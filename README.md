@@ -6,7 +6,7 @@ Simple desktop application for converting markdown documents into EncounerPlus c
 
 ## Installation
 
-Download the application flavour for your plattform from the [Latest Releases](/encounterplus/module-packer/releases/tag/v0.9.0/) section or clone this repository and run it from command line.
+Download the application flavour for your plattform from the [Latest Releases](https://github.com/encounterplus/module-packer/releases/tag/v0.9.0) section or clone this repository and run it from command line.
 
 ```
 npm install
