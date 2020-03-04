@@ -62,6 +62,22 @@ You can add images using standard mardown syntax:
 ![Heading](./images/heading.png)
 ```
 
+### Text blocks
+
+You can add default text block with standard block quote syntax:
+
+```md
+> Text block
+```
+
+Or `Read Aloud` text by adding custom class `read` to standard block quote:
+
+```md
+> Read aloud text
+{.read}
+```
+
+
 ## License
 
 [CC0 1.0 (Public Domain)](LICENSE.md)
