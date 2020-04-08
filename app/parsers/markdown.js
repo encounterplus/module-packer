@@ -11,6 +11,10 @@ const cheerio = require('cheerio')
 const EventEmitter = require('events').EventEmitter
 const util = require('util')
 
+function slgfy(s) {
+  return slugify(s, {lower: true, remove: /[*+~.()'"!:@&’]/g, strict: true})
+}
+
 const md = require('markdown-it')({
   html: true,
   linkify: true,
@@ -61,6 +65,8 @@ class Markdown {
       // render markdown to html
       let html = md.render(content.body)
 
+      console.log(html);
+
       // get name or filename
       let name = content.attributes.name || path.basename(file)
 
@@ -93,12 +99,14 @@ class Markdown {
           // console.log(selector)
 
           // get previous elements until another heading
-          let prevId = $(elem).prevAll(selector).first().attr('id')
-          console.log(prevId)
+          let prevId = $(elem).prevAll(selector).first().text()
+          
 
           // set parent based on id
           if (prevId) {
-            page.parent = lookup[prevId]
+            let prevSlug = slgfy(prevId)
+            console.log(prevSlug)
+            page.parent = lookup[prevSlug]
           }
           
           // append page to module
