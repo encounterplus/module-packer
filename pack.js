@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+const path = require('path');
 var argv = require('yargs')
     .usage('Usage: $0 <path> [options]')
     .command('path', 'Path to a directory', { alias: 'path' })
@@ -15,7 +16,11 @@ var argv = require('yargs')
 const Module = require('./app/models/module');
 const Markdown = require('./app/parsers/markdown');
 
-var path = argv._[ 0 ];
+Object.defineProperty(process, "resourcesPath", {
+    value: path.join(process.cwd(), "resources")
+});
+
+var src = argv._[ 0 ];
 
 // create module
 let mod = new Module(undefined, argv.n)
@@ -24,7 +29,7 @@ let mod = new Module(undefined, argv.n)
 var parser = new Markdown(mod)
 
 // process
-parser.process(path)
+parser.process(src)
 
 
 
