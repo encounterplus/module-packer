@@ -128,6 +128,10 @@ class Markdown {
             console.log(prevSlug)
             page.parent = lookup[prevSlug]
           }
+
+          if (!page.parent && group) {
+            page.parent = group
+          }
           
           // append page to module
           that.module.pages.push(page)
