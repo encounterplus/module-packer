@@ -32,6 +32,17 @@ class Module {
   		image: this.image,
   	}
 
+	// groups
+  	let groups = this.groups.map(group => {
+		let attrs = {id: group.id}
+		if (group.parent) {
+			attrs.parent = group.parent.id
+		}
+		return {$: attrs, name: group.name, slug: group.slug}
+	})
+
+	mod.group = groups
+
   	// pages
   	let pages = this.pages.map(page => {
   		// console.log(page)
