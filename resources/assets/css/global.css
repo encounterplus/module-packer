@@ -6,28 +6,28 @@
  */
 
 @font-face {
-    font-family: 'Andanda SC';
+    font-family: 'Andada SC';
     src: url('../font/AndadaSC-Regular.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
-    font-family: 'Andanda SC';
+    font-family: 'Andada SC';
     src: url('../font/AndadaSC-BoldItalic.otf') format('opentype');
     font-weight: bold;
     font-style: italic;
 }
 
 @font-face {
-    font-family: 'Andanda SC';
+    font-family: 'Andada SC';
     src: url('../font/AndadaSC-Italic.otf') format('opentype');
     font-weight: normal;
     font-style: italic;
 }
 
 @font-face {
-    font-family: 'Andanda SC';
+    font-family: 'Andada SC';
     src: url('../font/AndadaSC-Bold.otf') format('opentype');
     font-weight: bold;
     font-style: normal;
@@ -56,7 +56,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Andanda SC', '-apple-system', sans-serif;;
+    font-family: 'Andada SC', '-apple-system', sans-serif;;
     color: #58180d;
     font-weight: normal;
     /* font-variant: small-caps;*/
@@ -83,7 +83,7 @@ h3 {
 
 h4 {
     font-size: 18px;
-    ]line-height: 23px;
+    line-height: 23px;
 }
 
 h1 + p:not(.no-fancy)::first-letter {
