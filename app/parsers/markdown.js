@@ -91,12 +91,14 @@ class Markdown {
       let name = content.attributes.name || path.basename(file)
   
       var lookup = {}
+
+      let pageContentFound = false
   
       if (content.attributes.pagebreak) {
         // split pages by headings
         // load html parser
         let $ = cheerio.load(html)
-  
+
         // get all hedings
         $(content.attributes.pagebreak).each((i, elem) => {
   
@@ -111,6 +113,7 @@ class Markdown {
           // get next elements until another heading
           $(elem).nextUntil(content.attributes.pagebreak).each((i, e) => {
             page.content += $.html(e)
+            pageContentFound = true
           })
   
           lookup[page.slug] = page
@@ -121,7 +124,6 @@ class Markdown {
           // get previous elements until another heading
           let prevId = $(elem).prevAll(selector).first().text()
           
-  
           // set parent based on id
           if (prevId) {
             let prevSlug = slgfy(prevId)
@@ -137,7 +139,9 @@ class Markdown {
           that.module.pages.push(page)
         })
   
-      } else {
+      } 
+      
+      if (!pageContentFound) {
         // create single page
         let page = new Page(undefined, name)
         page.content = html
