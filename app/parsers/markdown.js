@@ -43,7 +43,7 @@ class Markdown {
     this.module = module;
   }
 
-  parseDirectory(src, group) {
+  parseDirectory(src, moduleOutput, group) {
     let that = this
     let subdirectories = fs.readdirSync(src).filter(function (file) {
       return fs.statSync(src+'/'+file).isDirectory();
@@ -52,7 +52,14 @@ class Markdown {
     subdirectories.forEach((subdir) => {
       let directory = src + '/' + subdir
 
+      if (subdir == 'ModuleOutput') {
+        return
+      }
+
       if (fs.existsSync(directory + '/.ignoregroup')) {
+        if (!group) { // If a root-level ignored folder, copy to output
+          fs.copy(directory, moduleOutput + '/' + subdir)
+        }
         return
       }
 
@@ -62,19 +69,31 @@ class Markdown {
       }
 
       that.module.groups.push(newGroup) 
-      that.parseDirectory(directory, newGroup)
+      that.parseDirectory(directory, moduleOutput, newGroup)
     })
   
-    // get all markdown files
-    let files = glob.sync(src + '/*.md')
+    // get all files
+    let files = glob.sync(src + '/*.*')
   
     // lenght check
     if (files.length == 0) {
       return
     }
   
+    const imageExtensions = ['.gif', '.jpeg', '.jpg', '.png'];
     files.forEach((file) => {
       console.log(file)
+
+      let extension = path.extname(file)
+      if (imageExtensions.includes(extension)) {
+        let filename = path.basename(file)
+        let newDestination = path.join(moduleOutput, filename)
+        fs.copyFileSync(file, newDestination)
+      }
+
+      if (extension != '.md') {
+        return
+      }
   
       // read source md file
       let data = fs.readFileSync(file, 'utf8')
@@ -98,6 +117,7 @@ class Markdown {
         // split pages by headings
         // load html parser
         let $ = cheerio.load(html)
+        let cover = $('.size-cover')
 
         // get all hedings
         $(content.attributes.pagebreak).each((i, elem) => {
@@ -105,17 +125,22 @@ class Markdown {
           let name = $(elem).text()
           console.log('---')
           console.log(name)
-  
+
           // create page
           let page = new Page(undefined, name)
+
+          if (!pageContentFound && cover) {
+            page.content += cover
+          }
+
           page.content += $.html(elem)
-  
+          
           // get next elements until another heading
           $(elem).nextUntil(content.attributes.pagebreak).each((i, e) => {
             page.content += $.html(e)
             pageContentFound = true
           })
-  
+
           lookup[page.slug] = page
   
           let selector = trim(content.attributes.pagebreak.split(elem.tagName)[0], ',')
@@ -131,7 +156,7 @@ class Markdown {
             page.parent = lookup[prevSlug]
           }
 
-          if (!page.parent && group) {
+          if (!prevId && group) {
             page.parent = group
           }
           
@@ -146,7 +171,6 @@ class Markdown {
         let page = new Page(undefined, name)
         page.content = html
 
-        // As
         if (group) {
           page.parent = group
         }
@@ -163,7 +187,15 @@ class Markdown {
 
     let that = this
 
-    that.parseDirectory(src);
+    let moduleOutput = path.join(src, 'ModuleOutput')
+    if (!fs.existsSync(moduleOutput)) {
+      fs.mkdirSync(moduleOutput)
+    }
+    
+    let ignoreFile = path.join(moduleOutput, '.ignoregroup')
+    fs.writeFileSync(ignoreFile, '')
+
+    that.parseDirectory(src, moduleOutput);
 
     if (fs.existsSync(path.join(src, 'cover.jpg'))) {
       this.module.image = 'cover.jpg'
@@ -172,21 +204,19 @@ class Markdown {
     // console.log(that.module)
 
     // export module
-    that.module.exportToXML(path.join(src, 'module.xml'))
+    that.module.exportToXML(path.join(moduleOutput, 'module.xml'))
 
     // copy resources if needed
-    if (!fs.existsSync(path.join(src, 'assets'))) {
+    if (!fs.existsSync(path.join(moduleOutput, 'assets'))) {
       // bleh, need to find a better way
       let packedAssets = path.join(process.resourcesPath, 'resources', 'assets')
       let localAssets = path.join(path.dirname(path.dirname(__dirname)), 'resources', 'assets')
-      let dstAssets = path.join(src, 'assets')
-      let assetsIgnore = path.join(dstAssets, '.ignoregroup')
+      let dstAssets = path.join(moduleOutput, 'assets')
       fs.copySync( fs.existsSync(localAssets) ? localAssets : packedAssets, dstAssets)
-      fs.writeFileSync(assetsIgnore, '')
     }
 
     // return
-    let dirname = path.dirname(src);
+    let dirname = path.dirname(moduleOutput);
 
     // create archive
     let filename = path.join(dirname, this.module.slug + '.module')
@@ -225,7 +255,7 @@ class Markdown {
     // archive.directory(src, false)
 
     // all files except source md
-    archive.glob('./**/!(*.md)', {cwd: src})
+    archive.glob('./**/!(*.md)', {cwd: moduleOutput})
 
     // finalize the archive (ie we are done appending files but streams have to finish yet)
     archive.finalize()
