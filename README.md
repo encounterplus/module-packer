@@ -65,6 +65,21 @@ You can add images using standard mardown syntax:
 ![Heading](./images/heading.png)
 ```
 
+A cover image can be made to extend to the edges of the page to match traditional RPG manual style by using the "size-cover" class. These are meant to come before the top heading, however, if using the "pagebreak" parameter, make sure you place your cover images after the heading and they will automatically be moved to the top of the page.
+
+Cover image example when NOT using pagebreaks:
+```md
+![Cover Image](cover.jpg){.size-cover}
+
+# My Title
+```
+
+Cover image example when using pagebreaks:
+```md
+# My Title
+![Cover Image](cover.jpg){.size-cover}
+```
+
 ### Text blocks
 
 You can add default text block with standard block quote syntax:
@@ -80,6 +95,9 @@ Or `Read Aloud` text by adding custom class `read` to standard block quote:
 {.read}
 ```
 
+### Groups
+
+Subdirectories under the main module folder will automatically be turned into Groups in the module. To have a folder *not* be made into a Group, create a file named ".ignoregroup" in the folder. That folder and all subfolders will no longer be turned into groups. They will, however, be included as a resource folder in the module (e.g. for the "images" folder).
 
 ## License
 

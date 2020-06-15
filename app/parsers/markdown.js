@@ -69,7 +69,7 @@ class Markdown {
       // image or resource folder)
       if (fs.existsSync(directory + '/.ignoregroup')) {
         if (!group) { // If a root-level ignored folder, copy to output
-          fs.copy(directory, moduleOutput + '/' + subdir)
+          fs.copySync(directory, moduleOutput + '/' + subdir)
         }
         return
       }
