@@ -45,17 +45,28 @@ class Markdown {
 
   parseDirectory(src, moduleOutput, group) {
     let that = this
+    
+    // Get subdirectories
     let subdirectories = fs.readdirSync(src).filter(function (file) {
       return fs.statSync(src+'/'+file).isDirectory();
     });
   
+    // Recursively loop through subdirectories
     subdirectories.forEach((subdir) => {
-      let directory = src + '/' + subdir
+      // subdir is the name of the folder,
+      // get absolute path
+      let directory = src + '/' + subdir 
 
+      // Skip ModuleOutput - that's where we're moving
+      // all of our image files to
       if (subdir == 'ModuleOutput') {
         return
       }
 
+      // Skip any folder with an ".ignoregroup" file for the purpose of
+      // creating groups or reading .md files. However, copy
+      // their content to the module output (as they may be an
+      // image or resource folder)
       if (fs.existsSync(directory + '/.ignoregroup')) {
         if (!group) { // If a root-level ignored folder, copy to output
           fs.copy(directory, moduleOutput + '/' + subdir)
@@ -63,27 +74,32 @@ class Markdown {
         return
       }
 
+      // Create a new group with a random UUID
+      // and assign the parent
       let newGroup = new Group(uuidv4(), subdir)
       if (group) {
         newGroup.parent = group
       }
 
+      // Push group to list of groups and recursively start
+      // parsing subdirectory
       that.module.groups.push(newGroup) 
       that.parseDirectory(directory, moduleOutput, newGroup)
     })
   
-    // get all files
+    // Ensure there are files in the modules directory
     let files = glob.sync(src + '/*.*')
-  
-    // lenght check
     if (files.length == 0) {
       return
     }
   
-    const imageExtensions = ['.gif', '.jpeg', '.jpg', '.png'];
     files.forEach((file) => {
       console.log(file)
 
+      // Copy all images to the base ModuleOutput folder
+      // This allows you to create same-directory image
+      // references when authoring markdown
+      const imageExtensions = ['.gif', '.jpeg', '.jpg', '.png']
       let extension = path.extname(file)
       if (imageExtensions.includes(extension)) {
         let filename = path.basename(file)
@@ -91,6 +107,8 @@ class Markdown {
         fs.copyFileSync(file, newDestination)
       }
 
+      // All code below is for parsing markdown files,
+      // so ignore any non-markdown files
       if (extension != '.md') {
         return
       }
@@ -102,50 +120,47 @@ class Markdown {
       let content = fm(data)
   
       // render markdown to html
-      let html = md.render(content.body)
-  
-      console.log(html);
+      let html = md.render(content.body)  
+      // console.log(html);
   
       // get name or filename
       let name = content.attributes.name || path.basename(file)
   
       var lookup = {}
-
-      let pageContentFound = false
   
+      let cover = undefined
+      let pagebreakContentFound = false
       if (content.attributes.pagebreak) {
         // split pages by headings
         // load html parser
         let $ = cheerio.load(html)
-        let cover = $('.size-cover')
 
-        // get all hedings
+        // get all headings
         $(content.attributes.pagebreak).each((i, elem) => {
-  
           let name = $(elem).text()
           console.log('---')
           console.log(name)
 
-          // create page
+          // Create page
           let page = new Page(undefined, name)
-
-          if (!pageContentFound && cover) {
-            page.content += cover
-          }
-
           page.content += $.html(elem)
           
           // get next elements until another heading
           $(elem).nextUntil(content.attributes.pagebreak).each((i, e) => {
-            page.content += $.html(e)
-            pageContentFound = true
+            // Special case cover images - they will be moved
+            // to the beginning of the page later
+            if ($(e).find('.size-cover').length > 0) {
+              cover = e
+            } else {
+              page.content += $.html(e)
+            }
+            
+            pagebreakContentFound = true
           })
 
-          lookup[page.slug] = page
-  
+          lookup[page.slug] = page  
           let selector = trim(content.attributes.pagebreak.split(elem.tagName)[0], ',')
-          // console.log(selector)
-  
+
           // get previous elements until another heading
           let prevId = $(elem).prevAll(selector).first().text()
           
@@ -156,6 +171,14 @@ class Markdown {
             page.parent = lookup[prevSlug]
           }
 
+          // If there is a cover image, apply to top current page
+          if (cover) {
+            page.content = $.html(cover) + page.content
+            cover = undefined
+          }
+
+          // If the page has no parent and there is a group, 
+          // make page belong to that group
           if (!prevId && group) {
             page.parent = group
           }
@@ -163,10 +186,12 @@ class Markdown {
           // append page to module
           that.module.pages.push(page)
         })
-  
       } 
       
-      if (!pageContentFound) {
+      // If a page hasn't otherwise been created by
+      // pagebreak parsing logic, use full HTML
+      // to create page
+      if (!pagebreakContentFound) {
         // create single page
         let page = new Page(undefined, name)
         page.content = html
@@ -187,11 +212,15 @@ class Markdown {
 
     let that = this
 
+    // Create a ModuleOutput folder so the main
+    // folder gets minimally altered
     let moduleOutput = path.join(src, 'ModuleOutput')
     if (!fs.existsSync(moduleOutput)) {
       fs.mkdirSync(moduleOutput)
-    }
+    }    
     
+    // Make sure repeated runs don't include the ModuleOutput
+    // folder
     let ignoreFile = path.join(moduleOutput, '.ignoregroup')
     fs.writeFileSync(ignoreFile, '')
 
