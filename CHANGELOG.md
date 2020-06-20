@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## [0.9.3]
 ### Added
 - Support for image size attributes
 - Allow drag-and-drop of module folder onto window
