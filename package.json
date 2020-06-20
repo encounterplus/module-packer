@@ -1,7 +1,7 @@
 {
   "name": "module-packer",
-  "version": "0.9.1",
-  "description": "A minimal Electron application",
+  "version": "0.9.2",
+  "description": "EncounterPlus Module Packer",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
@@ -15,9 +15,16 @@
   },
   "icon": "build/icon.icns",
   "build": {
-    "appId": "sk.qbit.module-packer",
+    "appId": "com.jjohnston.modulepacker",
     "mac": {
-      "category": "public.app-category.utilities"
+      "category": "public.app-category.utilities",
+      "identity": "UMJUH72CLG",
+      "hardenedRuntime": true,
+      "entitlements": "./build/entitlements.mac.plist",
+      "entitlementsInherit": "./build/entitlements.mac.plist",
+      "target": [
+        "dmg"
+      ]
     },
     "asar": true,
     "extraResources": [
