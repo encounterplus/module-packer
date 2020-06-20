@@ -1,0 +1,12 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"markdown.styles": [
+			"example/ModuleOutput/assets/css/global.css"
+		]
+	}
+}

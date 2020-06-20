@@ -1,8 +1,8 @@
 # EncounterPlus Module Packer
 
-Simple desktop application for converting markdown documents into EncounerPlus compatible .module files.
+Simple desktop application for converting markdown documents into EncounterPlus compatible .module files.
 
-![screenshot](screenshot.png)
+![Module Packer Screenshot](documentation/screenshot.png)
 
 ## Installation
 
@@ -49,7 +49,7 @@ pagebreak: h1,h2,h3
 
 You can add links to any monster, player, item and spell in the compendium or to other pages or maps. Examples in markdown:
 
-```md
+```Markdown
 [Goblin](/monster/goblin)
 [Staff of Power](/item/staff-of-power)
 [Fireball](/spell/fireball)
@@ -60,7 +60,7 @@ You can add links to any monster, player, item and spell in the compendium or to
 
 You can add images using standard mardown syntax:
 
-```md
+```Markdown
 ![Cover Image](cover.jpg)
 ![Heading](./images/heading.png)
 ```
@@ -68,14 +68,14 @@ You can add images using standard mardown syntax:
 A cover image can be made to extend to the edges of the page to match traditional RPG manual style by using the "size-cover" class. These are meant to come before the top heading, however, if using the "pagebreak" parameter, make sure you place your cover images after the heading and they will automatically be moved to the top of the page.
 
 Cover image example when NOT using pagebreaks:
-```md
+```Markdown
 ![Cover Image](cover.jpg){.size-cover}
 
 # My Title
 ```
 
 Cover image example when using pagebreaks:
-```md
+```Markdown
 # My Title
 ![Cover Image](cover.jpg){.size-cover}
 ```
@@ -84,13 +84,13 @@ Cover image example when using pagebreaks:
 
 You can add default text block with standard block quote syntax:
 
-```md
+```Markdown
 > Text block
 ```
 
 Or `Read Aloud` text by adding custom class `read` to standard block quote:
 
-```md
+```Markdown
 > Read aloud text
 {.read}
 ```
@@ -98,6 +98,30 @@ Or `Read Aloud` text by adding custom class `read` to standard block quote:
 ### Groups
 
 Subdirectories under the main module folder will automatically be turned into Groups in the module. To have a folder *not* be made into a Group, create a file named ".ignoregroup" in the folder. That folder and all subfolders will no longer be turned into groups. They will, however, be included as a resource folder in the module (e.g. for the "images" folder).
+
+## Markdown Editors
+
+Any markdown editor can be used to author content that will be compatible with EncounterPlus. Below you will find instructions on how to configure various editors so that your markdown previews more-closely match the way EncounterPlus will render the content.
+
+After running the module packer for the first time, the default stylesheets EncounterPlus uses to render markdown pages will be placed in the "ModuleOutput/Assets". Note that most editors do not currently support the special attributes mentioned above, such as "no-fancy", "read", and "size-cover".
+
+### Visual Studio Code
+![Visual Studio Code Screenshot](documentation/VisualStudioCode.png)
+
+Visual Studio Code has great support for rendering markdown with custom styles out-of-the-box. However, with the help of [Markdown Extended](https://marketplace.visualstudio.com/items?itemName=jebbs.markdown-extended) extension, Visual Studio can be used to render markdown pages almost identically to how EncounterPlus will render them - including the special attributes.
+
+1. Run Module Packer on your content for the first time to generate the ModuleOutput/Assets folder.
+2. In Visual Studio Code, go to Settings -> Extensions -> Markdown -> Styles
+3. Add a Style and point it to the "ModuleOutput/Assets/css/global.css" file.
+4. Optional (for custom attribute support) - Download and install [Markdown Extended](https://marketplace.visualstudio.com/items?itemName=jebbs.markdown-extended).
+
+### Ulysses
+User Team-Hufflepuff has created a wonderful style for Ulysses that allows previewing markdown authored in Ulysses as it would show in EncounterPlus. Ulyssess does not currently support HTML or the extended attributes. Download the [EncounterPlus Ulysses plugin here](documentation/EncounterPlus.ulstyle).
+
+![Ulysses Screenshot](documentation/Ulysses.png)
+
+#### Other Editors
+Have you supported EncounterPlus's style in another editor? Let us know on [Discord](https://discord.gg/rc8Bez8)!
 
 ## License
 
