@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 0.9.2
 ### Added
 - Added support for creating groups based on directories in Module folder.
 - Added support for cover images on pages generated from pagebreaks.
