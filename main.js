@@ -19,7 +19,8 @@ if ( process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) 
 }
 
 function createWindow () {
-  // Create the browser window.
+  
+  // Create the browser window
   mainWindow = new BrowserWindow({
     width: 363,
     height: 570,
@@ -31,14 +32,18 @@ function createWindow () {
     }
   })
 
-
-  // and load the index.html of the app.
+  // Load the index.html of the app
   mainWindow.loadFile('index.html')
 
-
-  // Open the DevTools.
-  if (dev ) {
+  // Open the developer tools if running
+  // in a development environment.
+  if (dev) {
     mainWindow.webContents.openDevTools()
+
+    // The developer tools take up space,
+    // so adjust the window size and re-center
+    mainWindow.setSize(800, 570, false)
+    mainWindow.center()
   }
 
   // Emitted when the window is closed.

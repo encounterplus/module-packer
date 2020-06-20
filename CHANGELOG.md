@@ -3,6 +3,7 @@
 ## [Unreleased]
 ### Added
 - Support for image size attributes
+- Allow drag-and-drop of module folder onto window
 
 ## 0.9.2
 ### Added

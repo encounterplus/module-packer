@@ -15,11 +15,34 @@ const addButton = document.getElementById('add-button'),
   nameInput =  document.getElementById('name-input'),
   pathInfo =  document.getElementById('path-info'),
   statusInfo =  document.getElementById('status-info'),
-  statusLink =  document.getElementById('status-link')
+  statusLink =  document.getElementById('status-link'),
+  container = document.getElementById('container')
 
 
 let basePath
 let exportedPath
+
+function handlePathSelection(paths) {
+  // get basepath
+  for (let p of paths) {
+    if (fs.lstatSync(p).isDirectory()) {
+      basePath = p
+    } else {
+      basePath = path.dirname(p)
+    }
+    
+    addLabel.innerText = basePath
+    nameInput.value = path.basename(basePath)
+    break; // We only care about one result
+  }
+
+  // show module section
+  addLabel.classList.remove('d-none');
+  moduleSection.classList.remove('d-none');
+  
+  statusInfo.classList.add('invisible');
+  statusLink.classList.add('invisible');
+}
 
 // file picker
 addButton.onclick = () => {
@@ -37,20 +60,7 @@ addButton.onclick = () => {
         return
     }
   
-    // get basepath
-    for (let file of result.filePaths) {
-        basePath = file
-
-        addLabel.innerText = basePath
-        nameInput.value = path.basename(basePath)
-    }
-
-    // show module section
-    addLabel.classList.remove('d-none');
-    moduleSection.classList.remove('d-none');
-    
-    statusInfo.classList.add('invisible');
-    statusLink.classList.add('invisible');
+    handlePathSelection(result.filePaths);
 
   }).catch(err => {
       log.error(err);
@@ -97,3 +107,28 @@ ipcRenderer.on('error', (event, message) => {
   statusInfo.innerHTML = '<span class="text-danger"><strong>Error</strong>: ' + message + '</span>'
   statusLink.classList.add('invisible');
 })
+
+// Support drag and drop onto the view
+
+container.ondragover = () => {
+  return false;
+};
+
+container.ondragleave = () => {
+  return false;
+};
+
+container.ondragend = () => {
+  return false;
+};
+
+container.ondrop = (event) => {
+  event.preventDefault();
+  let paths = []
+  for (let file of event.dataTransfer.files) {
+    paths.push(file.path)
+  }
+  handlePathSelection(paths);
+  return false;
+};
+
