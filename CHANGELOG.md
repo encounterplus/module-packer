@@ -1,9 +1,13 @@
 # Change Log
 
+## [Unreleased]
+### Added
+- Support for image size attributes
+
 ## 0.9.2
 ### Added
-- Added support for creating groups based on directories in Module folder.
-- Added support for cover images on pages generated from pagebreaks.
+- Support for creating groups based on directories in Module folder.
+- Support for cover images on pages generated from pagebreaks.
 
 ### Changed
 - If pagebreaks are specified, but none are detected, a page will still be created.

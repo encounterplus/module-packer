@@ -62,6 +62,7 @@
     "markdown-it": "^10.0.0",
     "markdown-it-anchor": "^5.2.7",
     "markdown-it-attrs": "^3.0.2",
+    "markdown-it-imsize": "^2.0.1",
     "node-uuid": "^1.4.8",
     "popper.js": "^1.16.1",
     "slugify": "^1.4.0",

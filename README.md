@@ -58,11 +58,21 @@ You can add links to any monster, player, item and spell in the compendium or to
 
 ### Images
 
-You can add images using standard mardown syntax:
+You can add images using standard markdown syntax:
 
 ```Markdown
 ![Cover Image](cover.jpg)
 ![Heading](./images/heading.png)
+```
+
+Image sizes can be applied using the extended image size format. For example:
+```Markdown
+![My Image](myImage.png =100x200)
+```
+
+Or, if you only want to specify a width and have the height automatically adjusted:
+```Markdown
+![My Image](myImage.png =100x)
 ```
 
 A cover image can be made to extend to the edges of the page to match traditional RPG manual style by using the "size-cover" class. These are meant to come before the top heading, however, if using the "pagebreak" parameter, make sure you place your cover images after the heading and they will automatically be moved to the top of the page.
@@ -108,12 +118,11 @@ After running the module packer for the first time, the default stylesheets Enco
 ### Visual Studio Code
 ![Visual Studio Code Screenshot](documentation/VisualStudioCode.png)
 
-Visual Studio Code has great support for rendering markdown with custom styles out-of-the-box. However, with the help of [Markdown Extended](https://marketplace.visualstudio.com/items?itemName=jebbs.markdown-extended) extension, Visual Studio can be used to render markdown pages almost identically to how EncounterPlus will render them - including the special attributes.
+Visual Studio Code has great support for rendering markdown with custom styles out-of-the-box. However, with the help of the [EncounterPlus Markdown Extension](https://marketplace.visualstudio.com/items?itemName=JacobJohnston.encounterplus-markdown), Visual Studio Code can preview markdown pages as if they were already run through the Module Packer and rendered in EncounterPlus. Simply install the plugin and preview your markdown documents.
 
-1. Run Module Packer on your content for the first time to generate the ModuleOutput/Assets folder.
-2. In Visual Studio Code, go to Settings -> Extensions -> Markdown -> Styles
-3. Add a Style and point it to the "ModuleOutput/Assets/css/global.css" file.
-4. Optional (for custom attribute support) - Download and install [Markdown Extended](https://marketplace.visualstudio.com/items?itemName=jebbs.markdown-extended).
+Optionally, if you want to preview the custom styling in your module, do the following (*this only needs to be done if you've modified custom.css*):
+1. In Visual Studio Code, go to Settings -> Extensions -> Markdown -> Styles
+2. Add a Style and point it to the "ModuleOutput/Assets/css/custom.css" file.
 
 ### Ulysses
 User Team-Hufflepuff has created a wonderful style for Ulysses that allows previewing markdown authored in Ulysses as it would show in EncounterPlus. Ulyssess does not currently support HTML or the extended attributes. Download the [EncounterPlus Ulysses plugin here](documentation/EncounterPlus.ulstyle).

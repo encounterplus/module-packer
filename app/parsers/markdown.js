@@ -1,6 +1,7 @@
 const slugify = require('slugify')
 const markdownItAttrs = require('markdown-it-attrs')
-const markdownItAnchor = require("markdown-it-anchor")
+const markdownItAnchor = require('markdown-it-anchor')
+const markdownItImSize = require('markdown-it-imsize')
 const fs = require('fs-extra')
 const fm = require('front-matter')
 const glob = require('glob')
@@ -26,7 +27,9 @@ const md = require('markdown-it')({
 // setup markdown
 md
   .use(markdownItAttrs)
-  .use(markdownItAnchor);
+  .use(markdownItAnchor)
+  .use(markdownItImSize, { autofill: true });
+
 
 function trim (s, c) {
   if (c === "]") c = "\\]";
@@ -35,8 +38,6 @@ function trim (s, c) {
     "^[" + c + "]+|[" + c + "]+$", "g"
     ), "");
 }
-
-
 
 class Markdown {
   constructor(module) {
