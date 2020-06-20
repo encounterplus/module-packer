@@ -5,3 +5,5 @@ dist
 .vscode/
 
 package-lock.json
+
+example/
