@@ -6,9 +6,9 @@ Simple desktop application for converting markdown documents into EncounterPlus 
 
 ## Installation
 
-Download the application for your plattform from the [Latest Releases](releases/latest).
+Download the application for your plattform from the [Latest Releases](https://github.com/encounterplus/module-packer/releases/latest).
 
-To run module-packer from code, you will need Node Package Manager (npm) installed. Once npm is installed, clone this repository and run the following from your command line.
+To run module-packer from code, you will need [Node Package Manager](https://www.npmjs.com) (npm) installed. Once npm is installed, clone this repository, navigate to that repository directory from your command line, and run the following commands.
 
 ```
 npm install
