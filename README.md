@@ -8,20 +8,14 @@ Simple desktop application for converting markdown documents into EncounterPlus 
 
 Download the application for your plattform from the [Latest Releases](https://github.com/encounterplus/module-packer/releases/latest).
 
-To run module-packer from code, you will need [Node Package Manager](https://www.npmjs.com) (npm) installed. Once npm is installed, clone this repository, navigate to that repository directory from your command line, and run the following commands.
-
-```
-npm install
-npm start
-```
+For information on building and running module-packer from code, see the [Coding Guide](CodingGuide.md)
 
 ## Usage
 
 1. Select a folder containing some markdown formatted documents you want to convert and pack. 
-2. Change the name of your module.
-3. Click on the "Create module" button
-4. Click on the link to reveal the .module file in your file browser.
-5. Import generated .module file into EncounterPlus iOS app using app settings.
+2. Click on the "Create module" button.
+3. Click on the link to reveal the .module file in your file browser.
+4. Import the generated .module file into EncounterPlus. This can be done in the settings menu on iOS/iPadOS, or simply by double clicking the `.module` file on macOS.
 
 ## Example content
 
@@ -41,11 +35,11 @@ slug: page-name
 pagebreak: h1,h2,h3
 ---
 ```
-> *id* is an optional parameter (string) used as a unique identifier for the page. If not provided, UUIDv4 string will be automatically generated.
+> ***id*** - An optional parameter (string) used as a unique identifier for the page. If not provided, UUIDv4 string will be automatically generated.
 
-> *slug* is an optional parameter (string) used for referencing pages (see links below). If not provided, it's automatically generated.
+> ***slug*** - An optional parameter (string) used for referencing pages (see links below). If not provided, it's automatically generated.
 
-> *pagebreak* is an optional parameter which can be used for splitting single markdown document into multiple pages. The splitting is done automatically, based on the heading level array specified in this parameter and the actual content in the document. It's useful for describing map locations which can be added later as pins.
+> ***pagebreak*** - An optional parameter which can be used for splitting single markdown document into multiple pages. The splitting is done automatically, based on the heading level array specified in this parameter and the actual content in the document. It's useful for describing map locations which can be added later as pins.
 
 ### Links
 
@@ -77,7 +71,7 @@ Or, if you only want to specify a width and have the height automatically adjust
 ![My Image](myImage.png =100x)
 ```
 
-A cover image can be made to extend to the edges of the page to match traditional RPG manual style by using the "size-cover" class. These are meant to come before the top heading, however, if using the "pagebreak" parameter, make sure you place your cover images after the heading and they will automatically be moved to the top of the page.
+A cover image can be made to extend to the edges of the page to match traditional RPG manual style by using the `size-cover` class. These are meant to come before the top heading, however, if using the "pagebreak" parameter, make sure you place your cover images after the heading and they will automatically be moved to the top of the page.
 
 Cover image example when NOT using pagebreaks:
 ```Markdown
@@ -109,7 +103,29 @@ Or `Read Aloud` text by adding custom class `read` to standard block quote:
 
 ### Groups
 
-Subdirectories under the main module folder will automatically be turned into Groups in the module. To have a folder *not* be made into a Group, create a file named ".ignoregroup" in the folder. That folder and all subfolders will no longer be turned into groups. They will, however, be included as a resource folder in the module (e.g. for the "images" folder).
+Subdirectories under the main module folder will automatically be turned into Groups in the module. To have a folder *not* be made into a Group, create a file named `.ignoregroup` in the folder. That folder and all subfolders will no longer be turned into groups. They will, however, be included as a resource folder in the module (e.g. for the `images` folder).
+
+## Module Properties
+
+In the root folder of your module project, you can create a file named `module.json` to define properties about the module. If module.json does not exist, essential properties like `name` and `slug` will be inferred from the module's folder name. A more thorough guide to module.json is available.
+
+```JSON
+{
+  "name": "Example Module",
+  "slug": "example-module",
+  "description": "Example module description.",
+  "category": "adventure",
+  "author": "Dungeony MasterFace",
+  "code": "ABC-123",
+  "cover": "cover.jpg",
+  "version": 4,
+  "autoIncrementVersion": true
+}
+```
+
+The `id` value can also be specified (as a UUID string) to cause a module to be overwritten rather than duplicated when repeatedly imported. However, this is not advised as repeated module imports can cause duplicate groups and pages to be created unless care is taken to ensure they, also, have a manual ID specified.
+
+The `autoIncrementVersion` field will cause the version number to automatically increment each time the module is packed. This is useful for keeping track 
 
 ## Markdown Editors
 
@@ -120,7 +136,9 @@ After running the module packer for the first time, the default stylesheets Enco
 ### Visual Studio Code
 ![Visual Studio Code Screenshot](documentation/VisualStudioCode.png)
 
-Visual Studio Code has great support for rendering markdown with custom styles out-of-the-box. However, with the help of the [EncounterPlus Markdown Extension](https://marketplace.visualstudio.com/items?itemName=JacobJohnston.encounterplus-markdown), Visual Studio Code can preview markdown pages as if they were already run through the Module Packer and rendered in EncounterPlus. Simply install the plugin and preview your markdown documents.
+Visual Studio Code has great support for rendering markdown with custom styles out-of-the-box. However, with the help of the official [EncounterPlus Markdown Extension](https://marketplace.visualstudio.com/items?itemName=JacobJohnston.encounterplus-markdown), Visual Studio Code can preview markdown pages as if they were already run through the Module Packer and rendered in EncounterPlus. Simply install the plugin and preview your markdown documents.
+
+For detailed information on using the Visual Studio Extension, see the [EncounterPlus Markdown Extension Guide](VisualStudioExtensionGuide.md).
 
 Optionally, if you want to preview the custom styling in your module, do the following (*this only needs to be done if you've modified custom.css*):
 1. In Visual Studio Code, go to Settings -> Extensions -> Markdown -> Styles

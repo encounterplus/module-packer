@@ -5,7 +5,7 @@
  global styles & theme
  */
 
-@font-face {
+font-face {
     font-family: 'Andada SC';
     src: url('../font/AndadaSC-Regular.otf') format('opentype');
     font-weight: normal;
@@ -43,11 +43,11 @@ body {
     font-family: '-apple-system', sans-serif;
     font-size: 13px;
     line-height: 18px;
-    background: #6d6d6d;
+    background: #ffffff;
     padding: 0px;
     margin: 0px;
     color: black;
-    background: url('../img/bg.png') #6d6d6d repeat;
+    background: url('../img/bg.png') #ffffff repeat;
 }
 
 #page {
@@ -129,7 +129,6 @@ blockquote {
     border-top: 2px solid black;
     border-bottom: 2px solid black;
     box-shadow: 0px 3px 10px 0px rgba(0,0,0,0.3);
-    border-left-width: 0px;
 }
 
 blockquote:before {
@@ -283,7 +282,9 @@ img.size-full {
 }
 
 @media print {
-    body{
-        background: white;
+    body {
+        background: url('../img/bg.png') #ffffff cover;
+        padding: 0px;
+        margin: 0px;
     }
 }

@@ -1,4 +1,7 @@
-node_modules
-dist
+/node_modules
+/dist
+/app-out
+/extension-out
+/example
+*.vsix
 .DS_Store
-example

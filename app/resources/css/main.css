@@ -58,6 +58,26 @@ body {
 	background-color: rgba(255,255,255, 0.3);
 }
 
+#help-button img {
+	color: white;
+	padding: 20%;
+}
+
+#help-button {
+	position: absolute;
+	right: 0px;
+	background-color: rgba(255,255,255, 0.1);
+	border-radius: 50%;
+	transition: 0.3s;
+	margin: 5px;
+	width: 32px;
+	height: 32px;
+}
+
+#help-button:hover {
+	background-color: rgba(255,255,255, 0.3);
+}
+
 #add-button img {
 	width: 100px;
 	height: 100px;

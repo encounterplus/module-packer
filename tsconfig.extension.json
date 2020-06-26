@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+		"target": "es2019",
+		"lib": ["ES2019", "DOM"],
+        "declaration": true,
+        "outDir": "./extension-out",
+        "strict": true,
+        "noUnusedLocals": true,
+        "stripInternal": true,
+        "downlevelIteration": true,
+        "sourceMap": true
+    },
+    "exclude": ["node_modules", ".vscode-test", "extension-out", "app-out"],
+    "include": [
+        "vscode-extension/**/*",
+        "shared/**/*"
+    ]
+}
