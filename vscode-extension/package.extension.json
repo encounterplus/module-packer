@@ -18,51 +18,162 @@
     "url": "https://github.com/encounterplus/module-packer/issues"
   },
   "homepage": "https://github.com/encounterplus/module-packer",
-  "categories": [
-    "Other"
-  ],
-  "keywords": [
-    "EncounterPlus",
-    "iOS",
-    "module",
-    "packer"
-  ],
-  "activationEvents": [
-    "onLanguage:markdown"
-  ],
+  "categories": ["Other"],
+  "keywords": ["EncounterPlus", "iOS", "module", "packer"],
+  "activationEvents": ["onLanguage:markdown"],
   "main": "./extension-out/vscode-extension/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "extension.buildModule",
+        "command": "encounterPlusMarkdown.buildModule",
         "title": "Build EncounterPlus Module",
         "category": "Markdown",
         "icon": {
           "light": "./extension-out/resources/build-module-light.svg",
           "dark": "./extension-out/resources/build-module-dark.svg"
         }
+      },
+      {
+        "title": "Markdown: Toggle Bold",
+        "command": "encounterPlusMarkdown.toggleBold",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Italics",
+        "command": "encounterPlusMarkdown.toggleItalics",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Underline",
+        "command": "encounterPlusMarkdown.toggleUnderLine",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Mark",
+        "command": "encounterPlusMarkdown.toggleMark",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Superscript",
+        "command": "encounterPlusMarkdown.toggleSuperscript",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Subscript",
+        "command": "encounterPlusMarkdown.toggleSubscript",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Strikethrough",
+        "command": "encounterPlusMarkdown.toggleStrikethrough",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Inline Code",
+        "command": "encounterPlusMarkdown.toggleCodeInline",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Code Block",
+        "command": "encounterPlusMarkdown.toggleCodeBlock",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Unordered List",
+        "command": "encounterPlusMarkdown.toggleUList",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Ordered List",
+        "command": "encounterPlusMarkdown.toggleOList",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Block Quote",
+        "command": "encounterPlusMarkdown.toggleBlockQuote",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "encounterPlusMarkdown.toggleBold",
+        "key": "ctrl+b",
+        "mac": "cmd+b",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.toggleItalics",
+        "key": "ctrl+i",
+        "mac": "cmd+i",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.toggleUnderLine",
+        "key": "ctrl+u",
+        "mac": "cmd+u",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.toggleMark",
+        "key": "ctrl+m",
+        "mac": "cmd+m",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.toggleSuperscript",
+        "key": "ctrl+shift+=",
+        "mac": "cmd+shift+=",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.toggleSubscript",
+        "key": "ctrl+shift+-",
+        "mac": "cmd+shift+-",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.toggleStrikethrough",
+        "key": "alt+shift+x",
+        "mac": "cmd+shift+x",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.toggleCodeInline",
+        "key": "alt+shift+`",
+        "mac": "alt+shift+`",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.toggleCodeBlock",
+        "key": "ctrl+alt+shift+`",
+        "mac": "ctrl+alt+shift+`",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.toggleBlockQuote",
+        "key": "alt-shift-q",
+        "mac": "alt-shift-q",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
       }
     ],
     "menus": {
       "editor/title": [
         {
-          "command": "extension.buildModule",
-          "when": "editorLangId == markdown",
-          "alt": "extension.buildModule",
+          "command": "encounterPlusMarkdown.buildModule",
+          "when": "projectHasMarkdown == true",
+          "alt": "encounterPlusMarkdown.buildModule",
           "group": "navigation"
         }
       ]
     },
     "markdown.markdownItPlugins": true,
-    "markdown.previewStyles": [
-      "assets/css/global.css"
-    ]
+    "markdown.previewStyles": ["assets/css/global.css"]
   },
   "scripts": {
-		"lint": "eslint . --ext .ts,.tsx",
+    "lint": "eslint . --ext .ts,.tsx",
     "vscode:prepublish": "npm run compile-extension",
-		"compile-extension": "tsc -p tsconfig.extension.json && cp -R ./vscode-extension/resources ./extension-out/resources && cp -R ./assets ./extension-out",
-		"watch-extension": "tsc -watch -p tsconfig.extension.json"
+    "compile-extension": "tsc -p tsconfig.extension.json && cp -R ./vscode-extension/resources ./extension-out/resources && cp -R ./assets ./extension-out",
+    "watch-extension": "tsc -watch -p tsconfig.extension.json"
   },
   "devDependencies": {
     "@types/node": "^12.12.47",
@@ -88,6 +199,9 @@
     "markdown-it-anchor": "^5.3.0",
     "markdown-it-attrs": "^3.0.3",
     "markdown-it-imsize": "^2.0.1",
+    "markdown-it-sub": "^1.0.0",
+    "markdown-it-sup": "^1.0.0",
+    "markdown-it-underline": "^1.0.1",
     "minimist": ">=0.2.1",
     "path": "^0.12.7",
     "slugify": "^1.4.0",

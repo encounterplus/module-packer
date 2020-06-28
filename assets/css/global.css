@@ -56,10 +56,9 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Andada SC', '-apple-system', sans-serif;;
+    font-family: 'Andada SC', '-apple-system', sans-serif;
     color: #58180d;
     font-weight: normal;
-    /* font-variant: small-caps;*/
     display: block;
     padding: 0px;
     margin: 5px 0px;
@@ -199,7 +198,6 @@ code, pre {
 a {
     color: #58180d;
     text-decoration: none;
-    /*font-weight: bold;*/
 }
 
 a:hover {
@@ -234,6 +232,12 @@ table thead {
     font-weight: bold;
 }
 
+table.headerTitle thead {
+    font-weight: bold;
+    font-family: 'Andada SC', '-apple-system', sans-serif;
+    color: #58180d;
+}
+
 td,
 th {
     padding: 10px;
@@ -246,7 +250,27 @@ td p {
 }
 
 tbody tr:nth-child(odd) {
-    background: #e0e4c3;
+    background: #E0E4C3;
+}
+
+table.green tbody tr:nth-child(odd) {
+    background: #E0E4C3;
+}
+
+table.red tbody tr:nth-child(odd) {
+    background: #E4C3C3;
+}
+
+table.blue tbody tr:nth-child(odd) {
+    background: #C3D3E4;
+}
+
+table.yellow tbody tr:nth-child(odd) {
+    background: #E4E1C3;
+}
+
+table.gray tbody tr:nth-child(odd) {
+    background: #D4D4D4;
 }
 
 .text-center {

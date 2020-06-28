@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.5
 ### Added
 - Added Visual Studio Code Extension part of Module Packer
   - Previews markdown as it would appear in EncounterPlus
@@ -8,11 +8,12 @@
   - Adds tools for working with Markdown in Visual Studio Code
 - Added support for setting Module properties via `module.json` file
 - Added help button to Module Packer
+- Added support for additional markdown syntax: underline, subscript, superscript
+- Added {.headerTitle}, {.green}, {.blue}, {.red}, {.yellow}, and {.gray} styles attributes for tables
 
 ### Changed
 - `ModuleOutput` folder was renamed to `ModuleBuild`
-
-In this update, the module packer codebase was changed to use typescript.
+- Codebase was changed to use typescript
 
 ## 0.9.3
 ### Added

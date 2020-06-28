@@ -34,6 +34,7 @@
 		{
 			"label": "build extension",
 			"type": "process",
+			"problemMatcher": "$tsc-watch",
 			"command": "${config:python.pythonPath}",
 			"args": ["${workspaceFolder}/launcher.py", "build-extension"],
 			"options": {
@@ -43,6 +44,7 @@
 		{
 			"label": "build app",
 			"type": "process",
+			"problemMatcher": "$tsc-watch",
 			"command": "${config:python.pythonPath}",
 			"args": ["${workspaceFolder}/launcher.py", "build-app"],
 			"options": {
