@@ -36,6 +36,7 @@ export function activate(context: vscode.ExtensionContext) {
         .use(require('markdown-it-anchor'))
         .use(require('markdown-it-attrs'))
         .use(require('markdown-it-imsize'), { autofill: true })
+        .use(require('markdown-it-mark'))
         .use(require('markdown-it-sub'))
         .use(require('markdown-it-sup'))
         .use(require('markdown-it-underline'))

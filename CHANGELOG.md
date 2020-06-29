@@ -8,7 +8,7 @@
   - Adds tools for working with Markdown in Visual Studio Code
 - Added support for setting Module properties via `module.json` file
 - Added help button to Module Packer
-- Added support for additional markdown syntax: underline, subscript, superscript
+- Added support for additional markdown syntax: underline, subscript, superscript, mark
 - Added {.headerTitle}, {.green}, {.blue}, {.red}, {.yellow}, and {.gray} styles attributes for tables
 
 ### Changed
