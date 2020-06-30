@@ -63,8 +63,12 @@ app.on("window-all-closed", () => {
 })
 
 ipcMain.on('createModule', async (event, path, name) => {
-  let module = await Module.createModuleFromPath(path, name)
-  mainWindow.webContents.send('success', module.name, module.moduleArchivePath)  
+  try {
+    let module = await Module.createModuleFromPath(path, name)
+    mainWindow.webContents.send('success', module.name, module.moduleArchivePath)  
+  } catch (error) {
+    mainWindow.webContents.send('error', error.message)
+  }    
 })
 
 process.on('uncaughtException', function (error) {

@@ -20,4 +20,10 @@ export interface MarkdownToggle {
   /** The format to apply to the matched text to disable the markdown state from an enabled state */
   disableFormat: string
 
+  /** The line offset count when the format is applied */
+  lineOffset: number
+
+  /** The character offset count when the format is applied */
+  characterOffset: number
+
 }

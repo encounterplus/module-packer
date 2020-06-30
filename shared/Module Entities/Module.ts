@@ -21,7 +21,7 @@ export class Module {
   // ---------------------------------------------------------------
 
   /** The markdown parsing engine */
-  private markdown: Markdown
+  private static markdown: Markdown | undefined = undefined
 
   // ---------------------------------------------------------------
   // Initialization & Cleanup
@@ -35,21 +35,6 @@ export class Module {
     this.name = name
     this.id = UUIDV4()
     this.slug = Module.getSlugFromValue(name)
-    this.markdown = Markdown({
-      html: true,
-      linkify: true,
-      typographer: true,
-    })
-
-    // Load plugins for markdown
-    this.markdown
-      .use(require('markdown-it-anchor'))
-      .use(require('markdown-it-attrs'))
-      .use(require('markdown-it-imsize'), { autofill: true })
-      .use(require('markdown-it-mark'))
-      .use(require('markdown-it-sub'))
-      .use(require('markdown-it-sup'))
-      .use(require('markdown-it-underline'))
   }
 
   // ---------------------------------------------------------------
@@ -480,7 +465,10 @@ export class Module {
         return
       }
 
-      this.processFile(fullPath, moduleBuildPath, parentGroup)
+      let newPages = Module.processFile(fullPath, moduleBuildPath, parentGroup)
+      newPages.forEach(page => {
+        this.pages.push(page)
+      })
     })
   }
 
@@ -491,11 +479,33 @@ export class Module {
    * @param moduleBuildPath The module build folder path
    * @param parentGroup The parent group (optional)
    */
-  private processFile(
+  public static processFile(
     filePath: string,
-    moduleBuildPath: string,
+    moduleBuildPath: string | undefined = undefined,
     parentGroup: Group | undefined = undefined
-  ) {
+  ): Page[] {
+
+    // Create markdown parser and load plugins if
+    // the parser has not yet been created
+    if (Module.markdown === undefined) {
+      Module.markdown = Markdown({
+        html: true,
+        linkify: true,
+        typographer: true,
+      })
+
+      Module.markdown
+        .use(require('markdown-it-anchor'))
+        .use(require('markdown-it-attrs'))
+        .use(require('markdown-it-imsize'), { autofill: true })
+        .use(require('markdown-it-mark'))
+        .use(require('markdown-it-multimd-table'))
+        .use(require('markdown-it-sub'))
+        .use(require('markdown-it-sup'))
+        .use(require('markdown-it-underline'))
+    }
+
+    let pages: Page[] = []
     console.log(`Processing file: ${filePath}`)
 
     // Copy all images to the base ModuleBuild folder
@@ -503,7 +513,7 @@ export class Module {
     // references when authoring markdown
     const imageExtensions = ['.gif', '.jpeg', '.jpg', '.png']
     let extension = Path.extname(filePath)
-    if (imageExtensions.includes(extension)) {
+    if (moduleBuildPath !== undefined && imageExtensions.includes(extension)) {
       let filename = Path.basename(filePath)
       let newDestination = Path.join(moduleBuildPath, filename)
       FileSystem.copyFileSync(filePath, newDestination)
@@ -512,7 +522,7 @@ export class Module {
     // All code below is for parsing markdown files,
     // so ignore any non-markdown files
     if (extension != '.md') {
-      return
+      return pages
     }
 
     // Read the markdown file contents
@@ -524,7 +534,7 @@ export class Module {
     let matter = GrayMatter(data)
 
     // Convert markdown to HTML
-    let html = this.markdown.render(matter.content)
+    let html = Module.markdown.render(matter.content)
 
     // If defined in the front-matter, get the name
     // for the page there. Otherwise, get it from
@@ -549,6 +559,12 @@ export class Module {
         // Create Page from current HTML
         let page = new Page(headerText)
         page.content += $.html(element)
+
+        // If there is a cover image, apply to top current page
+        if (cover) {
+          page.content = $.html(cover) + page.content
+          cover = undefined
+        }
 
         // Advance through page content until the next header
         $(element)
@@ -582,12 +598,6 @@ export class Module {
           page.parent = pagesByHeader[parentHeader]
         }
 
-        // If there is a cover image, apply to top current page
-        if (cover) {
-          page.content = $.html(cover) + page.content
-          cover = undefined
-        }
-
         // If the page has no parent and there is a group,
         // make page belong to that group
         if (parentElement.length === 0 && parentGroup !== undefined) {
@@ -595,7 +605,7 @@ export class Module {
         }
 
         // Finally, add the page to the module
-        this.pages.push(page)
+        pages.push(page)
         pagebreakContentFound = true
       })
     }
@@ -607,8 +617,10 @@ export class Module {
       let page = new Page(pageName)
       page.content = html
       page.parent = parentGroup
-      this.pages.push(page)
+      pages.push(page)
     }
+
+    return pages
   }
 
   /**

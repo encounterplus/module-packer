@@ -20,10 +20,6 @@ export function activate(context: vscode.ExtensionContext) {
     })
   }
 
-  vscode.commands.getCommands().then(commands => {
-    console.log("test")
-  })
-
   context.subscriptions.push(
     vscode.commands.registerCommand('encounterPlusMarkdown.buildModule', () => {
       Commands.buildModule()
@@ -37,6 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
         .use(require('markdown-it-attrs'))
         .use(require('markdown-it-imsize'), { autofill: true })
         .use(require('markdown-it-mark'))
+        .use(require('markdown-it-multimd-table'))        
         .use(require('markdown-it-sub'))
         .use(require('markdown-it-sup'))
         .use(require('markdown-it-underline'))

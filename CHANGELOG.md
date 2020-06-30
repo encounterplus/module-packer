@@ -1,5 +1,17 @@
 # Change Log
 
+## 1.0.6
+
+### Added
+- Added statbock table style and additional table handling (column span, cell span, etc.)
+
+### Fixed
+- Improved handling of selection when using format toggles
+- Improved detection of word selection on format toggles
+- Fixed bug in group slug generation
+- Fixed blockquote styling
+- Fixed background image being broken again.
+
 ## 1.0.5
 ### Added
 - Added Visual Studio Code Extension part of Module Packer

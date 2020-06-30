@@ -18,6 +18,8 @@ export class MarkdownToggler {
       disableRegExp: /\*\*(\S.*?\S)\*\*/gi,
       enableFormat: '**$1**',
       disableFormat: '$1',
+      lineOffset: 0,
+      characterOffset: 2,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleItalics'] = {
@@ -27,6 +29,8 @@ export class MarkdownToggler {
       disableRegExp: /\*(\S.*?\S)\*(?!=\*)/gi,
       enableFormat: '*$1*',
       disableFormat: '$1',
+      lineOffset: 0,
+      characterOffset: 1,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleUnderLine'] = {
@@ -36,6 +40,8 @@ export class MarkdownToggler {
       disableRegExp: /_(\S.*?\S)_/gi,
       enableFormat: '_$1_',
       disableFormat: '$1',
+      lineOffset: 0,
+      characterOffset: 1,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleMark'] = {
@@ -45,6 +51,8 @@ export class MarkdownToggler {
       disableRegExp: /==(\S.*?\S)==/gi,
       enableFormat: '==$1==',
       disableFormat: '$1',
+      lineOffset: 0,
+      characterOffset: 2,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleSuperscript'] = {
@@ -54,6 +62,8 @@ export class MarkdownToggler {
       disableRegExp: /\^(\S.*?\S)\^/gi,
       enableFormat: '^$1^',
       disableFormat: '$1',
+      lineOffset: 0,
+      characterOffset: 1,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleSubscript'] = {
@@ -63,6 +73,8 @@ export class MarkdownToggler {
       disableRegExp: /~(\S.*?\S)~(?!=~)/gi,
       enableFormat: '~$1~',
       disableFormat: '$1',
+      lineOffset: 0,
+      characterOffset: 1,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleStrikethrough'] = {
@@ -72,6 +84,8 @@ export class MarkdownToggler {
       disableRegExp: /~~(\S.*?\S)~~/gi,
       enableFormat: '~~$1~~',
       disableFormat: '$1',
+      lineOffset: 0,
+      characterOffset: 2,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleCodeInline'] = {
@@ -81,6 +95,8 @@ export class MarkdownToggler {
       disableRegExp: /`(\S.*?\S)`/gi,
       enableFormat: '`$1`',
       disableFormat: '$1',
+      lineOffset: 0,
+      characterOffset: 1,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleCodeBlock'] = {
@@ -90,6 +106,8 @@ export class MarkdownToggler {
       disableRegExp: /^```\r?\n([\S\s]+)\r?\n```\s*$/gi,
       enableFormat: '```\n$1\n```',
       disableFormat: '$1',
+      lineOffset: 1,
+      characterOffset: 0,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleUList'] = {
@@ -99,6 +117,8 @@ export class MarkdownToggler {
       disableRegExp: /(^|\n)-\s+(.+)\s*(?=$|\n)/gi,
       enableFormat: '$1- $2',
       disableFormat: '$1$2',
+      lineOffset: 0,
+      characterOffset: 2,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleOList'] = {
@@ -108,6 +128,8 @@ export class MarkdownToggler {
       disableRegExp: /(^|\n)(?:\d+\.)\s+(.+)\s*(?=$|\n)/gi,
       enableFormat: '$11. $2',
       disableFormat: '$1$2',
+      lineOffset: 0,
+      characterOffset: 3,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleBlockQuote'] = {
@@ -117,6 +139,8 @@ export class MarkdownToggler {
       disableRegExp: /(^|\n)>[^\S\n]+(.*?)[^\S\n]*(?=$|\n)/gi,
       enableFormat: '$1> $2',
       disableFormat: '$1$2',
+      lineOffset: 0,
+      characterOffset: 2,
     }
   }
 
@@ -140,7 +164,11 @@ export class MarkdownToggler {
     }
 
     if(selectionLineRanges.length == 1 && selectionLineRanges[0].isEmpty) {
-      selectionLineRanges = [this.getWordAtCursor(document, selection)]
+      let wordSelection = this.getWordAtCursor(document, selection)
+      if (!wordSelection) {
+        return
+      }
+      selectionLineRanges = [wordSelection]
     }
 
     let firstSelectionText = document.getText(selectionLineRanges[0])
@@ -155,46 +183,82 @@ export class MarkdownToggler {
         let matches: RegExpMatchArray | null
         let matchRegExp = shouldEnable ? toggle.enableRegExp : toggle.disableRegExp
         let replaceFormat = shouldEnable ? toggle.enableFormat : toggle.disableFormat
-
-        while (matches = matchRegExp.exec(selectionText)) {
-          if (!matches) {
-            break
-          }
+        
+        matches = selectionText.match(matchRegExp)
+        if (matches) {
           let lineNumber = selectionLineRange.start.line
           let startCharacter = selectionLineRange.start.character + (matches.index ?? 0)
           let endCharacter = startCharacter + matches[0].length
           let matchRange = new vscode.Range(lineNumber, startCharacter, lineNumber, endCharacter)
           let replacedText = selectionText.replace(matchRegExp, replaceFormat)
           edits.push(new vscode.TextEdit(matchRange, replacedText))
-          break
         }
       })
     }
 
     editor.edit(editBuilder => {
       edits.forEach(edit => {
+        // If the selection region is the entirety of the replaced region, then we do not need to
+        // offset the selection, VS Code handles that
+        let selectionCoversEdit = selection.isEqual(edit.range)
+
+        // Replace the text
         editBuilder.replace(edit.range, edit.newText)
+        let lineDifference = shouldEnable ? toggle.lineOffset : -toggle.lineOffset
+        let characterDifference = shouldEnable ? toggle.characterOffset : -toggle.characterOffset        
+        
+        // Modify the selection if the text changed out from under it (sometimes VS Code handles this
+        // for us, see note above)
+        editor.selections = editor.selections.map( selection => {
+          if (selectionCoversEdit) {
+            return selection
+          }
+
+          return new vscode.Selection(
+              new vscode.Position(selection.start.line + lineDifference, selection.start.character + characterDifference),
+              new vscode.Position(selection.end.line + lineDifference, selection.end.character + characterDifference))
+        })        
       })
     })    
   }
 
+  /**
+   * Gets the word that surrounds the cursor
+   * @param document The document being edited 
+   * @param selection The current selection
+   */
   private getWordAtCursor(
     document: vscode.TextDocument,
     selection: vscode.Selection
-  ): vscode.Range {
+  ): vscode.Range | undefined {
     let cursor = selection.active
     let line = document.lineAt(cursor.line)
     let lineText = line.text
-    let startOfWord = lineText.lastIndexOf(' ', cursor.character) + 1
-    let startPosition = new vscode.Position(line.lineNumber, startOfWord)    
-    let endOfWord = lineText.indexOf(' ', cursor.character)
-    if (endOfWord == -1) {
-      endOfWord = lineText.length
+    
+    let wordRegExp = RegExp(/([&\*=_~`A-Za-z])+/gi)
+    let match: RegExpMatchArray | null
+    while (match = wordRegExp.exec(lineText)) {
+      if (match.index === undefined) {
+        return
+      }
+
+      let wordStartPosition = new vscode.Position(line.lineNumber, match.index)
+      let wordEndPosition = new vscode.Position(line.lineNumber, wordStartPosition.character + match[0].length)
+
+      if (cursor.character >= wordStartPosition.character && cursor.character < wordEndPosition.character) {
+        return new vscode.Range(wordStartPosition, wordEndPosition)
+      }
     }
-    let endPosition = new vscode.Position(line.lineNumber, endOfWord)
-    return new vscode.Range(startPosition, endPosition)
+    
+    return undefined
   }
 
+  /**
+   * Splits the selection into an array of selections, separated
+   * by any newlines that occur in the selection
+   * @param document The document being edited 
+   * @param selection The current selection
+   */
   private getLineSelections(
     document: vscode.TextDocument,
     selection: vscode.Selection

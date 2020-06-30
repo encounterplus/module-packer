@@ -39,6 +39,14 @@ font-face {
   font-style: normal;
 }
 
+html {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 0px;
+  padding-bottom: 20px;
+  margin: 0px;
+}
+
 body {
   font-family: '-apple-system', sans-serif;
   font-size: 13px;
@@ -133,6 +141,7 @@ blockquote {
   border-top: 2px solid black;
   border-bottom: 2px solid black;
   box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.3);
+  border-left-width: 0px;
 }
 
 blockquote:before {
@@ -211,7 +220,7 @@ blockquote.read:after {
 }
 
 mark {
-  background: #e4e1c3;
+  background: #e4c3c3;
 }
 
 code,
@@ -337,6 +346,49 @@ img.size-cover {
 img.size-full {
   width: 100%;
   height: auto;
+}
+
+table.statblock {
+  background: #f2f0d6;
+	float: right;
+  max-width: 400px;
+  width: 45%;
+  font-size: 11px;
+}
+
+table.statblock tbody tr:nth-child(odd) {
+  background: #e4e1c3;
+}
+
+table.statblock tr td img {
+  margin: 0;
+  padding: 0;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+table.statblock thead {
+  font-weight: bold;
+  font-family: 'Andada SC', '-apple-system', sans-serif;
+  color: #58180d;
+  font-size: 18px;
+  border-top: none;
+}
+
+table.statblock tbody tr {
+  border-bottom: 2px solid #c4c2a7;
+  border-top: 2px solid #c4c2a7;
+  border-collapse: separate;
+}
+
+
+table.statblock td:first-child {
+  font-weight: bold;
+  font-family: 'Andada SC', '-apple-system', sans-serif;
+  color: #58180d;
+  font-size: 9px;
+  padding: 4px 8px;
 }
 
 @media print {

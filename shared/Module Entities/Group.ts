@@ -14,7 +14,7 @@ export class Group extends ModuleEntity {
    * @param name The name of the group
    */
   constructor(name: string = 'Unnamed Group') {
-    let slug = `group-${Module.getSlugFromValue(name)}`
+    let slug = Module.getSlugFromValue(`group-${Module.getSlugFromValue(name)}`)
     super(name, UUIDV4(), slug)
   }
 }
