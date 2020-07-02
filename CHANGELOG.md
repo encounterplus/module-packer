@@ -1,5 +1,17 @@
 # Change Log
 
+## [Unreleased]
+
+### Added
+- Added support for markdown-it-decorate attributes
+- Added "Create Module.json" command.
+
+### Changed
+- Made page, group, and module IDs more deterministic in generation - based off the Module ID.
+
+### Fixed
+- Fixed heading underlines extending into stat blocks in preview
+
 ## 1.0.6
 
 ### Added

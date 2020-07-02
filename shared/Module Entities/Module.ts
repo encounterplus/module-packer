@@ -2,6 +2,7 @@ import { Group } from './Group'
 import { Page } from './Page'
 import { ModuleEntity } from './ModuleEntity'
 import { v4 as UUIDV4 } from 'uuid'
+import { v5 as UUIDV5 } from 'uuid'
 import Slugify from 'slugify'
 import * as Path from 'path'
 import * as FileSystem from 'fs-extra'
@@ -33,8 +34,9 @@ export class Module {
    */
   private constructor(name: string) {
     this.name = name
-    this.id = UUIDV4()
-    this.slug = Module.getSlugFromValue(name)
+    let moduleSlug = Module.getSlugFromValue(name)
+    this.id = UUIDV5(moduleSlug, UUIDV4()) // Random UUID for modules
+    this.slug = moduleSlug
   }
 
   // ---------------------------------------------------------------
@@ -131,8 +133,8 @@ export class Module {
     }
 
     // Check for module.json
-    let moduleJsonPath = Path.join(projectDirectory, 'module.json')    
-    if(!FileSystem.existsSync(moduleJsonPath)) {
+    let moduleJsonPath = Path.join(projectDirectory, 'module.json')
+    if (!FileSystem.existsSync(moduleJsonPath)) {
       return undefined
     }
 
@@ -212,7 +214,7 @@ export class Module {
   private parseModuleJSON(moduleJsonPath: string) {
     // Simply return if module doesn't exist - default
     // module naming and handling will apply.
-    if(!FileSystem.existsSync(moduleJsonPath)) {
+    if (!FileSystem.existsSync(moduleJsonPath)) {
       return
     }
 
@@ -220,11 +222,14 @@ export class Module {
     let moduleData = JSON.parse(moduleDataBuffer.toString())
 
     // If ID is specified in module.json, ensure it is a UUID and use that
-    let id = (moduleData['id'] as string)
-    if(id) {
-      let uuidValidationRegEx = RegExp(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/, 'i')
+    let id = moduleData['id'] as string
+    if (id) {
+      let uuidValidationRegEx = RegExp(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+        'i'
+      )
       let matches = id.match(uuidValidationRegEx)
-      if(matches && matches.length > 0) {
+      if (matches && matches.length > 0) {
         this.id = id
       } else {
         throw Error(`Invalid UUID specified in ${moduleJsonPath}`)
@@ -232,18 +237,18 @@ export class Module {
     }
 
     // If name is specified in module.json, use that
-    let name = (moduleData['name'] as string)
+    let name = moduleData['name'] as string
     if (name) {
       this.name = name
     }
 
     // Reset module slugs because we may have changed
     // the name of the module
-    Module.existingSlugs = [] 
+    Module.existingSlugs = []
 
     // If name is specified in module.json, use that, otherwise
     // use the slug based on the name
-    let slug = (moduleData['slug'] as string) 
+    let slug = moduleData['slug'] as string
     if (slug) {
       this.slug = Module.sanitizeSlug(slug)
     } else {
@@ -251,63 +256,79 @@ export class Module {
     }
 
     // If description is specified in module.json, use that.
-    let description = (moduleData['description'] as string)
+    let description = moduleData['description'] as string
     if (description) {
       this.description = description
     }
 
     // If category is specified in module.json, use that.
     // Ensure values are 'adevnture' or 'other'
-    let category = (moduleData['category'] as string)
+    let category = moduleData['category'] as string
     if (category === 'adventure' || category === 'other') {
       this.category = category
     }
 
     // If author is specified in module.json, use that
-    let author = (moduleData['author'] as string)
+    let author = moduleData['author'] as string
     if (author) {
       this.author = author
     }
 
     // If reference code is specified in module.json, use that
-    let code = (moduleData['code'] as string)
+    let code = moduleData['code'] as string
     if (code) {
       this.referenceCode = code
     }
 
     // If version is specified in module.json, use that
-    let version = (moduleData['version'] as number)
+    let version = moduleData['version'] as number
     if (version) {
       this.version = version
     }
 
     // If cover image is specified in module.json, use that.
     // Ensure cover image actually exists
-    let imagePath = (moduleData['cover'] as string)
+    let imagePath = moduleData['cover'] as string
     if (imagePath) {
       let moduleDirectory = Path.dirname(moduleJsonPath)
       let fullImagePath = Path.join(moduleDirectory, imagePath)
-      if (!FileSystem.existsSync(fullImagePath)){
+      if (!FileSystem.existsSync(fullImagePath)) {
         throw Error(`Module cover image path does not exist: ${fullImagePath}`)
       }
       this.imagePath = imagePath
     }
 
-    // It auto-increment is specified, then auto-increment the version with 
+    // It auto-increment is specified, then auto-increment the version with
     // each build. Write a new module.json each build.
-    let autoIncrementVersion = (moduleData['autoIncrementVersion'] as boolean)
+    let autoIncrementVersion = moduleData['autoIncrementVersion'] as boolean
     if (version !== undefined && autoIncrementVersion) {
       version += 1
       this.version = version
-      let newModuleJson: any = new Object
-      if(this.id) { newModuleJson['id'] = this.id }
-      if(this.name) { newModuleJson['name'] = this.name }
-      if(this.slug) { newModuleJson['slug'] = this.slug }
-      if(this.description) { newModuleJson['description'] = this.description }
-      if(this.category) { newModuleJson['category'] = this.category }
-      if(this.author) { newModuleJson['author'] = this.author }
-      if(this.referenceCode) { newModuleJson['code'] = this.referenceCode }
-      if(this.imagePath) { newModuleJson['cover'] = this.imagePath }
+      let newModuleJson: any = new Object()
+      if (this.id) {
+        newModuleJson['id'] = this.id
+      }
+      if (this.name) {
+        newModuleJson['name'] = this.name
+      }
+      if (this.slug) {
+        newModuleJson['slug'] = this.slug
+      }
+      if (this.description) {
+        newModuleJson['description'] = this.description
+      }
+      if (this.category) {
+        newModuleJson['category'] = this.category
+      }
+      if (this.author) {
+        newModuleJson['author'] = this.author
+      }
+      if (this.referenceCode) {
+        newModuleJson['code'] = this.referenceCode
+      }
+      if (this.imagePath) {
+        newModuleJson['cover'] = this.imagePath
+      }
       newModuleJson['version'] = this.version
       newModuleJson['autoIncrementVersion'] = true
       let outputJson = JSON.stringify(newModuleJson, null, 2)
@@ -320,15 +341,15 @@ export class Module {
    * @param outputPath The output path for the module file
    * @param moduleBuildPath The module build directory
    */
-  private async createArchive(outputPath: string, moduleBuildPath: string) {    
+  private async createArchive(outputPath: string, moduleBuildPath: string) {
     let filename = Path.join(outputPath)
     var archiveStream = FileSystem.createWriteStream(filename)
     var archive = Archiver('zip', {
-      zlib: { level: 9 }
+      zlib: { level: 9 },
     })
 
     // Good practice - catch warnings (ie stat failures and other non-blocking errors)
-    archive.on('warning', function(error) {
+    archive.on('warning', function (error) {
       let errorMessage = (error as Error).message
       if (error.code === 'ENOENT') {
         console.warn(errorMessage)
@@ -338,12 +359,12 @@ export class Module {
     })
 
     // Good practice - catch this error explicitly
-    archive.on('error', function(error) {
+    archive.on('error', function (error) {
       throw error
     })
 
     archive.pipe(archiveStream)
-    archive.glob('./**/*', {cwd: moduleBuildPath})
+    archive.glob('./**/*', { cwd: moduleBuildPath })
     await archive.finalize()
   }
 
@@ -402,18 +423,12 @@ export class Module {
    * @param moduleBuildPath The module build folder path
    * @param parentGroup The parent group (optional)
    */
-  private processDirectory(
-    directoryPath: string,
-    moduleBuildPath: string,
-    parentGroup: Group | undefined = undefined
-  ) {
+  private processDirectory(directoryPath: string, moduleBuildPath: string, parentGroup: Group | undefined = undefined) {
     console.log(`Processing directory: ${directoryPath}`)
 
     // Get all subdirectories - we will recursively scan
     // through these, creating Groups.
-    let subdirectoryNames: string[] = FileSystem.readdirSync(
-      directoryPath
-    ).filter(function (file) {
+    let subdirectoryNames: string[] = FileSystem.readdirSync(directoryPath).filter(function (file) {
       let childPath = Path.join(directoryPath, file)
       return FileSystem.statSync(childPath).isDirectory()
     })
@@ -433,17 +448,14 @@ export class Module {
       if (FileSystem.existsSync(ignoreFilePath)) {
         if (parentGroup === undefined) {
           // If a root-level ignored folder, copy to output
-          FileSystem.copySync(
-            subdirectoryPath,
-            Path.join(moduleBuildPath, subdirectoryName)
-          )
+          FileSystem.copySync(subdirectoryPath, Path.join(moduleBuildPath, subdirectoryName))
         }
         return
       }
 
       // Create a new group with a random UUID
       // and assign the parent
-      let newGroup = new Group(subdirectoryName)
+      let newGroup = new Group(subdirectoryName, this.id)
       newGroup.parent = parentGroup
 
       // Push group to list of groups and recursively start
@@ -465,8 +477,8 @@ export class Module {
         return
       }
 
-      let newPages = Module.processFile(fullPath, moduleBuildPath, parentGroup)
-      newPages.forEach(page => {
+      let newPages = this.processFile(fullPath, moduleBuildPath, parentGroup)
+      newPages.forEach((page) => {
         this.pages.push(page)
       })
     })
@@ -479,12 +491,11 @@ export class Module {
    * @param moduleBuildPath The module build folder path
    * @param parentGroup The parent group (optional)
    */
-  public static processFile(
+  public processFile(
     filePath: string,
     moduleBuildPath: string | undefined = undefined,
     parentGroup: Group | undefined = undefined
   ): Page[] {
-
     // Create markdown parser and load plugins if
     // the parser has not yet been created
     if (Module.markdown === undefined) {
@@ -497,6 +508,7 @@ export class Module {
       Module.markdown
         .use(require('markdown-it-anchor'))
         .use(require('markdown-it-attrs'))
+        .use(require('markdown-it-decorate'))
         .use(require('markdown-it-imsize'), { autofill: true })
         .use(require('markdown-it-mark'))
         .use(require('markdown-it-multimd-table'))
@@ -557,7 +569,7 @@ export class Module {
         console.log(`Parsing page ${headerText} from header ${element.tagName}`)
 
         // Create Page from current HTML
-        let page = new Page(headerText)
+        let page = new Page(headerText, this.id)
         page.content += $.html(element)
 
         // If there is a cover image, apply to top current page
@@ -583,10 +595,7 @@ export class Module {
 
         // Find higher level header levels - for example, if the user specified
         // "h1,h2,h3" for pagebreaks, then this will return "h1,h2".
-        let parentPagebreaks = Module.trim(
-          pagebreaks.split(element.tagName)[0],
-          ','
-        )
+        let parentPagebreaks = Module.trim(pagebreaks.split(element.tagName)[0], ',')
 
         // Traverse backwards until we find the parent page break
         let parentElement = $(element).prevAll(parentPagebreaks).first()
@@ -614,7 +623,7 @@ export class Module {
     // pagebreak parsing logic, use full HTML
     // to create page
     if (!pagebreakContentFound) {
-      let page = new Page(pageName)
+      let page = new Page(pageName, this.id)
       page.content = html
       page.parent = parentGroup
       pages.push(page)
@@ -632,9 +641,6 @@ export class Module {
   private static trim(value: string, character: string) {
     if (character === ']') character = '\\]'
     if (character === '\\') character = '\\\\'
-    return value.replace(
-      new RegExp('^[' + character + ']+|[' + character + ']+$', 'g'),
-      ''
-    )
+    return value.replace(new RegExp('^[' + character + ']+|[' + character + ']+$', 'g'), '')
   }
 }

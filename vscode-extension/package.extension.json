@@ -26,12 +26,22 @@
     "commands": [
       {
         "command": "encounterPlusMarkdown.buildModule",
-        "title": "Build EncounterPlus Module",
-        "category": "Markdown",
+        "title": "Build Module",
+        "category": "EncounterPlus Markdown",
         "icon": {
           "light": "./extension-out/resources/build-module-light.svg",
           "dark": "./extension-out/resources/build-module-dark.svg"
         }
+      },
+      {
+        "command": "encounterPlusMarkdown.createModuleJson",
+        "title": "Create Module.json",
+        "category": "EncounterPlus Markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.exportModuleToPDF",
+        "title": "Export Module to PDF",
+        "category": "EncounterPlus Markdown"
       },
       {
         "title": "Markdown: Toggle Bold",
@@ -189,6 +199,7 @@
     "@types/cheerio": "^0.22.18",
     "@types/fs-extra": "^9.0.1",
     "@types/markdown-it": "^10.0.1",
+    "@types/puppeteer-core": "^2.0.0",
     "@types/uuid": "^8.0.0",
     "@types/xml2js": "^0.4.5",
     "archiver": "^4.0.1",
@@ -198,6 +209,7 @@
     "markdown-it": "^11.0.0",
     "markdown-it-anchor": "^5.3.0",
     "markdown-it-attrs": "^3.0.3",
+    "markdown-it-decorate": "^1.2.2",
     "markdown-it-imsize": "^2.0.1",
     "markdown-it-mark": "^3.0.0",
     "markdown-it-multimd-table": "^4.0.2",
@@ -206,6 +218,7 @@
     "markdown-it-underline": "^1.0.1",
     "minimist": ">=0.2.1",
     "path": "^0.12.7",
+    "puppeteer-core": "^4.0.1",
     "slugify": "^1.4.0",
     "uuid": "^8.1.0",
     "xml2js": "^0.4.23"

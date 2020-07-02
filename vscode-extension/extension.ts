@@ -1,7 +1,13 @@
 import * as vscode from 'vscode'
-import { Commands } from './Commands'
 import * as glob from 'glob'
-import { MarkdownToggler } from './MarkdownToggler'
+import { BuildModuleCommand } from './Commands/BuildModuleCommand'
+import { CreateModuleJsonCommand } from './Commands/CreateModuleJsonCommand'
+import { ExportToPdfCommand } from './Commands/ExportToPdfCommand'
+import { MarkdownToggler } from './Commands/MarkdownToggler'
+
+const buildModuleCommand = new BuildModuleCommand()
+const createModuleJsonCommand = new CreateModuleJsonCommand()
+const exportToPdfCommand = new ExportToPdfCommand()
 
 export function activate(context: vscode.ExtensionContext) {
   console.log('EncounterPlus Markdown Extension loaded.')
@@ -22,7 +28,19 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('encounterPlusMarkdown.buildModule', () => {
-      Commands.buildModule()
+      buildModuleCommand.startCommand()
+    })
+  )
+
+  context.subscriptions.push(    
+    vscode.commands.registerCommand('encounterPlusMarkdown.createModuleJson', () => {
+      createModuleJsonCommand.startCommand()
+    })
+  )
+
+  context.subscriptions.push(    
+    vscode.commands.registerCommand('encounterPlusMarkdown.exportModuleToPDF', () => {
+      exportToPdfCommand.startCommand()
     })
   )
 
@@ -31,6 +49,7 @@ export function activate(context: vscode.ExtensionContext) {
       return md
         .use(require('markdown-it-anchor'))
         .use(require('markdown-it-attrs'))
+        .use(require('markdown-it-decorate'))
         .use(require('markdown-it-imsize'), { autofill: true })
         .use(require('markdown-it-mark'))
         .use(require('markdown-it-multimd-table'))        

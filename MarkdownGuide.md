@@ -75,7 +75,7 @@ slug: page-name
 pagebreak: h1,h2,h3
 ---
 ```
-> `id` - An optional parameter (string) used as a unique identifier for the page. If not provided, UUIDv4 string will be automatically generated.
+> `id` - An optional parameter (string) used as a unique identifier for the page. If not provided, UUIDv5 string will be automatically generated.
 
 > `slug` - An optional parameter (string) used for referencing pages (see links below). If not provided, it's automatically generated.
 
@@ -233,7 +233,7 @@ In addition, table colors can be customized with by adding the `{.green}`, `{.re
 | 95-98    | Potion of greater healing |
 | 99       | Bag of holding            |
 | 00       | Driftglobe                |
-{.blue,.headerTitle}
+{.blue .headerTitle}
 ```
 
 ![Tables](documentation/Tables.jpg)

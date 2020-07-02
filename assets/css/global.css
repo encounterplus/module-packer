@@ -45,22 +45,46 @@ html {
   padding-top: 0px;
   padding-bottom: 20px;
   margin: 0px;
+  -webkit-print-color-adjust: exact;
+  filter: opacity(1);
+  -webkit-filter: opacity(1);
 }
 
-body {
-  font-family: '-apple-system', sans-serif;
-  font-size: 13px;
-  line-height: 18px;
-  background: #ffffff;
-  padding: 0px;
-  margin: 0px;
-  color: black;
-  background: url('../img/bg.png') #ffffff repeat;
-}
+@media screen {
+  body {
+    font-family: '-apple-system', sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    padding: 0px;
+    margin: 0px;
+    color: black;
+    background: url('../img/bg.png') #FEFEFC repeat;
+  }
 
-#page {
-  padding: 15px 20px;
-  overflow: hidden;
+  img.size-cover {
+    max-width: none;
+    width: calc(100% + 40px);
+    margin-top: calc(-30px);
+    margin-left: calc(-20px);
+    margin-right: calc(-20px);
+    margin-bottom: calc(+20px);
+    height: auto;
+  }
+
+  #page {
+    padding: 15px 20px;
+    overflow: hidden;
+  }
+
+  table.statblock {
+    background: #edebe8;
+    float: right;
+    margin-left: 10px;
+    max-width: 400px;
+    width: 45%;
+    font-size: 11px;
+    page-break-inside: avoid;
+  }
 }
 
 h1,
@@ -91,6 +115,7 @@ h3 {
   font-size: 20px;
   border-bottom: 1px solid #58180d;
   line-height: 28px;
+  overflow: hidden;
 }
 
 h4 {
@@ -118,6 +143,7 @@ blockquote {
   padding: 10px 15px;
   margin: 20px 0px;
   position: relative;
+  page-break-inside: avoid;
 }
 
 blockquote p:first-child {
@@ -333,31 +359,13 @@ img {
   height: auto;
 }
 
-img.size-cover {
-  max-width: none;
-  width: calc(100% + 40px);
-  margin-top: calc(-30px);
-  margin-left: calc(-20px);
-  margin-right: calc(-20px);
-  margin-bottom: calc(+20px);
-  height: auto;
-}
-
 img.size-full {
   width: 100%;
   height: auto;
 }
 
-table.statblock {
-  background: #f2f0d6;
-	float: right;
-  max-width: 400px;
-  width: 45%;
-  font-size: 11px;
-}
-
 table.statblock tbody tr:nth-child(odd) {
-  background: #e4e1c3;
+  background: #e4e2df;
 }
 
 table.statblock tr td img {
@@ -377,11 +385,10 @@ table.statblock thead {
 }
 
 table.statblock tbody tr {
-  border-bottom: 2px solid #c4c2a7;
-  border-top: 2px solid #c4c2a7;
+  border-bottom: 2px solid #d8d6d2;
+  border-top: 2px solid #d8d6d2;
   border-collapse: separate;
 }
-
 
 table.statblock td:first-child {
   font-weight: bold;
@@ -393,8 +400,31 @@ table.statblock td:first-child {
 
 @media print {
   body {
-    background: url('../img/bg.png') #ffffff cover;
+    font-family: '-apple-system', sans-serif;
+    font-size: 13px;
+    line-height: 18px;
     padding: 0px;
     margin: 0px;
+    color: black;
+    background: url('../img/print-bg.png') #FEFEFC cover;
+  }
+
+  table.statblock {
+    background: #edebe8;
+    margin-left: 0.1in;
+    margin-right: 0.1in;
+    width: calc(100% - 0.2in);
+    font-size: 11px;   
+    page-break-inside: avoid; 
+  }
+
+  .innerprint {
+    column-count: 2;
+    column-gap: 0.25in;
+    column-fill: auto;
+    padding-top: 0.25in;
+    padding-bottom: 0.25in;
+    padding-left: 0.25in;
+    padding-right: 0.25in;
   }
 }
