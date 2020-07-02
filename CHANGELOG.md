@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.7
 
 ### Added
 - Added support for markdown-it-decorate attributes
