@@ -25,6 +25,7 @@ elif target == 'package-extension':
     run('rm -rf ./extension-out')
     run('cp ./vscode-extension/package.extension.json ./package.json')
     run('npm install')
+    run('npm audit fix')
     run('npm run compile-extension')
     run('vsce package')
 elif target == 'build-app':
@@ -43,6 +44,7 @@ elif target == 'package-app':
     run('rm -rf ./extension-out')
     run('cp ./app/package.app.json ./package.json')
     run('npm install')
+    run('npm audit fix')
     run('npm run compile-app')
     run('npm run build-all')
 elif target == 'clean':

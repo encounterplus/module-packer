@@ -3,7 +3,7 @@
   "displayName": "EncounterPlus Module Packer",
   "description": "Tools for creating EncounterPlus modules from markdown.",
   "icon": "build/icon.icns",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "repository": {
     "type": "git",
     "url": "https://github.com/encounterplus/module-packer"
@@ -71,6 +71,7 @@
     "@types/uuid": "^8.0.0",
     "@types/xml2js": "^0.4.5",
     "archiver": "^4.0.1",
+    "bufferutil": "^4.0.1",
     "cheerio": "^1.0.0-rc.3",
     "fs-extra": "^9.0.1",
     "gray-matter": "^4.0.2",
@@ -89,6 +90,7 @@
     "puppeteer-core": "^4.0.1",
     "puppeteer-in-electron": "^3.0.3",
     "slugify": "^1.4.0",
+    "utf-8-validate": "^5.0.2",
     "uuid": "^8.1.0",
     "xml2js": "^0.4.23"
   }
