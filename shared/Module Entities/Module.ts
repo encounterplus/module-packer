@@ -7,22 +7,17 @@ import Slugify from 'slugify'
 import * as Path from 'path'
 import * as FileSystem from 'fs-extra'
 import * as GrayMatter from 'gray-matter'
-import * as Markdown from 'markdown-it'
 import * as Cheerio from 'cheerio'
 import * as XML2JS from 'xml2js'
 import * as Archiver from 'archiver'
+import { MarkdownRenderer } from '../MarkdownRenderer'
+import { ModuleProject } from '../ModuleProject'
 
 /**
  * Represents an EncounterPlus module. Contains
  * logic for parsing modules from markdown.
  */
 export class Module {
-  // ---------------------------------------------------------------
-  // Private fields
-  // ---------------------------------------------------------------
-
-  /** The markdown parsing engine */
-  private static markdown: Markdown | undefined = undefined
 
   // ---------------------------------------------------------------
   // Initialization & Cleanup
@@ -30,46 +25,24 @@ export class Module {
 
   /**
    * Initializes an instance of `Module`
-   * @param name The name of the module
    */
-  private constructor(name: string) {
-    this.name = name
-    let moduleSlug = Module.getSlugFromValue(name)
-    this.id = UUIDV5(moduleSlug, UUIDV4()) // Random UUID for modules
-    this.slug = moduleSlug
+  private constructor() {
+    
   }
 
   // ---------------------------------------------------------------
   // Public Properties
   // ---------------------------------------------------------------
 
+  /** The module build folder name */
+  static buildFolderName = 'ModuleBuild'
+
   /** An array of existing slugs to ensure slugs
    * are not duplicated.  */
   static existingSlugs: string[] = []
 
-  /** The name of the module */
-  name: string
-
-  /** The UUID of the module */
-  id: string
-
-  /** The slug for the module */
-  slug: string
-
-  /** The module description */
-  description: string | undefined = undefined
-
-  /** The module author */
-  author: string | undefined = undefined
-
-  /** The module category */
-  category: string | undefined = undefined
-
-  /** The reference code of the module */
-  referenceCode: String | undefined = undefined
-
-  /** The module image relative path */
-  imagePath: string | undefined = undefined
+  /** The module project information */
+  moduleProjectInfo: ModuleProject = new ModuleProject()
 
   /** The groups of the module */
   groups: Group[] = []
@@ -82,9 +55,6 @@ export class Module {
 
   /** The encounters of the module */
   encounters: ModuleEntity[] = []
-
-  /** The module version */
-  version: number | undefined = undefined
 
   /** The path for the module archive (after it is created) */
   moduleArchivePath: string | undefined = undefined
@@ -157,23 +127,30 @@ export class Module {
 
     // Create a new module object and reset the list of
     // existing slugs as we're parsing a new module project
-    let module = new Module(name)
+    let module = new Module()
     Module.existingSlugs = []
 
-    // Parse the module JSON - if it doesn't exist, the parsing
-    // method will handle it
-    module.parseModuleJSON(Path.join(projectDirectory, 'module.json'))
-
+    // Parse the module JSON. If one doesn't exist - create it.
+    let moduleJsonPath = Path.join(projectDirectory, 'module.json')
+    module.moduleProjectInfo.name = name
+    module.moduleProjectInfo.slug = Module.getSlugFromValue(name)
+    module.moduleProjectInfo.id = UUIDV5(module.moduleProjectInfo.slug, UUIDV4()) // Random UUID for modules
+    if(FileSystem.existsSync(moduleJsonPath)) {
+      module.moduleProjectInfo = ModuleProject.parseModuleProject(moduleJsonPath) ?? module.moduleProjectInfo
+    } else {      
+      module.moduleProjectInfo.writeModuleProjectFile(moduleJsonPath)
+    }
+    
     // Check for cover image if not already defined. This was
     // the legacy way of defining the cover image path.
     let coverPath = Path.join(projectDirectory, 'cover.jpg')
-    if (module.imagePath === undefined && FileSystem.existsSync(coverPath)) {
-      module.imagePath = 'cover.jpg'
+    if (module.moduleProjectInfo.imagePath === undefined && FileSystem.existsSync(coverPath)) {
+      module.moduleProjectInfo.imagePath = 'cover.jpg'
     }
 
     // Create a Module Build folder so the main
     // folder gets minimally altered
-    let moduleBuildPath = Path.join(projectDirectory, 'ModuleBuild')
+    let moduleBuildPath = Path.join(projectDirectory, Module.buildFolderName)
     if (!FileSystem.existsSync(moduleBuildPath)) {
       FileSystem.mkdirSync(moduleBuildPath)
     }
@@ -195,7 +172,7 @@ export class Module {
       FileSystem.copySync(packedAssets, assetsOutputPath)
     }
 
-    let moduleArchivePath = Path.join(projectDirectory, `${module.slug}.module`)
+    let moduleArchivePath = Path.join(projectDirectory, `${module.moduleProjectInfo.slug}.module`)
     await module.createArchive(moduleArchivePath, moduleBuildPath)
     module.moduleArchivePath = moduleArchivePath
 
@@ -205,136 +182,6 @@ export class Module {
   // ---------------------------------------------------------------
   // Private Methods
   // ---------------------------------------------------------------
-
-  /**
-   * Parses the module JSON file to define key properties
-   * about the module
-   * @param moduleJsonPath The module JSON file to parse/update.
-   */
-  private parseModuleJSON(moduleJsonPath: string) {
-    // Simply return if module doesn't exist - default
-    // module naming and handling will apply.
-    if (!FileSystem.existsSync(moduleJsonPath)) {
-      return
-    }
-
-    let moduleDataBuffer = FileSystem.readFileSync(moduleJsonPath)
-    let moduleData = JSON.parse(moduleDataBuffer.toString())
-
-    // If ID is specified in module.json, ensure it is a UUID and use that
-    let id = moduleData['id'] as string
-    if (id) {
-      let uuidValidationRegEx = RegExp(
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/,
-        'i'
-      )
-      let matches = id.match(uuidValidationRegEx)
-      if (matches && matches.length > 0) {
-        this.id = id
-      } else {
-        throw Error(`Invalid UUID specified in ${moduleJsonPath}`)
-      }
-    }
-
-    // If name is specified in module.json, use that
-    let name = moduleData['name'] as string
-    if (name) {
-      this.name = name
-    }
-
-    // Reset module slugs because we may have changed
-    // the name of the module
-    Module.existingSlugs = []
-
-    // If name is specified in module.json, use that, otherwise
-    // use the slug based on the name
-    let slug = moduleData['slug'] as string
-    if (slug) {
-      this.slug = Module.sanitizeSlug(slug)
-    } else {
-      this.slug = Module.getSlugFromValue(this.name)
-    }
-
-    // If description is specified in module.json, use that.
-    let description = moduleData['description'] as string
-    if (description) {
-      this.description = description
-    }
-
-    // If category is specified in module.json, use that.
-    // Ensure values are 'adevnture' or 'other'
-    let category = moduleData['category'] as string
-    if (category === 'adventure' || category === 'other') {
-      this.category = category
-    }
-
-    // If author is specified in module.json, use that
-    let author = moduleData['author'] as string
-    if (author) {
-      this.author = author
-    }
-
-    // If reference code is specified in module.json, use that
-    let code = moduleData['code'] as string
-    if (code) {
-      this.referenceCode = code
-    }
-
-    // If version is specified in module.json, use that
-    let version = moduleData['version'] as number
-    if (version) {
-      this.version = version
-    }
-
-    // If cover image is specified in module.json, use that.
-    // Ensure cover image actually exists
-    let imagePath = moduleData['cover'] as string
-    if (imagePath) {
-      let moduleDirectory = Path.dirname(moduleJsonPath)
-      let fullImagePath = Path.join(moduleDirectory, imagePath)
-      if (!FileSystem.existsSync(fullImagePath)) {
-        throw Error(`Module cover image path does not exist: ${fullImagePath}`)
-      }
-      this.imagePath = imagePath
-    }
-
-    // It auto-increment is specified, then auto-increment the version with
-    // each build. Write a new module.json each build.
-    let autoIncrementVersion = moduleData['autoIncrementVersion'] as boolean
-    if (version !== undefined && autoIncrementVersion) {
-      version += 1
-      this.version = version
-      let newModuleJson: any = new Object()
-      if (this.id) {
-        newModuleJson['id'] = this.id
-      }
-      if (this.name) {
-        newModuleJson['name'] = this.name
-      }
-      if (this.slug) {
-        newModuleJson['slug'] = this.slug
-      }
-      if (this.description) {
-        newModuleJson['description'] = this.description
-      }
-      if (this.category) {
-        newModuleJson['category'] = this.category
-      }
-      if (this.author) {
-        newModuleJson['author'] = this.author
-      }
-      if (this.referenceCode) {
-        newModuleJson['code'] = this.referenceCode
-      }
-      if (this.imagePath) {
-        newModuleJson['cover'] = this.imagePath
-      }
-      newModuleJson['version'] = this.version
-      newModuleJson['autoIncrementVersion'] = true
-      let outputJson = JSON.stringify(newModuleJson, null, 2)
-      FileSystem.writeFileSync(moduleJsonPath, outputJson)
-    }
-  }
 
   /**
    * Archives the module information as a .module file
@@ -400,14 +247,14 @@ export class Module {
 
     // Layout root module data structure
     let moduleData = {
-      $: { id: this.id },
-      name: this.name,
-      slug: this.slug,
-      description: this.description,
-      author: this.author,
-      code: this.referenceCode,
-      category: this.category,
-      image: this.imagePath,
+      $: { id: this.moduleProjectInfo.id },
+      name: this.moduleProjectInfo.name,
+      slug: this.moduleProjectInfo.slug,
+      description: this.moduleProjectInfo.description,
+      author: this.moduleProjectInfo.author,
+      code: this.moduleProjectInfo.referenceCode,
+      category: this.moduleProjectInfo.category,
+      image: this.moduleProjectInfo.imagePath,
       group: groups,
       page: pages,
     }
@@ -440,6 +287,13 @@ export class Module {
         return
       }
 
+      // Skip any folder with a "module.json" file. This is indication
+      // this is the start of another module project.
+      let moduleProjectFilePath = Path.join(subdirectoryPath, 'module.json')
+      if (FileSystem.existsSync(moduleProjectFilePath)) {
+        return
+      }
+
       // Skip any folder with an ".ignoregroup" file for the purpose of
       // creating groups or reading .md files. However, copy
       // their content to the module output (as they may be an
@@ -455,7 +309,7 @@ export class Module {
 
       // Create a new group with a random UUID
       // and assign the parent
-      let newGroup = new Group(subdirectoryName, this.id)
+      let newGroup = new Group(subdirectoryName, this.moduleProjectInfo.id)
       newGroup.parent = parentGroup
 
       // Push group to list of groups and recursively start
@@ -466,9 +320,6 @@ export class Module {
 
     // Ensure there are files in the modules directory
     let directoryChildren = FileSystem.readdirSync(directoryPath)
-    if (directoryChildren.length == 0) {
-      return
-    }
 
     // Parse each file
     directoryChildren.forEach((itemName) => {
@@ -496,26 +347,8 @@ export class Module {
     moduleBuildPath: string | undefined = undefined,
     parentGroup: Group | undefined = undefined
   ): Page[] {
-    // Create markdown parser and load plugins if
-    // the parser has not yet been created
-    if (Module.markdown === undefined) {
-      Module.markdown = Markdown({
-        html: true,
-        linkify: true,
-        typographer: true,
-      })
-
-      Module.markdown
-        .use(require('markdown-it-anchor'))
-        .use(require('markdown-it-attrs'))
-        .use(require('markdown-it-decorate'))
-        .use(require('markdown-it-imsize'), { autofill: true })
-        .use(require('markdown-it-mark'))
-        .use(require('markdown-it-multimd-table'))
-        .use(require('markdown-it-sub'))
-        .use(require('markdown-it-sup'))
-        .use(require('markdown-it-underline'))
-    }
+    
+    let markdown = MarkdownRenderer.getRenderer()
 
     let pages: Page[] = []
     console.log(`Processing file: ${filePath}`)
@@ -546,7 +379,7 @@ export class Module {
     let matter = GrayMatter(data)
 
     // Convert markdown to HTML
-    let html = Module.markdown.render(matter.content)
+    let html = markdown.render(matter.content)
 
     // If defined in the front-matter, get the name
     // for the page there. Otherwise, get it from
@@ -569,7 +402,7 @@ export class Module {
         console.log(`Parsing page ${headerText} from header ${element.tagName}`)
 
         // Create Page from current HTML
-        let page = new Page(headerText, this.id)
+        let page = new Page(headerText, this.moduleProjectInfo.id)
         page.content += $.html(element)
 
         // If there is a cover image, apply to top current page
@@ -623,7 +456,7 @@ export class Module {
     // pagebreak parsing logic, use full HTML
     // to create page
     if (!pagebreakContentFound) {
-      let page = new Page(pageName, this.id)
+      let page = new Page(pageName, this.moduleProjectInfo.id)
       page.content = html
       page.parent = parentGroup
       pages.push(page)

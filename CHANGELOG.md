@@ -1,10 +1,21 @@
 # Change Log
 
+## [Unreleased]
+
+### Added
+- EncounterPlus View Container in Visual Studio Code Extension
+- Ability to handle mutliple projects
+
+### Fixed
+- Some elements overlapped with statblocks
+
+
+
 ## 1.0.7
 
 ### Added
-- Added support for markdown-it-decorate attributes
-- Added "Create Module.json" command.
+- Support for markdown-it-decorate attributes
+- "Create Module.json" command.
 
 ### Changed
 - Made page, group, and module IDs more deterministic in generation - based off the Module ID.

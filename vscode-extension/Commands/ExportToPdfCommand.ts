@@ -27,7 +27,7 @@ export class ExportToPdfCommand extends CommandBase {
     let customStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'custom.css')
     let globalStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'global.css')
     let pageLocation = Path.join(moduleOutputPath, 'printPage.html')
-    let saveLocation = Path.join(projectPath, `${module.slug}.pdf`)
+    let saveLocation = Path.join(projectPath, `${module.moduleProjectInfo.slug}.pdf`)
 
     let html = `<!DOCTYPE html><html lang="en"><head>`
     html += `<link rel="stylesheet" href="${globalStyleLocation}"><link rel="stylesheet" href="${customStyleLocation}">`
@@ -60,7 +60,7 @@ export class ExportToPdfCommand extends CommandBase {
     FileSystem.writeFileSync(saveLocation, pdf)
     await browser.close()
 
-    let completeMessage = `Successfully exported module: ${module.name}.`
+    let completeMessage = `Successfully exported module: ${module.moduleProjectInfo.name}.`
     vscode.window
       .showInformationMessage(completeMessage, 'Open PDF Location')
       .then((selection) => {
@@ -79,7 +79,7 @@ export class ExportToPdfCommand extends CommandBase {
       }
 
       vscode.window.showInformationMessage('[EncounterPlus Markdown] Installing Chromium for PDF rendering...')
-      var statusbarmessage = vscode.window.setStatusBarMessage('Installing Chromium PDF engine...')
+      var statusbarmessage = vscode.window.setStatusBarMessage('Installing Chromium PDF engine...', 3000)
 
       const https_proxy = vscode.workspace.getConfiguration('http')['proxy'] || ''
       if (https_proxy) {
@@ -88,14 +88,17 @@ export class ExportToPdfCommand extends CommandBase {
       }
 
       // Download Chromium
+      const desiredRevision = '756035'
       const browserFetcher = Puppeteer.createBrowserFetcher()
-      let revisionInfo = await browserFetcher.download('756035', this.onBrowserDownload)
+      let revisionInfo = await browserFetcher.download(desiredRevision, this.onBrowserDownload)
       let localRevisions = await browserFetcher.localRevisions()
       console.log('Chromium downloaded to ' + revisionInfo.folderPath)
 
       // Remove any older versions
       const cleanupOldVersions = await localRevisions.map(async (revision) => {
-        await browserFetcher.remove(revision)
+        if (revision !== desiredRevision) {
+          await browserFetcher.remove(revision)
+        }
       })
 
       if (FileSystem.existsSync(Puppeteer.executablePath())) {
@@ -117,6 +120,6 @@ export class ExportToPdfCommand extends CommandBase {
    */
   private onBrowserDownload(downloadBytes: number, totalBytes: number) {
     const progress = (downloadBytes / totalBytes) * 100.0
-    vscode.window.setStatusBarMessage(`Downloading PDF engine: ${progress}`, 1000)
+    vscode.window.setStatusBarMessage(`Downloading PDF engine: ${progress.toFixed(1)}%`, 1000)
   }
 }

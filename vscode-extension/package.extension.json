@@ -23,15 +23,40 @@
   "activationEvents": ["onLanguage:markdown"],
   "main": "./extension-out/vscode-extension/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "encounter-plus-view-container",
+          "title": "EncounterPlus",
+          "icon": "./extension-out/resources/encounterplus-markdown-viewcontainer.svg"
+        }
+      ]
+    },
+    "views": {
+      "encounter-plus-view-container": [
+        {
+          "id": "encounter-plus-modules",
+          "name": "Modules",
+          "icon": "./extension-out/resources/encounterplus-markdown-viewcontainer.svg",
+          "contextualTitle": "EncounterPlus Modules"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "encounterPlusMarkdown.buildModule",
         "title": "Build Module",
         "category": "EncounterPlus Markdown",
-        "icon": {
-          "light": "./extension-out/resources/build-module-light.svg",
-          "dark": "./extension-out/resources/build-module-dark.svg"
+        "icon": { 
+          "light": "./extension-out/resources/light/build-module.svg",
+          "dark": "./extension-out/resources/dark/build-module.svg"
         }
+      },
+      {
+        "command": "encounterPlusMarkdown.refreshModules",
+        "title": "Refresh Module List",
+        "category": "EncounterPlus Markdown",
+        "icon": "$(refresh)"
       },
       {
         "command": "encounterPlusMarkdown.createModuleJson",
@@ -167,12 +192,18 @@
       }
     ],
     "menus": {
-      "editor/title": [
+      "view/title": [
+        {
+            "command": "encounterPlusMarkdown.refreshModules",
+            "when": "view == encounter-plus-modules",
+            "group": "navigation"
+        }
+      ],
+      "view/item/context": [
         {
           "command": "encounterPlusMarkdown.buildModule",
-          "when": "projectHasMarkdown == true",
-          "alt": "encounterPlusMarkdown.buildModule",
-          "group": "navigation"
+          "when": "view == encounter-plus-modules && viewItem == moduleProject",
+          "group": "inline"
         }
       ]
     },

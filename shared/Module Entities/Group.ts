@@ -4,6 +4,7 @@ import { ModuleEntity } from './ModuleEntity'
 /** Represents a Group in a Module */
 
 export class Group extends ModuleEntity {
+  
   // ---------------------------------------------------------------
   // Initialization & Cleanup
   // ---------------------------------------------------------------
@@ -18,4 +19,5 @@ export class Group extends ModuleEntity {
     
     super(name, moduleUUID, slug)
   }
+  
 }

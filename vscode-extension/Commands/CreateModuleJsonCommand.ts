@@ -25,7 +25,7 @@ export class CreateModuleJsonCommand extends CommandBase {
   protected async executeCommand() {
     let projectPath = vscode.workspace.rootPath
     if (projectPath === undefined) {
-      throw Error('Could not locate module project path.')
+      throw Error('Could not locate folder for module.json.')
     }
 
         // See if a module.json file already exists

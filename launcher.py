@@ -15,6 +15,7 @@ args = parser.parse_args()
 target = args.target
 
 if target == 'build-extension':
+    run('rm -rf ./extension-out')
     run('cp ./vscode-extension/package.extension.json ./package.json')
     run('npm install')
     run('npm run compile-extension')
@@ -29,6 +30,7 @@ elif target == 'package-extension':
     run('npm run compile-extension')
     run('vsce package')
 elif target == 'build-app':
+    run('rm -rf ./app-out')
     run('cp ./app/package.app.json ./package.json')
     run('npm install')
     run('npm run compile-app')

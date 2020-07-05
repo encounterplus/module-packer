@@ -27,7 +27,7 @@ export class BuildModuleCommand extends CommandBase {
       Path.basename(projectPath)
     )
     
-    let completeMessage = `Successfully created module: ${module.name}.`
+    let completeMessage = `Successfully created module: ${module.moduleProjectInfo.name}.`
     vscode.window
       .showInformationMessage(completeMessage, 'View Module File')
       .then((selection) => {
