@@ -20,7 +20,9 @@
   "homepage": "https://github.com/encounterplus/module-packer",
   "categories": ["Other"],
   "keywords": ["EncounterPlus", "iOS", "module", "packer"],
-  "activationEvents": ["onLanguage:markdown"],
+  "activationEvents": [
+    "*"
+  ],
   "main": "./extension-out/vscode-extension/extension.js",
   "contributes": {
     "viewsContainers": {
@@ -42,6 +44,12 @@
         }
       ]
     },
+    "viewsWelcome": [
+      {
+        "view": "encounter-plus-modules",
+        "contents": "No modules found. You may need to create a module.json file.\n[Create Module Project](command:encounterPlusMarkdown.createModuleJson)"
+      }
+    ],
     "commands": [
       {
         "command": "encounterPlusMarkdown.buildModule",
@@ -242,7 +250,7 @@
     "markdown-it-decorate": "^1.2.2",
     "markdown-it-imsize": "^2.0.1",
     "markdown-it-mark": "^3.0.0",
-    "markdown-it-multimd-table": "^4.0.2",
+    "markdown-it-multimd-table": "^4.0.3",
     "markdown-it-sub": "^1.0.0",
     "markdown-it-sup": "^1.0.0",
     "markdown-it-underline": "^1.0.1",

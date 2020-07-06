@@ -1,5 +1,4 @@
 import * as Path from 'path'
-import * as Glob from 'glob'
 import * as FileSystem from 'fs-extra'
 import { v4 as UUIDV4 } from 'uuid'
 import { Module } from './Module Entities/Module'
@@ -59,13 +58,31 @@ export class ModuleProject {
    */
   static findModuleProjects(rootDirectory: string): ModuleProject[] {
     let moduleProjects: ModuleProject[] = []
-    let matches = Glob.sync(rootDirectory + '**/module.json', {})
-    matches.forEach(match => {
-      let moduleProject = ModuleProject.parseModuleProject(match)
-      if (moduleProject !== undefined) {
+
+    // Get all subdirectories - we will recursively scan
+    // through these, creating Groups.
+    let subdirectoryNames: string[] = FileSystem.readdirSync(rootDirectory).filter(function (file) {
+      let childPath = Path.join(rootDirectory, file)
+      return FileSystem.statSync(childPath).isDirectory()
+    })
+
+    // Get module projects from subdirectories
+    subdirectoryNames.forEach((subdirectoryName) => {      
+      let subdirectoryPath = Path.join(rootDirectory, subdirectoryName)
+      let subdirectoryModules = ModuleProject.findModuleProjects(subdirectoryPath)
+      subdirectoryModules.forEach ( (moduleProject) => {
+        moduleProjects.push(moduleProject)
+      })
+    })
+
+    let moduleProjectPath = Path.join(rootDirectory, 'module.json')
+    if(FileSystem.existsSync(moduleProjectPath)) {
+      let moduleProject = ModuleProject.parseModuleProject(moduleProjectPath)
+      if(moduleProject !== undefined) {
         moduleProjects.push(moduleProject)
       }
-    })
+    }
+
     return moduleProjects
   }
 

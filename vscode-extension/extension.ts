@@ -36,7 +36,6 @@ export function activate(context: vscode.ExtensionContext) {
       let uri = vscode.Uri.file(pagePath)
       let doc = await vscode.workspace.openTextDocument(uri)
       vscode.window.showTextDocument(doc, vscode.ViewColumn.One)
-      //vscode.commands.executeCommand
     })
   )
 
@@ -49,8 +48,8 @@ export function activate(context: vscode.ExtensionContext) {
   }
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('encounterPlusMarkdown.buildModule', () => {
-      buildModuleCommand.startCommand()
+    vscode.commands.registerCommand('encounterPlusMarkdown.buildModule', (moduleTreeItem) => {
+      buildModuleCommand.startModuleBuild(moduleTreeItem.moduleProject)
     })
   )
 

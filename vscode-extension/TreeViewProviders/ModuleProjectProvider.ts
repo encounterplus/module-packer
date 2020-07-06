@@ -22,7 +22,7 @@ export class ModuleProjectProvider implements vscode.TreeDataProvider<vscode.Tre
    * Initializes an instance of `ModuleProjectProvider`
    * @param workspaceRoot The workspace root path
    */
-  constructor(private workspaceRoot: string) {}
+  constructor(private workspaceRoot: string) { }
 
   // ---------------------------------------------------------------
   // Public Properties

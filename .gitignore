@@ -3,6 +3,7 @@
 /app-out
 /extension-out
 /example
+/examples
 *.vsix
 .DS_Store
 package.json

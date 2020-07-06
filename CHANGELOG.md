@@ -10,7 +10,6 @@
 - Some elements overlapped with statblocks
 
 
-
 ## 1.0.7
 
 ### Added
