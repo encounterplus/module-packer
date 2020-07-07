@@ -44,11 +44,6 @@ font-face {
 /******** Body / HTML ********/
 
 html {
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-top: 0px;
-  padding-bottom: 20px;
-  margin: 0px;
   -webkit-print-color-adjust: exact;
   filter: opacity(1);
   -webkit-filter: opacity(1);
@@ -386,9 +381,23 @@ table.statblock td:first-child {
   padding: 4px 8px;
 }
 
+table.statblock {
+  background: #edebe8;
+  font-size: 11px;
+  page-break-inside: avoid;
+}
+
 /******** Screen-Specific Styles ********/
 
 @media screen {
+  html {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 0px;
+    padding-bottom: 20px;
+    margin: 0px;
+  }
+
   body {
     font-family: '-apple-system', sans-serif;
     font-size: 13px;
@@ -397,6 +406,27 @@ table.statblock td:first-child {
     margin: 0px;
     color: black;
     background: url('../img/bg.png') #FEFEFC repeat;
+  }
+
+  .print-page {
+    background: url('../img/print-bg.jpg') #ff0000 0 no-repeat;
+    position: relative;
+    z-index: 15;
+    box-sizing: border-box;
+    overflow: hidden;
+    height: 279.4mm;
+    width: 215.9mm;
+    margin: 0px;
+    column-count: 2;
+    column-gap: 0.25in;
+    column-fill: auto;
+    padding-top: 0.25in;
+    padding-bottom: 0.25in;
+    padding-left: 0.25in;
+    padding-right: 0.25in;
+    text-rendering: optimizeLegibility;
+  	page-break-before: always;
+    page-break-after: always;
   }
 
   img.size-cover {
@@ -415,13 +445,10 @@ table.statblock td:first-child {
   }
 
   table.statblock {
-    background: #edebe8;
     float: right;
     margin-left: 10px;
     max-width: 400px;
     width: 45%;
-    font-size: 11px;
-    page-break-inside: avoid;
   }
 }
 
@@ -435,25 +462,46 @@ table.statblock td:first-child {
     padding: 0px;
     margin: 0px;
     color: black;
-    background: url('../img/print-bg.png') #FEFEFC cover;
   }
 
-  table.statblock {
-    background: #edebe8;
-    margin-left: 0.1in;
-    margin-right: 0.1in;
-    width: calc(100% - 0.2in);
-    font-size: 11px;   
-    page-break-inside: avoid; 
-  }
-
-  .innerprint {
+  .print-page {
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: top left;
+    position: relative;
+    z-index: 10;
+    box-sizing: border-box;
+    overflow: hidden;
+    height: 11in;
+    width: 8.5in;
     column-count: 2;
     column-gap: 0.25in;
     column-fill: auto;
+    -webkit-column-count: 2;
+	  -moz-column-count: 2;
+	  -webkit-column-gap: 0.25in;
+  	-moz-column-gap: 0.25in;
     padding-top: 0.25in;
-    padding-bottom: 0.25in;
+    padding-bottom: 0.55in;
     padding-left: 0.25in;
     padding-right: 0.25in;
+    text-rendering: optimizeLegibility;
+  	page-break-before: always;
+    page-break-after: always;
   }
+
+  table.statblock {
+    margin-left: 0.1in;
+    margin-right: 0.1in;
+    width: calc(100% - 0.2in);
+  }
+
+  .print-footer {
+		position: fixed;
+    bottom: 0;
+    background-size: 8.5in .52in;
+		z-index: 100;
+		height: .52in;
+		width: 8.5in;
+	}
 }

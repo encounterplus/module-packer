@@ -26,11 +26,14 @@ export class ExportToPdfCommand extends CommandBase {
     let moduleOutputPath = Path.join(projectPath, 'ModuleBuild')
     let customStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'custom.css')
     let globalStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'global.css')
+    let printImageStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'print-img.css')
     let pageLocation = Path.join(moduleOutputPath, 'printPage.html')
     let saveLocation = Path.join(projectPath, `${module.moduleProjectInfo.slug}.pdf`)
 
     let html = `<!DOCTYPE html><html lang="en"><head>`
-    html += `<link rel="stylesheet" href="${globalStyleLocation}"><link rel="stylesheet" href="${customStyleLocation}">`
+    html += `<link rel="stylesheet" href="${globalStyleLocation}">`
+    html += `<link rel="stylesheet" href="${printImageStyleLocation}">`
+    html += `<link rel="stylesheet" href="${customStyleLocation}">`
 
     let options = {
       headless: true,
@@ -39,12 +42,13 @@ export class ExportToPdfCommand extends CommandBase {
     }
     const browser = await Puppeteer.launch(options)
     const page = await browser.newPage()
-    await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 2 })
+    //await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 2 })
     module.pages.forEach((page) => {
-      html += '<div class="printbg"><div class="innerprint">'
+      html += '<div class="print-page">'
       html += page.content
-      html += '</div></div>'
-      html += '<p style="page-break-before: always">'
+      html += '</div>'
+      html += '<div class="print-footer">'
+      html += '</div>'
     })
     html += `</head><body>`
     FileSystem.writeFileSync(pageLocation, html)
@@ -52,9 +56,10 @@ export class ExportToPdfCommand extends CommandBase {
     await page.goto(vscode.Uri.file(pageLocation).toString(), {
       waitUntil: 'networkidle0',
     })
+    page.waitFor(3000)
 
     const pdf = await page.pdf({
-      format: 'A4',
+      format: 'Letter',
       printBackground: true,
     })
     FileSystem.writeFileSync(saveLocation, pdf)
