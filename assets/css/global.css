@@ -7,7 +7,7 @@
  
 /******** Fonts ********/
 
-font-face {
+@font-face {
   font-family: 'Andada SC';
   src: url('../font/AndadaSC-Regular.otf') format('opentype');
   font-weight: normal;
@@ -456,6 +456,7 @@ table.statblock {
 
 @media print {
   body {
+    counter-reset: page-numbers;
     font-family: '-apple-system', sans-serif;
     font-size: 13px;
     line-height: 18px;
@@ -465,6 +466,7 @@ table.statblock {
   }
 
   .print-page {
+    counter-increment: page-numbers;
     background-repeat: no-repeat;
     background-size: 100%;
     background-position: top left;
@@ -496,12 +498,28 @@ table.statblock {
     width: calc(100% - 0.2in);
   }
 
-  .print-footer {
+  .print-page::after {
+    content: "";
 		position: fixed;
-    bottom: 0;
-    background-size: 8.5in .52in;
-		z-index: 100;
+		bottom: 0;
+		left: 0;
+    z-index: 100;
 		height: .52in;
 		width: 8.5in;
-	}
+		background-size: 8.5in .52in;
+  }
+  
+  .footer-page-number {
+    position   : absolute;
+		right      : 2px;
+		bottom     : 22px;
+		width      : 50px;
+		font-size  : 15px;
+		color      : #58180d;
+		text-align : center;
+  }
+
+  .footer-page-number::after {
+    content: counter(page-numbers);
+  }
 }

@@ -87,7 +87,7 @@
     "markdown-it-underline": "^1.0.1",
     "minimist": ">=0.2.1",
     "path": "^0.12.7",
-    "puppeteer-core": "^4.0.1",
+    "puppeteer-core": "4.0.1",
     "puppeteer-in-electron": "^3.0.3",
     "slugify": "^1.4.0",
     "utf-8-validate": "^5.0.2",

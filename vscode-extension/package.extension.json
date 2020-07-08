@@ -58,7 +58,8 @@
         "icon": { 
           "light": "./extension-out/resources/light/build-module.svg",
           "dark": "./extension-out/resources/dark/build-module.svg"
-        }
+        },
+        "when": "view == encounter-plus-modules && viewItem == moduleProject"
       },
       {
         "command": "encounterPlusMarkdown.refreshModules",
@@ -74,7 +75,12 @@
       {
         "command": "encounterPlusMarkdown.exportModuleToPDF",
         "title": "Export Module to PDF",
-        "category": "EncounterPlus Markdown"
+        "category": "EncounterPlus Markdown",
+        "icon": { 
+          "light": "./extension-out/resources/light/export-to-pdf.svg",
+          "dark": "./extension-out/resources/dark/export-to-pdf.svg"
+        },
+        "when": "view == encounter-plus-modules && viewItem == moduleProject"
       },
       {
         "title": "Markdown: Toggle Bold",
@@ -212,6 +218,11 @@
           "command": "encounterPlusMarkdown.buildModule",
           "when": "view == encounter-plus-modules && viewItem == moduleProject",
           "group": "inline"
+        },
+        {
+          "command": "encounterPlusMarkdown.exportModuleToPDF",
+          "when": "view == encounter-plus-modules && viewItem == moduleProject",
+          "group": "inline"
         }
       ]
     },
@@ -256,7 +267,7 @@
     "markdown-it-underline": "^1.0.1",
     "minimist": ">=0.2.1",
     "path": "^0.12.7",
-    "puppeteer-core": "^4.0.1",
+    "puppeteer-core": "4.0.1",
     "slugify": "^1.4.0",
     "utf-8-validate": "^5.0.2",
     "uuid": "^8.1.0",

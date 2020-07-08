@@ -155,22 +155,23 @@ export class Module {
       FileSystem.mkdirSync(moduleBuildPath)
     }
 
+    // Copy the assets folder. The assets in the build folder should
+    // always be replaced. They can be overridden by a user by having
+    // an assets folder in their module.
+    let assetsOutputPath = Path.join(moduleBuildPath, 'assets')
+    if (FileSystem.existsSync(assetsOutputPath))  {
+      FileSystem.removeSync(assetsOutputPath)
+    }    
+    let packedAssets = Path.join(__dirname, '../../assets')
+    FileSystem.copySync(packedAssets, assetsOutputPath)
+
     // Parse the project directory - navigating through
     // all subdirectories (which become groups unless they
     // are explicitly ignored).
     module.processDirectory(projectDirectory, moduleBuildPath)
 
     // Export module.xml file
-    module.exportXML(Path.join(moduleBuildPath, 'module.xml'))
-
-    // Copy the assets folder if it isn't already there. If
-    // it is already there, don't overwrite it as the CSS
-    // may be customized.
-    let assetsOutputPath = Path.join(moduleBuildPath, 'assets')
-    if (!FileSystem.existsSync(assetsOutputPath)) {
-      let packedAssets = Path.join(__dirname, '../../assets')
-      FileSystem.copySync(packedAssets, assetsOutputPath)
-    }
+    module.exportXML(Path.join(moduleBuildPath, 'module.xml'))    
 
     let moduleArchivePath = Path.join(projectDirectory, `${module.moduleProjectInfo.slug}.module`)
     await module.createArchive(moduleArchivePath, moduleBuildPath)
@@ -431,7 +432,12 @@ export class Module {
         let parentPagebreaks = Module.trim(pagebreaks.split(element.tagName)[0], ',')
 
         // Traverse backwards until we find the parent page break
-        let parentElement = $(element).prevAll(parentPagebreaks).first()
+        let parentElement: Cheerio | undefined = undefined
+        
+        // Parent page breaks will be "" if none exist
+        if (parentPagebreaks) {
+          parentElement = $(element).prevAll(parentPagebreaks).first()
+        }
 
         // If we found a parent page break, we can assign that as the
         // parent for this group
@@ -442,7 +448,7 @@ export class Module {
 
         // If the page has no parent and there is a group,
         // make page belong to that group
-        if (parentElement.length === 0 && parentGroup !== undefined) {
+        if ((parentElement === undefined || parentElement.length === 0) && parentGroup !== undefined) {
           page.parent = parentGroup
         }
 

@@ -60,8 +60,8 @@ export function activate(context: vscode.ExtensionContext) {
   )
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('encounterPlusMarkdown.exportModuleToPDF', () => {
-      exportToPdfCommand.startCommand()
+    vscode.commands.registerCommand('encounterPlusMarkdown.exportModuleToPDF', (moduleTreeItem) => {
+      exportToPdfCommand.startModuleExport(moduleTreeItem.moduleProject)
     })
   )
 

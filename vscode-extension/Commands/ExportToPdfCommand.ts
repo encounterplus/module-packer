@@ -1,11 +1,14 @@
 import * as vscode from 'vscode'
-import { Module } from '../../shared/Module Entities/Module'
-import { CommandBase } from './CommandBase'
 import * as Path from 'path'
-import * as FileSystem from 'fs-extra'
-import * as Puppeteer from 'puppeteer-core'
+import { CommandBase } from './CommandBase'
+import { PdfExporter } from '../../shared/PdfExporter'
+import { ModuleProject } from '../../shared/ModuleProject'
 
 export class ExportToPdfCommand extends CommandBase {
+
+  /** The module project that will be built */
+  private moduleProject: ModuleProject | undefined = undefined
+
   /**
    * If specified, this will be displayed in the status bar
    * as the command executes
@@ -13,118 +16,58 @@ export class ExportToPdfCommand extends CommandBase {
   statusMessage = 'Exporting Module to PDF...'
 
   /**
+   * Starts a module project building
+   * @param moduleProject The module project to build
+   */
+  async startModuleExport(moduleProject: ModuleProject) {
+    this.moduleProject = moduleProject
+    this.startCommand()
+  }
+
+  /**
    * Contains execution code for the command
    */
   protected async executeCommand() {
-    await this.installChromiumIfNeeded()
-    let projectPath = vscode.workspace.rootPath
-    if (projectPath === undefined) {
+    let moduleProjectPath = this.moduleProject?.moduleProjectPath
+
+    // Ensure we have a proper project path
+    if (moduleProjectPath === undefined) {
       throw Error('Could not locate module project path.')
     }
 
-    let module = await Module.createModuleFromPath(projectPath, Path.basename(projectPath))
-    let moduleOutputPath = Path.join(projectPath, 'ModuleBuild')
-    let customStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'custom.css')
-    let globalStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'global.css')
-    let printImageStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'print-img.css')
-    let pageLocation = Path.join(moduleOutputPath, 'printPage.html')
-    let saveLocation = Path.join(projectPath, `${module.moduleProjectInfo.slug}.pdf`)
-
-    let html = `<!DOCTYPE html><html lang="en"><head>`
-    html += `<link rel="stylesheet" href="${globalStyleLocation}">`
-    html += `<link rel="stylesheet" href="${printImageStyleLocation}">`
-    html += `<link rel="stylesheet" href="${customStyleLocation}">`
-
-    let options = {
-      headless: true,
-      executablePath: Puppeteer.executablePath(),
-      args: ['--lang=' + vscode.env.language, '--no-sandbox', '--disable-setuid-sandbox'],
-    }
-    const browser = await Puppeteer.launch(options)
-    const page = await browser.newPage()
-    //await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 2 })
-    module.pages.forEach((page) => {
-      html += '<div class="print-page">'
-      html += page.content
-      html += '</div>'
-      html += '<div class="print-footer">'
-      html += '</div>'
+    let projectDirectory = Path.dirname(moduleProjectPath)
+ 
+    vscode.window.showInformationMessage(`Beginning export of "${this.moduleProject?.name}" to PDF`)
+    await PdfExporter.installChromiumForRendering(this.onBrowserDownload)    
+    let pdfPath = await PdfExporter.exportToPdf(projectDirectory, (path) => {
+      return vscode.Uri.file(path).toString()
     })
-    html += `</head><body>`
-    FileSystem.writeFileSync(pageLocation, html)
 
-    await page.goto(vscode.Uri.file(pageLocation).toString(), {
-      waitUntil: 'networkidle0',
-    })
-    page.waitFor(3000)
-
-    const pdf = await page.pdf({
-      format: 'Letter',
-      printBackground: true,
-    })
-    FileSystem.writeFileSync(saveLocation, pdf)
-    await browser.close()
-
-    let completeMessage = `Successfully exported module: ${module.moduleProjectInfo.name}.`
+    let completeMessage = `Successfully exported module to PDF.`
     vscode.window
       .showInformationMessage(completeMessage, 'Open PDF Location')
       .then((selection) => {
-        if (module.moduleArchivePath) {
-          let archiveURI = vscode.Uri.file(module.moduleArchivePath)
+        if (selection !== 'Open PDF Location') {
+          return
+        }
+
+        if (pdfPath) {
+          let archiveURI = vscode.Uri.file(pdfPath)
           vscode.commands.executeCommand('revealFileInOS', archiveURI)
         }
       })
   }
 
-  /** Installs the Chromium engine to render the PDF if needed */
-  private async installChromiumIfNeeded() {
-    try {
-      if (FileSystem.existsSync(Puppeteer.executablePath())) {
-        return
-      }
-
-      vscode.window.showInformationMessage('[EncounterPlus Markdown] Installing Chromium for PDF rendering...')
-      var statusbarmessage = vscode.window.setStatusBarMessage('Installing Chromium PDF engine...', 3000)
-
-      const https_proxy = vscode.workspace.getConfiguration('http')['proxy'] || ''
-      if (https_proxy) {
-        process.env.HTTPS_PROXY = https_proxy
-        process.env.HTTP_PROXY = https_proxy
-      }
-
-      // Download Chromium
-      const desiredRevision = '756035'
-      const browserFetcher = Puppeteer.createBrowserFetcher()
-      let revisionInfo = await browserFetcher.download(desiredRevision, this.onBrowserDownload)
-      let localRevisions = await browserFetcher.localRevisions()
-      console.log('Chromium downloaded to ' + revisionInfo.folderPath)
-
-      // Remove any older versions
-      const cleanupOldVersions = await localRevisions.map(async (revision) => {
-        if (revision !== desiredRevision) {
-          await browserFetcher.remove(revision)
-        }
-      })
-
-      if (FileSystem.existsSync(Puppeteer.executablePath())) {
-        statusbarmessage.dispose()
-        vscode.window.setStatusBarMessage('PDF engine installation succeeded.', 3000)
-        vscode.window.showInformationMessage('PDF engine installation succeeded.')
-        return Promise.all(cleanupOldVersions)
-      }
-    } catch (error) {
-      console.log(error.message)
-      throw Error(`PDF engine installation failed: ${error.Message}`)
-    }
-  }
-
   /**
    * Handles browser download progress changes
-   * @param downloadBytes The number of bytes downloaded
-   * @param totalBytes The total bytes for the download
+   * @param progress The percent progress of the download (1.5 = 1.5%)
    */
-  private onBrowserDownload(downloadBytes: number, totalBytes: number) {
-    const progress = (downloadBytes / totalBytes) * 100.0
+  private onBrowserDownload(progress: number) {    
+    if(progress === 0) {
+      vscode.window.showInformationMessage('[EncounterPlus Markdown] Installing Chromium for PDF rendering...')
+      vscode.window.setStatusBarMessage('Installing Chromium PDF engine...', 1000)
+    }
+
     vscode.window.setStatusBarMessage(`Downloading PDF engine: ${progress.toFixed(1)}%`, 1000)
   }
 }
