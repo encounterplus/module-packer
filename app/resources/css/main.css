@@ -74,6 +74,10 @@ body {
 	height: 32px;
 }
 
+#name-input:disabled {
+	background-color: #495057
+}
+
 #help-button:hover {
 	background-color: rgba(255,255,255, 0.3);
 }
@@ -83,6 +87,18 @@ body {
 	height: 100px;
 	color: white;
 	padding: 20%;
+}
+
+#build-module-button {
+	width: 200px;
+	height: 40px;
+	margin: 10px;
+}
+
+#export-to-pdf-button {
+	width: 200px;
+	height: 40px;
+	margin: 10px;
 }
 
 #module-section {
@@ -117,4 +133,10 @@ body {
 img {
     max-width: 100%;
     height: auto;
+}
+
+.button-image {
+	width: 24px;
+	height: 24px;
+	margin-right: 10px;
 }

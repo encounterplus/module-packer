@@ -12,7 +12,8 @@ import { Module } from '../shared/Module Entities/Module'
 
 const addButton = document.getElementById('add-button')
 const addLabel = document.getElementById('add-label')
-const createButton = document.getElementById('create-button')
+const createButton = document.getElementById('build-module-button')
+const exportButton = document.getElementById('export-to-pdf-button')
 const moduleSection = document.getElementById('module-section')
 const nameInput = document.getElementById('name-input') as HTMLInputElement
 const statusInfo = document.getElementById('status-info')
@@ -34,6 +35,7 @@ function handlePathSelection(paths: string[]) {
   let moduleJsonName = Module.getModuleName(basePath)
   if (moduleJsonName !== undefined) {
     nameInput.value = moduleJsonName
+    nameInput.disabled = true
     addModuleJson.classList.remove('invisible')
   } else {
     nameInput.value = Path.basename(basePath)
@@ -76,12 +78,35 @@ createButton.onclick = (event) => {
   Electron.ipcRenderer.send('createModule', basePath, name)
 }
 
-Electron.ipcRenderer.on('success', (event, moduleName, path) => {
+exportButton.onclick = (event) => {
+  event.preventDefault()
+  let name = nameInput.value
   statusInfo.classList.remove('invisible')
-  statusInfo.innerHTML = 'Success'
+  statusInfo.innerHTML = 'Processing'
+  statusLink.classList.add('invisible')
+  Electron.ipcRenderer.send('exportToPdf', basePath, name)
+}
+
+Electron.ipcRenderer.on('successModule', (event, moduleName, path) => {
+  statusInfo.classList.remove('invisible')
+  statusInfo.innerHTML = 'Successfully Created Module'
   statusLink.innerHTML = moduleName
   exportedPath = path
   statusLink.classList.remove('invisible')
+})
+
+Electron.ipcRenderer.on('successPdf', (event, path) => {
+  statusInfo.classList.remove('invisible')
+  statusInfo.innerHTML = 'Successfully Exported PDF'
+  statusLink.innerHTML = Path.basename(path)
+  exportedPath = path
+  statusLink.classList.remove('invisible')
+})
+
+Electron.ipcRenderer.on('installProgressUpdate', (event, progress: number) => {
+  statusInfo.classList.remove('invisible')
+  statusInfo.innerHTML = `Rendering Engine Install: ${progress.toFixed(1)}%`
+  statusLink.classList.add('invisible')
 })
 
 Electron.ipcRenderer.on('error', (event, message) => {

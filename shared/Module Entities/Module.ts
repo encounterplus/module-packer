@@ -20,6 +20,13 @@ import { ModuleProject } from '../ModuleProject'
 export class Module {
 
   // ---------------------------------------------------------------
+  // Private Properties
+  // ---------------------------------------------------------------
+
+  /** If true, exports the module in a format fit for print */
+  private exportForPrint: boolean = false
+
+  // ---------------------------------------------------------------
   // Initialization & Cleanup
   // ---------------------------------------------------------------
 
@@ -118,8 +125,9 @@ export class Module {
    * Builds modules from markdown at a specified directory.
    * @param projectDirectory The module project directory.
    * @param name The name of the module.
+   * @param forPrint If true, formats the module for printing
    */
-  static async createModuleFromPath(projectDirectory: string, name: string): Promise<Module> {
+  static async createModuleFromPath(projectDirectory: string, name: string, forPrint: boolean = false): Promise<Module> {
     // Ensure the path we're parsing is a directory
     if (!FileSystem.statSync(projectDirectory).isDirectory()) {
       throw Error('Specified module project path is not a directory.')
@@ -128,6 +136,7 @@ export class Module {
     // Create a new module object and reset the list of
     // existing slugs as we're parsing a new module project
     let module = new Module()
+    module.exportForPrint = forPrint
     Module.existingSlugs = []
 
     // Parse the module JSON. If one doesn't exist - create it.
@@ -281,6 +290,22 @@ export class Module {
       return FileSystem.statSync(childPath).isDirectory()
     })
 
+    // Ensure there are files in the modules directory
+    let directoryChildren = FileSystem.readdirSync(directoryPath)
+
+    // Parse each file
+    directoryChildren.forEach((itemName) => {
+      let fullPath = Path.join(directoryPath, itemName)
+      if (!FileSystem.statSync(fullPath).isFile()) {
+        return
+      }
+
+      let newPages = this.processFile(fullPath, moduleBuildPath, parentGroup)
+      newPages.forEach((page) => {
+        this.pages.push(page)
+      })
+    })
+
     // Parse subdirectories
     subdirectoryNames.forEach((subdirectoryName) => {
       let subdirectoryPath = Path.join(directoryPath, subdirectoryName)
@@ -318,22 +343,6 @@ export class Module {
       this.groups.push(newGroup)
       this.processDirectory(subdirectoryPath, moduleBuildPath, newGroup)
     })
-
-    // Ensure there are files in the modules directory
-    let directoryChildren = FileSystem.readdirSync(directoryPath)
-
-    // Parse each file
-    directoryChildren.forEach((itemName) => {
-      let fullPath = Path.join(directoryPath, itemName)
-      if (!FileSystem.statSync(fullPath).isFile()) {
-        return
-      }
-
-      let newPages = this.processFile(fullPath, moduleBuildPath, parentGroup)
-      newPages.forEach((page) => {
-        this.pages.push(page)
-      })
-    })
   }
 
   /**
@@ -349,7 +358,8 @@ export class Module {
     parentGroup: Group | undefined = undefined
   ): Page[] {
     
-    let markdown = MarkdownRenderer.getRenderer()
+    let markdownRenderer = new MarkdownRenderer(this.exportForPrint)
+    let markdown = markdownRenderer.getRenderer()
 
     let pages: Page[] = []
     console.log(`Processing file: ${filePath}`)
@@ -397,6 +407,13 @@ export class Module {
       let $ = Cheerio.load(html)
       let cover: CheerioElement | undefined = undefined
       let pagesByHeader: { [slug: string]: ModuleEntity } = {}
+
+      let firstPageBreak = $('*').find(pagebreaks).first()
+      $(firstPageBreak).prevAll().each((i, element) => {
+        if ($(element).find('.size-cover').length > 0) {
+          cover = element
+        }
+      })
 
       $(pagebreaks).each((i, element) => {
         let headerText = $(element).text()
@@ -453,6 +470,7 @@ export class Module {
         }
 
         // Finally, add the page to the module
+        page.content = this.wrapPageInPrintDivs(page.content)
         pages.push(page)
         pagebreakContentFound = true
       })
@@ -463,12 +481,32 @@ export class Module {
     // to create page
     if (!pagebreakContentFound) {
       let page = new Page(pageName, this.moduleProjectInfo.id)
-      page.content = html
+      page.content = this.wrapPageInPrintDivs(html)
       page.parent = parentGroup
       pages.push(page)
     }
 
     return pages
+  }
+
+  /**
+   * If true, wraps the page HTML in print divs
+   * when the `exportForPrint` flag is true.
+   * @param originalHTML The original HTML
+   */
+  private wrapPageInPrintDivs(originalHTML: string): string {
+    if(!this.exportForPrint) {
+      return originalHTML
+    }
+
+    let newHTML = '<div class="print-page">'
+    newHTML += '<div class="page-content">'
+    newHTML += originalHTML
+    newHTML += '</div>'
+    newHTML += '<div class="footer-page-number">'
+    newHTML += '</div>'
+    newHTML += '</div>'
+    return newHTML
   }
 
   /**

@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain } from 'electron'
 import * as Path from 'path'
 import { Module } from '../shared/Module Entities/Module'
 import { ModuleProject } from '../shared/ModuleProject'
+import { PdfExporter } from '../shared/PdfExporter'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -36,7 +37,7 @@ function createWindow() {
   // Open the DevTools.
   if (dev) {
     mainWindow.webContents.openDevTools()
-    mainWindow.setSize(800, 570, false)
+    mainWindow.setSize(950, 600, false)
     mainWindow.center()
   }
 }
@@ -65,16 +66,40 @@ app.on('window-all-closed', () => {
   }
 })
 
+ipcMain.on('exportToPdf', async (event, path, name) => {
+  try {
+    let moduleProjects = ModuleProject.findModuleProjects(path)
+    if (moduleProjects.length === 0) {
+      await PdfExporter.installChromiumForRendering(updateChromiumInstallProgress)
+      let outputPath = await PdfExporter.exportToPdf(path)
+      mainWindow.webContents.send('successPdf', outputPath)
+    } else if (moduleProjects.length === 1) {
+      let moduleFolderPath = Path.dirname(moduleProjects[0].moduleProjectPath)
+      await PdfExporter.installChromiumForRendering(updateChromiumInstallProgress)
+      let outputPath = await PdfExporter.exportToPdf(moduleFolderPath)
+      mainWindow.webContents.send('successPdf', outputPath)
+    } else {
+      mainWindow.webContents.send('error', 'There are multiple modules in the specified path.')  
+    }
+  } catch (error) {
+    mainWindow.webContents.send('error', error.message)
+  }
+})
+
+function updateChromiumInstallProgress(progress: number) {
+  mainWindow.webContents.send('installProgressUpdate', progress)
+}
+
 ipcMain.on('createModule', async (event, path, name) => {
   try {
     let moduleProjects = ModuleProject.findModuleProjects(path)
     if (moduleProjects.length === 0) {
       let module = await Module.createModuleFromPath(path, name)
-      mainWindow.webContents.send('success', module.moduleProjectInfo.name, module.moduleArchivePath)
+      mainWindow.webContents.send('successModule', module.moduleProjectInfo.name, module.moduleArchivePath)
     } else if (moduleProjects.length === 1) {
       let modulePath = Path.dirname(moduleProjects[0].moduleProjectPath)
       let module = await Module.createModuleFromPath(modulePath, name)
-      mainWindow.webContents.send('success', module.moduleProjectInfo.name, module.moduleArchivePath)
+      mainWindow.webContents.send('successModule', module.moduleProjectInfo.name, module.moduleArchivePath)
     } else {
       mainWindow.webContents.send('error', 'There are multiple modules in the specified path.')  
     }

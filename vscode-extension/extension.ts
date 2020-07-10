@@ -67,7 +67,13 @@ export function activate(context: vscode.ExtensionContext) {
 
   return {
     extendMarkdownIt(md: Markdown) {
-      return MarkdownRenderer.getRenderer()
+      try {
+        let renderer = new MarkdownRenderer(false)
+        return renderer.getRenderer()
+      } catch(error) {
+        console.error(error.message)
+        throw error
+      }
     },
   }
 }

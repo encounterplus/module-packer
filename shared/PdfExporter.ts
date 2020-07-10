@@ -2,6 +2,7 @@ import { Module } from './Module Entities/Module'
 import * as Path from 'path'
 import * as FileSystem from 'fs-extra'
 import * as Puppeteer from 'puppeteer-core'
+import { pathToFileURL } from 'url'
 
 export class PdfExporter {
 
@@ -11,7 +12,7 @@ export class PdfExporter {
    * @param transformPageLocation An optional function to transform the page's location (needed for tools like VSCode)
    */
   public static async exportToPdf(projectDirectory: string, transformPageLocation?: (path: string) => string): Promise<string> {    
-    let module = await Module.createModuleFromPath(projectDirectory, Path.basename(projectDirectory))
+    let module = await Module.createModuleFromPath(projectDirectory, Path.basename(projectDirectory), true)
     let moduleOutputPath = Path.join(projectDirectory, 'ModuleBuild')
     let customStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'custom.css')
     let globalStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'global.css')
@@ -32,18 +33,15 @@ export class PdfExporter {
     const browser = await Puppeteer.launch(options)
     const page = await browser.newPage()
     module.pages.forEach((page) => {
-      html += '<div class="print-page">'
       html += page.content
-      html += '<div class="footer-page-number">'
-      html += '</div>'
-      html += '</div>'
-
     })
     html += `</head><body>`
     FileSystem.writeFileSync(pageLocation, html)
 
     if(transformPageLocation) {
       pageLocation = transformPageLocation(pageLocation)
+    } else {
+      pageLocation = pathToFileURL(pageLocation).toString()
     }
 
     await page.goto(pageLocation, {

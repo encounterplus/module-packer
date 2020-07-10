@@ -8,6 +8,7 @@
     <script src="js/jquery.slim.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/fonts.css">
     <link rel="stylesheet" href="css/main.css">
   </head>
   <body>
@@ -20,7 +21,7 @@
 
         <!-- Add button and "Select Folder" Text -->
         <section id="add-section">
-          <a href="#" id="add-button"><img src="img/add.svg" alt="Add Module" /></a>
+          <a href="#" id="add-button"><img src="img/add.svg" alt="Add Module"></img></a>
           <p>Select a folder you want to pack.</p>
           <small id="add-label" class="form-text text-muted d-none">Unknown path</small>
         </section>
@@ -30,9 +31,10 @@
           <form>
             <div class="form-group">
               <input id="name-input" type="text" class="form-control" placeholder="Name" />
-              <small id="add-moduleJson" class="form-text text-muted invisible">Name changes will be ignored.</small>
+              <small id="add-moduleJson" class="form-text text-muted invisible">Name was set by project settings.</small>
             </div>
-            <button id="create-button" class="btn btn-outline-primary">Create Module</button>
+            <button id="build-module-button" class="btn btn-outline-primary"><span class="icon-build-module"></span>Create Module</button>
+            <button id="export-to-pdf-button" class="btn btn-outline-primary"><span class="icon-export-to-pdf"></span>Create PDF</button>
           </form>
           <div id="status">
             <p id="status-info" class="invisible"></p>

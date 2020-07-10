@@ -1,19 +1,37 @@
 
+# Table of Contents
+
+<img align="right" src="./documentation/Logo.png" alt="Module Packer Screenshot" width="230">
+
+- [Introdcution](#introdcution)
+- [Getting Started](#getting-started)
+  - [Example Content](#example-content)
+- [Managing Your Module Project](#managing-your-module-project)
+  - [Module Folder Structure](#module-folder-structure)
+  - [Module Properties](#module-properties-modulejson)
+  - [Groups and Folders](#groups-and-folders)
+  - [Markdown File Front-Matter](#markdown-file-front-matter)
+- [Markdown Guide](#markdown-guide)
+  - [Headings](#headings)
+  - [Text Styles](#text-styles)
+  - [Images](#images)
+  - [Text Blocks & Block Quotes](#text-blocks--block-quotes)
+  - [Links](#links)
+  - [Tables](#tables)
+  - [Page Breaks for Print](#page-breaks-for-print)
+- [Visual Studio Code Extension](#visual-studio-code-extension)
+- [Other Editors](#other-editors)
+- [License](#license)
+
+# Introdcution
+
+The EncounterPlus Module Packer is a simple standalone application for converting markdown documents into modules for [EncounterPlus](https://encounter.plus). It also allows exporting the markdown files into a PDF with a similar style. The Module Packer is also available as a [Visual Studio Code Extension](#visual-studio-code-extension).
 
 <p align="center">
-  <img src="./documentation/Logo.png" alt="Module Packer Screenshot" width="230">
-</p>
-<br><br>
-
-# EncounterPlus Module Packer
-
-The EncounterPlus Module Packer is a simple standalone application for converting markdown documents into modules for [EncounterPlus](https://encounter.plus). The Module Packer is also available as a [Visual Studio Code Extension](#visual-studio-code-extension).
-
-<p align="left">
-  <img src="./documentation/screenshot.png" alt="Module Packer Screenshot" width="400">
+  <img src="./documentation/ModulePackerWalkthrough.png" alt="Module Packer Screenshot" width="1000">
 </p>
 
-## Getting Started
+# Getting Started
 
 It's easy to begin creating a module in markdown. A guide to Markdown syntax can be found further in this document in the [Markdown Guide](#markdown-guide) section.
 
@@ -25,7 +43,9 @@ It's easy to begin creating a module in markdown. A guide to Markdown syntax can
 
 ## Example Content
 
-The content of the [example.zip](example.zip) file can be used to see examples of a module structure or to test the application.
+The content of the [examples.zip](examples.zip) file can be used to see examples of multiple module structures or to test the application.
+
+# Managing Your Module Project
 
 ## Module Folder Structure
 
@@ -33,6 +53,7 @@ Below is an example of how you might srtucture your Module content.
 
 ```
 .
+└── Assets               # Optional - allows override of the default style
 └── Group A              # A group for the module.
     ├── Page A.md        # A page in Group A of the module.
     ├── Page A Cover.jpg # An image used in Page A.
@@ -44,18 +65,17 @@ Below is an example of how you might srtucture your Module content.
     ├── .ignoregroup     # An empty file that instructs the Module Packer not to turn this into a Group
     ├── Image1.png       # An image used in multiple pages.
     └── Image2.jpg       # An image used in multiple pages.
-└── ModuleBuild          # Contains temporary module files (Module Packer will create this folder)
-    └── Assets           # Contains styles and assets for the module (Module Packer will create this folder)
 ├── module.json          # Optional - can define attributes of the module (e.g., Title, Author, Slug, etc.)
 └── My Module.md         # A page at the root level of the module.
 ```
 
-### Module Properties (module.json)
+## Module Properties (module.json)
 
 In the root folder of your module project, you can create a file named `module.json` to define properties about the module. If module.json does not exist, essential properties like `name` and `slug` will be inferred from the module's folder name. A more thorough guide to module.json is available.
 
 ```JSON
 {
+  "id": "<Random UUIDV4>",
   "name": "Example Module",
   "slug": "example-module",
   "description": "Example module description.",
@@ -68,39 +88,38 @@ In the root folder of your module project, you can create a file named `module.j
 }
 ```
 
-The `id` value can also be specified (as a UUID string) to cause a module to be overwritten rather than duplicated when repeatedly imported. However, this is not advised as repeated module imports can cause duplicate groups and pages to be created unless care is taken to ensure they, also, have a manual ID specified.
+**Values:**
+- `id`: If specified, will cause a module to be overwritten rather than duplicated when repeatedly imported. *Never* copy another module's UUID, or you will cause that module to be overwritten.
+- `name`:
 
 The `autoIncrementVersion` field will cause the version number to automatically increment each time the module is packed. This is useful for keeping track 
 
-### Groups and Folders
+## Groups and Folders
 
 Subdirectories under the main module folder will automatically be turned into Groups in the module. To have a folder *not* be made into a Group, create a file named `.ignoregroup` in the folder. That folder and all subfolders will no longer be turned into groups. They will, however, be included as a resource folder in the module (e.g. for the `images` folder).
 
-### Markdown File Front-Matter
+## Markdown File Front-Matter
 
 Each markdown document can contain front matter block for additional configuration.
 
 ```yaml
 ---
-id: 553e68cc-2f81-4a9d-9008-d0a39269da4e
 name: Page name
 slug: page-name
 pagebreak: h1,h2,h3
 ---
 ```
-> `id` - An optional parameter (string) used as a unique identifier for the page. If not provided, UUIDv5 string will be automatically generated.
 
-> `slug` - An optional parameter (string) used for referencing pages (see links below). If not provided, it's automatically generated.
+The front-matter fields are:
+- `name` - An optional parameter that is the name of the page. If not specified, the file name will be used to name the page.
+- `slug` - An optional parameter used for referencing pages (see links below). If not provided, it's automatically generated.
+- `pagebreak` - An optional parameter which can be used for splitting single markdown document into multiple pages. The splitting is done automatically, based on the heading level array specified in this parameter and the actual content in the document. It's useful for describing map locations which can be added later as pins.
 
-> `pagebreak` - An optional parameter which can be used for splitting single markdown document into multiple pages. The splitting is done automatically, based on the heading level array specified in this parameter and the actual content in the document. It's useful for describing map locations which can be added later as pins.
-
-## Markdown Guide
-
-### Markdown Syntax
+# Markdown Guide
 
 Below you will find examples of markdown syntax with images as it will appear in Encounter Plus. While EncounterPlus supports nearly all of the traditional markdown tags, it also supports many non-standard tags as well.
 
-#### Headings
+## Headings
 
 A single hash symbol denotes a first-level heading, two hash symbols is a second-level heading, three hash symbols is third-level, etc. Note that text content that occurs immediately after a first level heading will have a fancy first letter. 
 
@@ -146,7 +165,7 @@ A single hash symbol denotes a first-level heading, two hash symbols is a second
   <img src="./documentation/Heading6.jpg" alt="Heading 6 Image" width="400">
 </p>
 
-#### Standard Text Format Styles
+## Text Styles
 
 Below is an example of standard text format styles in markup:
 
@@ -171,7 +190,7 @@ And their corresponding appearance:
   <img src="./documentation/Formats.jpg" alt="Standard Text Formats" width="400">
 </p>
 
-#### Images
+## Images
 
 An image is shown by using an exclamation point, followed by a description in brackets, followed by a link to the image file in parantheses.
 
@@ -208,7 +227,7 @@ Finally, a special cover image style may be placed above the top header. This is
   <img src="./documentation/CoverImage.jpg" alt="Cover Image" width="400">
 </p>
 
-#### Text Blocks (Block Quotes)
+## Text Blocks & Block Quotes
 
 You can add default text block with standard block quote syntax:
 
@@ -229,7 +248,7 @@ You can add default text block with standard block quote syntax:
   <img src="./documentation/ReadAloud.jpg" alt="Read-Aloud" width="400">
 </p>
 
-#### Links
+## Links
 
 Normally, in markdown, links would be used to link to other webpages. However, in EncounterPlus, you can add links to any monster, player, item and spell in the compendium or to other pages or maps.
 
@@ -240,7 +259,7 @@ Normally, in markdown, links would be used to link to other webpages. However, i
 [Example page](example-page)
 ```
 
-#### Tables
+## Tables
 
 The Module Packer and Visual Studio Code extension support the standard Markdown table format. In addition, the MultiMarkdown table formatters are also supported for advanced table constructs like cell spans and column spans.
 
@@ -294,18 +313,38 @@ A special, right-floating stat block style table can be applied by using the {.}
   <img src="./documentation/Statblock.jpg" alt="Statblock" width="400">
 </p>
 
+## Page Breaks for Print
+
+When designing content for print, content will be clipped at a single page unless you manually specify a page break with the `(page)` tag in your markdown. The `(page)` tag will be hidden in the preview and in EncounterPlus.
+
+```Markdown
+This is some text.
+
+(page)
+
+This is some more text.
+```
+
 # Visual Studio Code Extension
 <p align="center">
-  <img src="./documentation/VisualStudioCode.png" alt="Visual Studio Code Extension" width="600">
+  <img src="./documentation/VSCodeLabels.JPG" alt="Visual Studio Code Extension" width="800">
 </p>
 
 Visual Studio Code has great support for rendering markdown with custom styles out-of-the-box. However, with the help of the official [EncounterPlus Markdown Extension](https://marketplace.visualstudio.com/items?itemName=JacobJohnston.encounterplus-markdown), Visual Studio Code can preview markdown pages as if they were already run through the Module Packer and rendered in EncounterPlus. Simply install the plugin and preview your markdown documents.
 
-For detailed information on using the Visual Studio Extension, see the [EncounterPlus Markdown Extension Guide](VisualStudioExtensionGuide.md).
+The EncounterPlus Markdown Extension also provides access to the same module packing and PDF export capabilities as the standalone Module Packer.
 
-Optionally, if you want to preview the custom styling in your module, do the following (*this only needs to be done if you've modified custom.css*):
-1. In Visual Studio Code, go to Settings -> Extensions -> Markdown -> Styles
-2. Add a Style and point it to the "ModuleOutput/Assets/css/custom.css" file.
+## Using the EncounterPlus Markdown Extension
+
+1. Open Visual Studio Code.
+2. Open the Extensions View and search for "EncounterPlus Markdown" in the marketplace.
+3. Install the EncounterPlus Markdown extension.
+4. In Visual Studio Code, open the folder that will contain your module.
+5. Open the EncounterPlus Module View (shown above).
+6. If necessary, create a module.json file for your project.
+7. Use the standard Visual Studio Code file view to create markdown files.
+8. Use the standard Visual Studio Code preview to preview markdown (they will now be styled as if they were in EncounterPlus).
+9. Use the EncounterPlus Module View to build and export your module!
 
 # Other Editors
 

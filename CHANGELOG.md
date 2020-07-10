@@ -1,14 +1,15 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.8
 
 ### Added
-- EncounterPlus View Container in Visual Studio Code Extension
-- Ability to handle mutliple projects
+- Export to PDF capabilities
+- Custom EncounterPlus views Visual Studio Code Extension
+- Ability to detect and handle mutliple projects in a given folder
 
 ### Fixed
 - Some elements overlapped with statblocks
-
+- Size-cover images not working above first pagebreak when using heading pagebreaks
 
 ## 1.0.7
 
@@ -22,6 +23,7 @@
 ### Fixed
 - Fixed heading underlines extending into stat blocks in preview
 
+
 ## 1.0.6
 
 ### Added
@@ -33,6 +35,7 @@
 - Fixed bug in group slug generation
 - Fixed blockquote styling
 - Fixed background image being broken again.
+
 
 ## 1.0.5
 ### Added
@@ -49,10 +52,12 @@
 - `ModuleOutput` folder was renamed to `ModuleBuild`
 - Codebase was changed to use typescript
 
+
 ## 0.9.3
 ### Added
 - Support for image size attributes
 - Allow drag-and-drop of module folder onto window
+
 
 ## 0.9.2
 ### Added
