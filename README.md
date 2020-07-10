@@ -325,9 +325,19 @@ This is some text.
 This is some more text.
 ```
 
+For elements that you want to show *only* in the print version, you can use the `{.print-only}` attribute.
+```Markdown
+![Image For Print](Image.png){.print-only}
+```
+
+Likewise, for elements that you to show *only* in EncounterPlus, you can use the `{.screen-only}` attribute.
+```Markdown
+![Image For EncounterPlus](Image.png){.screen-only}
+```
+
 # Visual Studio Code Extension
 <p align="center">
-  <img src="./documentation/VSCodeLabels.JPG" alt="Visual Studio Code Extension" width="800">
+  <img src="./documentation/VSCodeLabels.jpg" alt="Visual Studio Code Extension" width="800">
 </p>
 
 Visual Studio Code has great support for rendering markdown with custom styles out-of-the-box. However, with the help of the official [EncounterPlus Markdown Extension](https://marketplace.visualstudio.com/items?itemName=JacobJohnston.encounterplus-markdown), Visual Studio Code can preview markdown pages as if they were already run through the Module Packer and rendered in EncounterPlus. Simply install the plugin and preview your markdown documents.
@@ -342,7 +352,7 @@ The EncounterPlus Markdown Extension also provides access to the same module pac
 4. In Visual Studio Code, open the folder that will contain your module.
 5. Open the EncounterPlus Module View (shown above).
 6. If necessary, create a module.json file for your project.
-7. Use the standard Visual Studio Code file view to create markdown files.
+7. Use the standard Visual Studio Code file view to create markdown files..
 8. Use the standard Visual Studio Code preview to preview markdown (they will now be styled as if they were in EncounterPlus).
 9. Use the EncounterPlus Module View to build and export your module!
 

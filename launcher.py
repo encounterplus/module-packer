@@ -50,6 +50,7 @@ elif target == 'package-app':
     run('npm run compile-app')
     run('npm run build-all')
 elif target == 'clean':
+    run('rm -rf ./node_modules')
     run('rm -rf ./dist')
     run('rm -rf ./app-out')
     run('rm -rf ./extension-out')

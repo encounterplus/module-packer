@@ -388,6 +388,10 @@ table.statblock {
 /******** Screen-Specific Styles ********/
 
 @media screen {
+  .print-only {
+    display: none;
+  }
+
   html {
     padding-left: 10px;
     padding-right: 10px;
@@ -436,6 +440,10 @@ table.statblock {
 /******** Print-Specific Styles ********/
 
 @media print {
+  .screen-only {
+    display: none;
+  }
+
   body {
     counter-reset: page-numbers;
     font-family: '-apple-system', sans-serif;
