@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.0.9
+
+### Added
+- "print-only" attribute for items that should only appear in PDF export.
+- "screen-only" attribute for items that should only appear in EncounterPlus
+
+### Fixed
+- Standalone app could not download chromium rendering engine
+
 ## 1.0.8
 
 ### Added
