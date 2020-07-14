@@ -3,7 +3,7 @@
   "displayName": "EncounterPlus Markdown",
   "description": "Renders markdown as it would appear in EncounterPlus",
   "icon": "Logo.png",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "publisher": "jacobjohnston",
   "repository": {
     "type": "git",
@@ -243,6 +243,7 @@
     "@types/vscode": "^1.46.0",
     "@typescript-eslint/eslint-plugin": "^3.3.0",
     "@typescript-eslint/parser": "^3.3.0",
+    "eslint": "^7.4.0",
     "typescript": "^3.9.4"
   },
   "dependencies": {
