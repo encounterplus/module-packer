@@ -97,8 +97,18 @@ export class MarkdownRenderer {
    * @param self The HTML renderer
    */
   private renderBlockquoteOpen(tokens: Token[], idx: number, options: MarkdownIt.Options, env: any, self: Renderer) {
+    let token = tokens[idx]
     let defaultBlockquoteOpenHtml = self.renderToken(tokens, idx, options)
-    return '<div class="blockquote-wrap">' + defaultBlockquoteOpenHtml
+
+    let readValue = token.attrs?.find( (attribute) => {
+      return attribute[0] === 'class' && attribute[1].split(' ').includes('read')
+    })
+
+    if (readValue) {
+      return '<div class="blockquote-read-wrap">' + defaultBlockquoteOpenHtml
+    } else {
+      return '<div class="blockquote-wrap">' + defaultBlockquoteOpenHtml
+    }
   }
 
   /**

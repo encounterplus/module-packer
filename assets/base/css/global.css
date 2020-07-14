@@ -66,6 +66,7 @@ h6 {
 h1 {
   font-size: 30px;
   line-height: 34px;
+  padding-bottom: 5px;
 }
 
 h2 {
@@ -97,13 +98,22 @@ h1 + p:not(.no-fancy)::first-letter {
   float: left;
 }
 
+/******** Horizontal Rule ********/
+
+hr {
+  border-color: #58180d;
+	height: 1px;
+	border-bottom: 1px solid;
+}
+
 /******** Standard Block Quote ********/
 
 .blockquote-wrap {
   padding-top: 8px;
   padding-bottom: 8px;
-  padding-left: 3px;
-  padding-right: 3px;
+  padding-left: 0px;
+  padding-right: 0px;
+  margin: 0px;
   overflow: hidden;
 }
 
@@ -118,7 +128,6 @@ blockquote {
   page-break-inside: avoid;
   border-top: 2px solid black;
   border-bottom: 2px solid black;
-  border-left-width: 0px;
 }
 
 blockquote p:first-child {
@@ -171,6 +180,15 @@ blockquote:after {
 }
 
 /******** Read-Aloud Block Quote ********/
+
+.blockquote-read-wrap {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 3px;
+  padding-right: 3px;
+  margin: 0px;
+  overflow: hidden;
+}
 
 blockquote.read {
   border-top: none;
@@ -252,6 +270,42 @@ a[href*='/spell/'] {
   font-weight: bold;
 }
 
+/******** Text Alignment ********/
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-left {
+  text-align: left;
+}
+
+/******** Images ********/
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+img.size-full {
+  width: 100%;
+  height: auto;
+}
+
+img.float-left {
+  float: left;
+  margin-right: 10px;
+}
+
+img.float-right {
+  float: right;
+  margin-left: 10px;
+}
+
 /******** Tables ********/
 
 .table-responsive,
@@ -297,6 +351,90 @@ tbody tr:nth-child(odd) {
   background: #e0e4c3;
 }
 
+/******** Shop Tables ********/
+table.shop tbody {
+  font-size: 11px;
+}
+
+table.shop tbody tr:nth-child(odd) {
+  background: #edebe840;
+}
+
+table.shop > thead > tr > td,
+table.shop > tbody > tr > td {
+  border-color: #58180d;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+
+table.shop > tbody > tr {
+  background: none;
+}
+
+table.shop > tbody > tr.shopH1 {
+  font-weight: bold;
+  font-family: 'Andada SC', '-apple-system', sans-serif;
+  color: #58180d;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+table.shop > tbody > tr.shopH2 {
+  font-weight: bold;
+  font-family: 'Andada SC', '-apple-system', sans-serif;
+  color: #58180d;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/******** Statblock Tables ********/
+
+table.statblock {
+  line-height: 13px;
+}
+
+table.statblock tbody tr:nth-child(odd) {
+  background: #d8d6d2;
+}
+
+table.statblock tr td img {
+  margin: 0;
+  padding: 0;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+table.statblock thead {
+  font-weight: bold;
+  font-family: 'Andada SC', '-apple-system', sans-serif;
+  color: #58180d;
+  font-size: 18px;
+  border-top: none;
+}
+
+table.statblock tbody tr {
+  border-bottom: none;
+  border-top: none;
+  border-collapse: separate;
+}
+
+table.statblock td:first-child {
+  font-weight: bold;
+  font-family: 'Andada SC', '-apple-system', sans-serif;
+  color: #58180d;
+  font-size: 9px;
+  padding: 4px 8px;
+}
+
+table.statblock {
+  background: #edebe8;
+  font-size: 11px;
+  page-break-inside: avoid;
+}
+
+/******** Table Colors ********/
+
 table.green tbody tr:nth-child(odd) {
   background: #e0e4c3;
 }
@@ -317,72 +455,12 @@ table.gray tbody tr:nth-child(odd) {
   background: #d4d4d4;
 }
 
-/******** text Alignment ********/
-
-.text-center {
-  text-align: center;
-}
-
-.text-right {
-  text-align: right;
-}
-
-.text-left {
-  text-align: left;
-}
-
-/******** Images ********/
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-img.size-full {
-  width: 100%;
-  height: auto;
-}
-
-/******** Statblock Tables ********/
-
-table.statblock tbody tr:nth-child(odd) {
-  background: #e4e2df;
-}
-
-table.statblock tr td img {
-  margin: 0;
-  padding: 0;
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-table.statblock thead {
-  font-weight: bold;
-  font-family: 'Andada SC', '-apple-system', sans-serif;
-  color: #58180d;
-  font-size: 18px;
-  border-top: none;
-}
-
-table.statblock tbody tr {
-  border-bottom: 2px solid #d8d6d2;
-  border-top: 2px solid #d8d6d2;
-  border-collapse: separate;
-}
-
-table.statblock td:first-child {
-  font-weight: bold;
-  font-family: 'Andada SC', '-apple-system', sans-serif;
-  color: #58180d;
-  font-size: 9px;
-  padding: 4px 8px;
-}
-
-table.statblock {
+table.neutral {
   background: #edebe8;
-  font-size: 11px;
-  page-break-inside: avoid;
+}
+
+table.neutral tbody tr:nth-child(odd) {
+  background: #d8d6d2;
 }
 
 /******** Screen-Specific Styles ********/

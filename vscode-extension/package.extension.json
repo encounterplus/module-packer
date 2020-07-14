@@ -227,7 +227,10 @@
       ]
     },
     "markdown.markdownItPlugins": true,
-    "markdown.previewStyles": ["assets/css/global.css"]
+    "markdown.previewStyles": [
+      "vscode-extension/resources/vscode.css",
+      "assets/base/css/global.css"
+    ]
   },
   "scripts": {
     "lint": "eslint . --ext .ts,.tsx",

@@ -6,7 +6,7 @@ import { ModuleProject } from '../../shared/ModuleProject'
 
 export class ExportToPdfCommand extends CommandBase {
 
-  /** The module project that will be built */
+  /** The module project that will be exported to PDF */
   private moduleProject: ModuleProject | undefined = undefined
 
   /**
@@ -16,8 +16,8 @@ export class ExportToPdfCommand extends CommandBase {
   statusMessage = 'Exporting Module to PDF...'
 
   /**
-   * Starts a module project building
-   * @param moduleProject The module project to build
+   * Starts a module project exporting to PDF
+   * @param moduleProject The module project to export to PDF
    */
   async startModuleExport(moduleProject: ModuleProject) {
     this.moduleProject = moduleProject

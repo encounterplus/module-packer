@@ -1,5 +1,28 @@
 # Change Log
 
+## [Unreleased]
+
+### Added
+- ignore-automatic-pagebreaks-pdf option for front-matter (true by default)
+- New Styles:
+  - Images
+    - float-left
+    - float-right
+  - Tables
+    - neutral (table color)
+    - shop (table style)
+    - shopH1 (row style)
+    - shopH2 (row style)
+
+## 1.0.9
+
+### Added
+- "print-only" attribute for items that should only appear in PDF export.
+- "screen-only" attribute for items that should only appear in EncounterPlus
+
+### Fixed
+- Standalone app could not download chromium rendering engine
+
 ## 1.0.8
 
 ### Added

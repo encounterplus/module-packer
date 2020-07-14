@@ -171,8 +171,13 @@ export class Module {
     if (FileSystem.existsSync(assetsOutputPath))  {
       FileSystem.removeSync(assetsOutputPath)
     }    
-    let packedAssets = Path.join(__dirname, '../../assets')
-    FileSystem.copySync(packedAssets, assetsOutputPath)
+    let baseAssets = Path.join(__dirname, '../../assets/base')    
+    FileSystem.copySync(baseAssets, assetsOutputPath)
+
+    if(forPrint) {
+      let printAssets = Path.join(__dirname, '../../assets/print')
+      FileSystem.copySync(printAssets, assetsOutputPath)
+    }
 
     // Parse the project directory - navigating through
     // all subdirectories (which become groups unless they
@@ -397,13 +402,17 @@ export class Module {
     // the file name
     let attributes = matter.data
     let pageName = (attributes['name'] as string) || Path.basename(filePath)
+    let ignorePDFPagebreak = (attributes['ignore-automatic-pagebreaks-pdf'] as boolean) ?? true
 
     let pagebreaks = attributes['pagebreak'] as string
     let pagebreakContentFound = false
 
+    let shouldUsePagebreaks = pagebreaks !== undefined &&
+      (!this.exportForPrint || !ignorePDFPagebreak)
+
     // If we have pagebreaks defined, we'll attempt to split
     // up, group, and subgroup content by header values
-    if (pagebreaks !== undefined) {
+    if (shouldUsePagebreaks) {
       let $ = Cheerio.load(html)
       let cover: CheerioElement | undefined = undefined
       let pagesByHeader: { [slug: string]: ModuleEntity } = {}

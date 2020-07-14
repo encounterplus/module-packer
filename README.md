@@ -3,7 +3,7 @@
 
 <img align="right" src="./documentation/Logo.png" alt="Module Packer Screenshot" width="230">
 
-- [Introdcution](#introdcution)
+- [Introduction](#introduction)
 - [Getting Started](#getting-started)
   - [Example Content](#example-content)
 - [Managing Your Module Project](#managing-your-module-project)
@@ -23,7 +23,7 @@
 - [Other Editors](#other-editors)
 - [License](#license)
 
-# Introdcution
+# Introduction
 
 The EncounterPlus Module Packer is a simple standalone application for converting markdown documents into modules for [EncounterPlus](https://encounter.plus). It also allows exporting the markdown files into a PDF with a similar style. The Module Packer is also available as a [Visual Studio Code Extension](#visual-studio-code-extension).
 
@@ -295,7 +295,7 @@ In addition, table colors can be customized with by adding the `{.green}`, `{.re
   <img src="./documentation/Tables.jpg" alt="Tables">
 </p>
 
-A special, right-floating stat block style table can be applied by using the {.}
+A special, right-floating stat block style table can be applied by using the `{.statblock}` attribute
 
 ```Markdown
 |  My Hero                         ||
