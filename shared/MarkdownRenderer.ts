@@ -51,10 +51,10 @@ export class MarkdownRenderer {
       this.markdown.block.ruler.after('blockquote', 'pagebreak', (state, startLine, endLine) => {
         let startPos = state.bMarks[startLine] + state.tShift[startLine]
         let possiblePageString = state.src.substr(startPos, 6).toLowerCase()
-        if (possiblePageString === '(page)') {
+        if (possiblePageString === '(print-page)') {
           state.line = startLine + 1
           let token = state.push('print_page_break', '', 0)
-          token.markup = '(page)'
+          token.markup = '(print-page)'
           token.map = [startLine, state.line]
           return true
         }

@@ -1,5 +1,6 @@
 import * as Path from 'path'
 import * as FileSystem from 'fs-extra'
+import * as YAML from 'yaml'
 import { v4 as UUIDV4 } from 'uuid'
 import { Module } from './Module Entities/Module'
 
@@ -75,7 +76,7 @@ export class ModuleProject {
       })
     })
 
-    let moduleProjectPath = Path.join(rootDirectory, 'module.json')
+    let moduleProjectPath = Path.join(rootDirectory, 'Module.yaml')
     if(FileSystem.existsSync(moduleProjectPath)) {
       let moduleProject = ModuleProject.parseModuleProject(moduleProjectPath)
       if(moduleProject !== undefined) {
@@ -87,8 +88,8 @@ export class ModuleProject {
   }
 
   /**
-   * Parses a Module.json as a ModuleProject
-   * @param projectFilePath The path to the module.json file
+   * Parses a Module.yaml as a ModuleProject
+   * @param projectFilePath The path to the Module.yaml file
    */
   static parseModuleProject(projectFilePath: string): ModuleProject | undefined {
     // Simply return if module doesn't exist - default
@@ -99,10 +100,10 @@ export class ModuleProject {
 
     let moduleProject = new ModuleProject()
     let moduleDataBuffer = FileSystem.readFileSync(projectFilePath)
-    let moduleData = JSON.parse(moduleDataBuffer.toString())
+    let moduleData = YAML.parse(moduleDataBuffer.toString())
     moduleProject.moduleProjectPath = projectFilePath
 
-    // If ID is specified in module.json, ensure it is a UUID and use that
+    // If ID is specified in Module project file, ensure it is a UUID and use that
     let id = moduleData['id'] as string
     if (id) {
       let uuidValidationRegEx = RegExp(
@@ -117,13 +118,13 @@ export class ModuleProject {
       }
     }
 
-    // If name is specified in module.json, use that
+    // If name is specified in Module project file, use that
     let name = moduleData['name'] as string
     if (name) {
       moduleProject.name = name
     }
 
-    // If name is specified in module.json, use that, otherwise
+    // If name is specified in Module project file, use that, otherwise
     // use the slug based on the name
     let slug = moduleData['slug'] as string
     if (slug) {
@@ -132,38 +133,38 @@ export class ModuleProject {
       moduleProject.slug = Module.getSlugFromValue(this.name)
     }
 
-    // If description is specified in module.json, use that.
+    // If description is specified in Module project file, use that.
     let description = moduleData['description'] as string
     if (description) {
       moduleProject.description = description
     }
 
-    // If category is specified in module.json, use that.
+    // If category is specified in Module project file, use that.
     // Ensure values are 'adevnture' or 'other'
     let category = moduleData['category'] as string
     if (category === 'adventure' || category === 'other') {
       moduleProject.category = category
     }
 
-    // If author is specified in module.json, use that
+    // If author is specified in Module project file, use that
     let author = moduleData['author'] as string
     if (author) {
       moduleProject.author = author
     }
 
-    // If reference code is specified in module.json, use that
+    // If reference code is specified in Module project file, use that
     let code = moduleData['code'] as string
     if (code) {
       moduleProject.referenceCode = code
     }
 
-    // If version is specified in module.json, use that
+    // If version is specified in Module project file, use that
     let version = moduleData['version'] as number
     if (version) {
       moduleProject.version = version
     }
 
-    // If cover image is specified in module.json, use that.
+    // If cover image is specified in Module project file, use that.
     // Ensure cover image actually exists
     let imagePath = moduleData['cover'] as string
     if (imagePath) {
@@ -178,17 +179,17 @@ export class ModuleProject {
   }
 
   /**
-   * Creates an empty module.json file
+   * Creates an empty Module.yaml file
    * @param projectPath The path to the project
    */
   static createModuleProjectFile(projectFilePath: string) {
     if (FileSystem.existsSync(projectFilePath)) {
-      throw Error('Module.json already exists.')
+      throw Error('Module.yaml already exists.')
     }
 
     let folderName = Path.basename(Path.dirname(projectFilePath))
 
-    // Format module.json data
+    // Format Module.yaml data
     let newModule = new ModuleProject()
     newModule.id = UUIDV4()
     newModule.name = folderName
@@ -201,7 +202,7 @@ export class ModuleProject {
     newModule.version = 1
     newModule.autoIncrementVersion = true
 
-    // Write module.json
+    // Write Module.yaml
     newModule.writeModuleProjectFile(projectFilePath)
   }
 
@@ -210,40 +211,40 @@ export class ModuleProject {
    * @param projectFilePath The path of the project file
    */
   writeModuleProjectFile(projectFilePath: string) {
-    let newModuleJson: any = new Object()
+    let newModuleProject: any = new Object()
     if (this.version !== undefined && this.autoIncrementVersion === true) {
       this.version += 1
     }
 
     if (this.id) {
-      newModuleJson['id'] = this.id
+      newModuleProject['id'] = this.id
     }
     if (this.name) {
-      newModuleJson['name'] = this.name
+      newModuleProject['name'] = this.name
     }
     if (this.slug) {
-      newModuleJson['slug'] = this.slug
+      newModuleProject['slug'] = this.slug
     }
     if (this.description) {
-      newModuleJson['description'] = this.description
+      newModuleProject['description'] = this.description
     }
     if (this.category) {
-      newModuleJson['category'] = this.category
+      newModuleProject['category'] = this.category
     }
     if (this.author) {
-      newModuleJson['author'] = this.author
+      newModuleProject['author'] = this.author
     }
     if (this.referenceCode) {
-      newModuleJson['code'] = this.referenceCode
+      newModuleProject['code'] = this.referenceCode
     }
     if (this.imagePath) {
-      newModuleJson['cover'] = this.imagePath
+      newModuleProject['cover'] = this.imagePath
     }
-    newModuleJson['version'] = this.version
-    newModuleJson['autoIncrementVersion'] = true
+    newModuleProject['version'] = this.version
+    newModuleProject['autoIncrementVersion'] = true
 
-    let outputJson = JSON.stringify(newModuleJson, null, 2)
-    FileSystem.writeFileSync(projectFilePath, outputJson)
+    let outputYAML = YAML.stringify(newModuleProject)
+    FileSystem.writeFileSync(projectFilePath, outputYAML)
   }
 
 }

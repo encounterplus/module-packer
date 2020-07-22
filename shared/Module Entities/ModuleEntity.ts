@@ -52,4 +52,10 @@ export abstract class ModuleEntity {
 
   /** The ID of the entity (UUIDV5) */
   id: string
+
+  /** The sort order of the entity */
+  sort: number | undefined = undefined
+
+  /** The children of this module */
+  children: ModuleEntity[] = []
 }

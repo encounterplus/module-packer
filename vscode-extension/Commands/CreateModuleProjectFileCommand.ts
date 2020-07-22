@@ -1,23 +1,24 @@
 import * as vscode from 'vscode'
 import { Module } from '../../shared/Module Entities/Module'
 import { CommandBase } from './CommandBase'
+import * as YAML from 'yaml'
 import * as Path from 'path'
 import * as FileSystem from 'fs-extra'
 import { v4 as UUIDV4 } from 'uuid'
 
-export class CreateModuleJsonCommand extends CommandBase {
+export class CreateModuleProjectFileCommand extends CommandBase {
 
   /**
    * If specified, this will be displayed in the status bar
    * as the command executes
    */
-  statusMessage = 'Creating Module.json...'
+  statusMessage = 'Creating Module Project File...'
 
   /**
    * If specified, this will be displayed as an info
    * message whtn the command succeeds.
    */
-  successMessage = 'Module.json created successfully.'
+  successMessage = 'Module Project File created successfully.'
 
   /**
    * Contains execution code for the command
@@ -25,13 +26,13 @@ export class CreateModuleJsonCommand extends CommandBase {
   protected async executeCommand() {
     let projectPath = vscode.workspace.rootPath
     if (projectPath === undefined) {
-      throw Error('Could not locate folder for module.json.')
+      throw Error('Could not locate folder for Module.yaml.')
     }
 
-        // See if a module.json file already exists
-    let moduleJsonPath = Path.join(projectPath, 'module.json')
-    if (FileSystem.existsSync(moduleJsonPath)) {
-      throw Error('Module.json already exists.')
+        // See if a Module.yaml file already exists
+    let moduleProjectFilePath = Path.join(projectPath, 'Module.yaml')
+    if (FileSystem.existsSync(moduleProjectFilePath)) {
+      throw Error('Module.yaml already exists.')
     }
 
     // Show an input box to get the module name from the user
@@ -44,16 +45,16 @@ export class CreateModuleJsonCommand extends CommandBase {
     
     // Check module path again in case it was deleted
     // while we were waiting for user input
-    if (FileSystem.existsSync(moduleJsonPath)) {
-      throw Error('Module.json already exists.')
+    if (FileSystem.existsSync(moduleProjectFilePath)) {
+      throw Error('Module.yaml already exists.')
     }
 
     if (moduleName === undefined) {
-      throw Error('Invalid Module.json name.')
+      throw Error('Invalid Module.yaml name.')
     }
 
-    // Format module.json data
-    let moduleJsonOutput = {
+    // Format Module.yaml data
+    let moduleFileContent = {
       id: UUIDV4(),
       name: moduleName,
       slug: Module.sanitizeSlug(moduleName),
@@ -61,13 +62,12 @@ export class CreateModuleJsonCommand extends CommandBase {
       category: 'adventure',
       author: 'Anonymous',
       code: 'TBD',
-      cover: 'cover.jpg',
       version: 1,
       autoIncrementVersion: true,
     }
 
-    // Write module.json
-    let outputJson = JSON.stringify(moduleJsonOutput, null, 2)
-    FileSystem.writeFileSync(moduleJsonPath, outputJson)
+    // Write Module.yaml
+    let outputProjectFile = YAML.stringify(moduleFileContent)
+    FileSystem.writeFileSync(moduleProjectFilePath, outputProjectFile)
   }
 }

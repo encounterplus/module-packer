@@ -2,14 +2,14 @@ import * as vscode from 'vscode'
 import * as glob from 'glob'
 import * as Markdown from 'markdown-it'
 import { BuildModuleCommand } from './Commands/BuildModuleCommand'
-import { CreateModuleJsonCommand } from './Commands/CreateModuleJsonCommand'
+import { CreateModuleProjectFileCommand } from './Commands/CreateModuleProjectFileCommand'
 import { ExportToPdfCommand } from './Commands/ExportToPdfCommand'
 import { MarkdownToggler } from './Commands/MarkdownToggler'
 import { ModuleProjectProvider } from './TreeViewProviders/ModuleProjectProvider'
 import { MarkdownRenderer } from '../shared/MarkdownRenderer'
 
 const buildModuleCommand = new BuildModuleCommand()
-const createModuleJsonCommand = new CreateModuleJsonCommand()
+const createModuleProjectFileCommand = new CreateModuleProjectFileCommand()
 const exportToPdfCommand = new ExportToPdfCommand()
 
 export function activate(context: vscode.ExtensionContext) {
@@ -54,8 +54,8 @@ export function activate(context: vscode.ExtensionContext) {
   )
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('encounterPlusMarkdown.createModuleJson', () => {
-      createModuleJsonCommand.startCommand()
+    vscode.commands.registerCommand('encounterPlusMarkdown.createModuleProjectFile', () => {
+      createModuleProjectFileCommand.startCommand()
     })
   )
 

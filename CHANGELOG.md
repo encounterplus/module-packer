@@ -3,7 +3,9 @@
 ## [Unreleased]
 
 ### Added
-- ignore-automatic-pagebreaks-pdf option for front-matter (true by default)
+- `module-pagebreaks` attribute in front-matter for automatic pagebreaks specifically for EncounterPlus output.
+- `pdf-pagebreaks` attribute in front-matter for automatic pagebreaks specifically for PDF output.
+- `order` attribute in page front-matter to specify the ordering of pages
 - New Styles:
   - Images
     - float-left
@@ -13,6 +15,14 @@
     - shop (table style)
     - shopH1 (row style)
     - shopH2 (row style)
+
+### Changed
+- Visual Studio Extension engine target is no 1.45 for compatibiltiy with Coder
+
+### Breaking
+- Table style `.statblock` is now `.sidebar`
+- `pagebreak` must now be specified as either `module-pagebreaks` or `pdf-pagebreaks`
+- `module.json` changed to `Module.yaml` to be consistent with page front-matter. Format changed from JSON to YAML for easier human-readability.
 
 ## 1.0.9
 

@@ -106,7 +106,7 @@ export class ModuleProjectProvider implements vscode.TreeDataProvider<vscode.Tre
 
       let subdirectoryPath = Path.join(directoryPath, subdirectoryName)
       let ignoreFilePath = Path.join(subdirectoryPath, '.ignoreGroup')
-      let moduleProjectFilePath = Path.join(subdirectoryPath, 'module.json')
+      let moduleProjectFilePath = Path.join(subdirectoryPath, 'Module.yaml')
       if (FileSystem.existsSync(ignoreFilePath) || FileSystem.existsSync(moduleProjectFilePath)) {
         return
       }

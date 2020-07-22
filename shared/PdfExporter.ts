@@ -1,17 +1,21 @@
+import { Page } from './Module Entities/Page'
 import { Module } from './Module Entities/Module'
 import * as Path from 'path'
 import * as FileSystem from 'fs-extra'
 import * as Puppeteer from 'puppeteer-core'
 import { pathToFileURL } from 'url'
+import { ModuleEntity } from './Module Entities/ModuleEntity'
 
 export class PdfExporter {
-
   /**
    * Exports a module to PDF (needs the chromium rendering engine already installed)
    * @param projectDirectory The project directory
    * @param transformPageLocation An optional function to transform the page's location (needed for tools like VSCode)
    */
-  public static async exportToPdf(projectDirectory: string, transformPageLocation?: (path: string) => string): Promise<string> {    
+  public static async exportToPdf(
+    projectDirectory: string,
+    transformPageLocation?: (path: string) => string
+  ): Promise<string> {
     let module = await Module.createModuleFromPath(projectDirectory, Path.basename(projectDirectory), true)
     let moduleOutputPath = Path.join(projectDirectory, 'ModuleBuild')
     let customStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'custom.css')
@@ -32,13 +36,12 @@ export class PdfExporter {
     }
     const browser = await Puppeteer.launch(options)
     const page = await browser.newPage()
-    module.pages.forEach((page) => {
-      html += page.content
-    })
+
+    html += PdfExporter.getChildPageContent(module.children)
     html += `</head><body>`
     FileSystem.writeFileSync(pageLocation, html)
 
-    if(transformPageLocation) {
+    if (transformPageLocation) {
       pageLocation = transformPageLocation(pageLocation)
     } else {
       pageLocation = pathToFileURL(pageLocation).toString()
@@ -98,4 +101,20 @@ export class PdfExporter {
       throw Error(`PDF engine installation failed: ${error.Message}`)
     }
   }
+
+  /**
+   * Gets the page content from an array of module entity children
+   * @param moduleEntities The module entity children
+   */
+  private static getChildPageContent(moduleEntities: ModuleEntity[]): string {
+    let html = ''
+    moduleEntities.forEach((child) => {
+      if (child instanceof Page) {
+        html += child.content
+      }
+      html += PdfExporter.getChildPageContent(child.children)
+    })
+    return html
+  }
+
 }

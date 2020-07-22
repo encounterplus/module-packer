@@ -387,17 +387,17 @@ table.shop > tbody > tr.shopH2 {
   font-weight: bold;
 }
 
-/******** Statblock Tables ********/
+/******** Sidebar Tables ********/
 
-table.statblock {
+table.sidebar {
   line-height: 13px;
 }
 
-table.statblock tbody tr:nth-child(odd) {
+table.sidebar tbody tr:nth-child(odd) {
   background: #d8d6d2;
 }
 
-table.statblock tr td img {
+table.sidebar tr td img {
   margin: 0;
   padding: 0;
   display: block;
@@ -405,7 +405,7 @@ table.statblock tr td img {
   height: auto;
 }
 
-table.statblock thead {
+table.sidebar thead {
   font-weight: bold;
   font-family: 'Andada SC', '-apple-system', sans-serif;
   color: #58180d;
@@ -413,13 +413,13 @@ table.statblock thead {
   border-top: none;
 }
 
-table.statblock tbody tr {
+table.sidebar tbody tr {
   border-bottom: none;
   border-top: none;
   border-collapse: separate;
 }
 
-table.statblock td:first-child {
+table.sidebar td:first-child {
   font-weight: bold;
   font-family: 'Andada SC', '-apple-system', sans-serif;
   color: #58180d;
@@ -427,7 +427,7 @@ table.statblock td:first-child {
   padding: 4px 8px;
 }
 
-table.statblock {
+table.sidebar {
   background: #edebe8;
   font-size: 11px;
   page-break-inside: avoid;
@@ -503,7 +503,7 @@ table.neutral tbody tr:nth-child(odd) {
     overflow: hidden;
   }
 
-  table.statblock {
+  table.sidebar {
     float: right;
     margin-left: 10px;
     max-width: 400px;
@@ -566,6 +566,14 @@ table.neutral tbody tr:nth-child(odd) {
     width: 8in;   
     position: relative;
     z-index: 20;
+  }
+
+  .print-page > .page-content-two-column {
+    overflow: hidden;
+    height: 10.2in;
+    width: 8in;   
+    position: relative;
+    z-index: 20;
     column-count: 2;
     column-gap: 0.25in;
     column-fill: auto;
@@ -575,7 +583,8 @@ table.neutral tbody tr:nth-child(odd) {
   	-moz-column-gap: 0.25in;
   }
 
-  table.statblock {
+
+  table.sidebar {
     margin-left: 0.1in;
     margin-right: 0.1in;
     width: calc(100% - 0.2in);

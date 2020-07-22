@@ -10,7 +10,7 @@
     "url": "https://github.com/encounterplus/module-packer"
   },
   "engines": {
-    "vscode": "^1.46.0"
+    "vscode": "^1.45.0"
   },
   "author": "QBIT, s.r.o",
   "license": "CC0-1.0",
@@ -47,7 +47,7 @@
     "viewsWelcome": [
       {
         "view": "encounter-plus-modules",
-        "contents": "No modules found. You may need to create a module.json file.\n[Create Module Project](command:encounterPlusMarkdown.createModuleJson)"
+        "contents": "No modules found. You may need to create a Module.yaml file.\n[Create Module Project File](command:encounterPlusMarkdown.createModuleProjectFile)"
       }
     ],
     "commands": [
@@ -68,8 +68,8 @@
         "icon": "$(refresh)"
       },
       {
-        "command": "encounterPlusMarkdown.createModuleJson",
-        "title": "Create Module.json",
+        "command": "encounterPlusMarkdown.createModuleProjectFile",
+        "title": "Create Module Project File",
         "category": "EncounterPlus Markdown"
       },
       {
@@ -240,7 +240,7 @@
   },
   "devDependencies": {
     "@types/node": "^12.12.47",
-    "@types/vscode": "^1.46.0",
+    "@types/vscode": "^1.45.0",
     "@typescript-eslint/eslint-plugin": "^3.3.0",
     "@typescript-eslint/parser": "^3.3.0",
     "eslint": "^7.4.0",
@@ -275,6 +275,7 @@
     "slugify": "^1.4.0",
     "utf-8-validate": "^5.0.2",
     "uuid": "^8.1.0",
-    "xml2js": "^0.4.23"
+    "xml2js": "^0.4.23",
+    "yaml": "^1.10.0"
   }
 }

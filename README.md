@@ -65,34 +65,41 @@ Below is an example of how you might srtucture your Module content.
     ├── .ignoregroup     # An empty file that instructs the Module Packer not to turn this into a Group
     ├── Image1.png       # An image used in multiple pages.
     └── Image2.jpg       # An image used in multiple pages.
-├── module.json          # Optional - can define attributes of the module (e.g., Title, Author, Slug, etc.)
+├── Module.yaml          # Optional - can define attributes of the module (e.g., Title, Author, Slug, etc.)
 └── My Module.md         # A page at the root level of the module.
 ```
 
-## Module Properties (module.json)
+## Module Properties (module.yaml)
 
-In the root folder of your module project, you can create a file named `module.json` to define properties about the module. If module.json does not exist, essential properties like `name` and `slug` will be inferred from the module's folder name. A more thorough guide to module.json is available.
+In the root folder of your module project, you can create a file named `Module.yaml` to define properties about the module. If `Module.yaml` does not exist, essential properties like `name` and `slug` will be inferred from the module's folder name. A more thorough guide to `Module.yaml` is available.
 
-```JSON
-{
-  "id": "<Random UUIDV4>",
-  "name": "Example Module",
-  "slug": "example-module",
-  "description": "Example module description.",
-  "category": "adventure",
-  "author": "Dungeony MasterFace",
-  "code": "ABC-123",
-  "cover": "cover.jpg",
-  "version": 4,
-  "autoIncrementVersion": true
-}
+```YAML
+---
+id: <Random UUIDV4>
+name: Example Module
+slug: example-module
+description: Example module description.
+category: adventure
+author: Dungeony MasterFace
+code: ABC-123
+cover: cover.jpg
+version: 4
+autoIncrementVersion: true
+...
 ```
 
 **Values:**
+All `Module.yaml` values are optional - and default values will be used for anything not specified.
 - `id`: If specified, will cause a module to be overwritten rather than duplicated when repeatedly imported. *Never* copy another module's UUID, or you will cause that module to be overwritten.
-- `name`:
-
-The `autoIncrementVersion` field will cause the version number to automatically increment each time the module is packed. This is useful for keeping track 
+- `name`: The name of the module.
+- `slug`: The slug for the module. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
+- `description`: The description of the module.
+- `category`: The category of the module. May be `adventure` or `other`.
+- `author`: The author of the module.
+- `code`: A reference code for the module.
+- `cover`: The file name of the cover image for the module (placed in the same directory).
+- `version`: The version of the module. Must be an integer.
+- `autoIncrementVersion`: May be `true` or `false`. If `true`, it will cause the version number to automatically increment each time the module is packed. This is useful for keeping track 
 
 ## Groups and Folders
 
@@ -106,14 +113,19 @@ Each markdown document can contain front matter block for additional configurati
 ---
 name: Page name
 slug: page-name
-pagebreak: h1,h2,h3
+order: 3
+module-pagebreaks: h1, h2, h3
+pdf-pagebreaks: h1
 ---
 ```
 
-The front-matter fields are:
-- `name` - An optional parameter that is the name of the page. If not specified, the file name will be used to name the page.
-- `slug` - An optional parameter used for referencing pages (see links below). If not provided, it's automatically generated.
-- `pagebreak` - An optional parameter which can be used for splitting single markdown document into multiple pages. The splitting is done automatically, based on the heading level array specified in this parameter and the actual content in the document. It's useful for describing map locations which can be added later as pins.
+**Values:**
+All front-matter values are optional - and default values will be used for anything not specified.
+- `name`: The name of the page.
+- `slug`: The slug for the module. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
+- `order`: An order for the page. Lower numbers will be placed before higher numbers. If two pages share the same order value, their effective order may differ upon each import.
+- `module-pagebreak`: Element tags that, when specified, will automatically result in the markdown being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to an EncounterPlus module.
+- `pdf-pagebreak`: Element tags that, when specified, will automatically result in the markdown output being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to a PDF.
 
 # Markdown Guide
 
@@ -295,7 +307,7 @@ In addition, table colors can be customized with by adding the `{.green}`, `{.re
   <img src="./documentation/Tables.jpg" alt="Tables">
 </p>
 
-A special, right-floating stat block style table can be applied by using the `{.statblock}` attribute
+A special, right-floating sidebar style table can be applied by using the `{.sidebar}` attribute
 
 ```Markdown
 |  My Hero                         ||
@@ -307,20 +319,20 @@ A special, right-floating stat block style table can be applied by using the `{.
 | Value D  | Characteristic D       |
 | Value E  | Characteristic E       |
 | Value F  | Characteristic F       |
-{.statblock}
+{.sidebar}
 ```
 <p align="left">
-  <img src="./documentation/Statblock.jpg" alt="Statblock" width="400">
+  <img src="./documentation/Sidebar.jpg" alt="Sidebar" width="400">
 </p>
 
 ## Page Breaks for Print
 
-When designing content for print, content will be clipped at a single page unless you manually specify a page break with the `(page)` tag in your markdown. The `(page)` tag will be hidden in the preview and in EncounterPlus.
+When designing content for print, content will be clipped at a single page unless you manually specify a page break with the `(print-page)` tag in your markdown. The `(print-page)` tag will be hidden in the preview and in EncounterPlus.
 
 ```Markdown
 This is some text.
 
-(page)
+(print-page)
 
 This is some more text.
 ```
@@ -351,7 +363,7 @@ The EncounterPlus Markdown Extension also provides access to the same module pac
 3. Install the EncounterPlus Markdown extension.
 4. In Visual Studio Code, open the folder that will contain your module.
 5. Open the EncounterPlus Module View (shown above).
-6. If necessary, create a module.json file for your project.
+6. If necessary, create a `Module.yaml` file for your project.
 7. Use the standard Visual Studio Code file view to create markdown files..
 8. Use the standard Visual Studio Code preview to preview markdown (they will now be styled as if they were in EncounterPlus).
 9. Use the EncounterPlus Module View to build and export your module!

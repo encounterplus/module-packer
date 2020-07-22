@@ -10,6 +10,7 @@ import * as GrayMatter from 'gray-matter'
 import * as Cheerio from 'cheerio'
 import * as XML2JS from 'xml2js'
 import * as Archiver from 'archiver'
+import * as YAML from 'yaml'
 import { MarkdownRenderer } from '../MarkdownRenderer'
 import { ModuleProject } from '../ModuleProject'
 
@@ -50,6 +51,9 @@ export class Module {
 
   /** The module project information */
   moduleProjectInfo: ModuleProject = new ModuleProject()
+
+  /** The nodes at the root level of the module */
+  children: ModuleEntity[] = []
 
   /** The groups of the module */
   groups: Group[] = []
@@ -100,7 +104,7 @@ export class Module {
   }
 
   /**
-   * Gets the name from the Module.json file if one already exists.
+   * Gets the name from the Module.yaml file if one already exists.
    * @param projectDirectory The project directory
    */
   static getModuleName(projectDirectory: string): string | undefined {
@@ -109,14 +113,14 @@ export class Module {
       return undefined
     }
 
-    // Check for module.json
-    let moduleJsonPath = Path.join(projectDirectory, 'module.json')
-    if (!FileSystem.existsSync(moduleJsonPath)) {
+    // Check for Module.yaml
+    let modulePrijectFilePath = Path.join(projectDirectory, 'Module.yaml')
+    if (!FileSystem.existsSync(modulePrijectFilePath)) {
       return undefined
     }
 
-    let moduleDataBuffer = FileSystem.readFileSync(moduleJsonPath)
-    let moduleData = JSON.parse(moduleDataBuffer.toString())
+    let moduleDataBuffer = FileSystem.readFileSync(modulePrijectFilePath)
+    let moduleData = YAML.parse(moduleDataBuffer.toString())
 
     return moduleData['name']
   }
@@ -139,15 +143,15 @@ export class Module {
     module.exportForPrint = forPrint
     Module.existingSlugs = []
 
-    // Parse the module JSON. If one doesn't exist - create it.
-    let moduleJsonPath = Path.join(projectDirectory, 'module.json')
+    // Parse the module project file. If one doesn't exist - create it.
+    let moduleProjectFilePath = Path.join(projectDirectory, 'Module.yaml')
     module.moduleProjectInfo.name = name
     module.moduleProjectInfo.slug = Module.getSlugFromValue(name)
     module.moduleProjectInfo.id = UUIDV5(module.moduleProjectInfo.slug, UUIDV4()) // Random UUID for modules
-    if(FileSystem.existsSync(moduleJsonPath)) {
-      module.moduleProjectInfo = ModuleProject.parseModuleProject(moduleJsonPath) ?? module.moduleProjectInfo
+    if(FileSystem.existsSync(moduleProjectFilePath)) {
+      module.moduleProjectInfo = ModuleProject.parseModuleProject(moduleProjectFilePath) ?? module.moduleProjectInfo
     } else {      
-      module.moduleProjectInfo.writeModuleProjectFile(moduleJsonPath)
+      module.moduleProjectInfo.writeModuleProjectFile(moduleProjectFilePath)
     }
     
     // Check for cover image if not already defined. This was
@@ -183,6 +187,7 @@ export class Module {
     // all subdirectories (which become groups unless they
     // are explicitly ignored).
     module.processDirectory(projectDirectory, moduleBuildPath)
+    module.children = module.sortChildren(module.children)
 
     // Export module.xml file
     module.exportXML(Path.join(moduleBuildPath, 'module.xml'))    
@@ -194,9 +199,28 @@ export class Module {
     return module
   }
 
+  
+
   // ---------------------------------------------------------------
   // Private Methods
   // ---------------------------------------------------------------
+
+  /**
+   * Sorts an array of module enttiy by the "order" (or "sort") value.
+   * Also sorts all the children of the children recursively.
+   * @param children The module entity children.
+   */
+  private sortChildren(children: ModuleEntity[]): ModuleEntity[] { 
+    children.forEach( child => {
+      child.children = this.sortChildren(child.children)
+    })
+    
+    return children.sort( (a, b) => {
+      if (a.sort === undefined) { return -1 }
+      if (b.sort === undefined) { return 1 }
+      return (a.sort < b.sort) ? -1 : 1
+    })
+  }
 
   /**
    * Archives the module information as a .module file
@@ -241,6 +265,7 @@ export class Module {
     let pages = this.pages.map((page) => {
       let pageAttributes = {
         id: page.id,
+        sort: page.sort,
         parent: page.parent?.id,
       }
       return {
@@ -255,6 +280,7 @@ export class Module {
     let groups = this.groups.map((group) => {
       let groupAttributes = {
         id: group.id,
+        sort: group.sort,
         parent: group.parent?.id,
       }
       return { $: groupAttributes, name: group.name, slug: group.slug }
@@ -318,9 +344,9 @@ export class Module {
         return
       }
 
-      // Skip any folder with a "module.json" file. This is indication
+      // Skip any folder with a "Module.yaml" file. This is indication
       // this is the start of another module project.
-      let moduleProjectFilePath = Path.join(subdirectoryPath, 'module.json')
+      let moduleProjectFilePath = Path.join(subdirectoryPath, 'Module.yaml')
       if (FileSystem.existsSync(moduleProjectFilePath)) {
         return
       }
@@ -343,6 +369,13 @@ export class Module {
       let newGroup = new Group(subdirectoryName, this.moduleProjectInfo.id)
       newGroup.parent = parentGroup
 
+      if (parentGroup) {
+        parentGroup.children.push(newGroup)
+      } else {
+        this.children.push(newGroup)
+      }
+      
+
       // Push group to list of groups and recursively start
       // parsing subdirectory
       this.groups.push(newGroup)
@@ -362,8 +395,9 @@ export class Module {
     moduleBuildPath: string | undefined = undefined,
     parentGroup: Group | undefined = undefined
   ): Page[] {
-    
+
     let markdownRenderer = new MarkdownRenderer(this.exportForPrint)
+    const forPrint = this.exportForPrint
     let markdown = markdownRenderer.getRenderer()
 
     let pages: Page[] = []
@@ -402,17 +436,18 @@ export class Module {
     // the file name
     let attributes = matter.data
     let pageName = (attributes['name'] as string) || Path.basename(filePath)
-    let ignorePDFPagebreak = (attributes['ignore-automatic-pagebreaks-pdf'] as boolean) ?? true
+    let order = (attributes['order'] as number)
 
-    let pagebreaks = attributes['pagebreak'] as string
-    let pagebreakContentFound = false
-
-    let shouldUsePagebreaks = pagebreaks !== undefined &&
-      (!this.exportForPrint || !ignorePDFPagebreak)
+    let pagebreaks = forPrint ? (attributes['pdf-pagebreaks'] as string) : (attributes['module-pagebreaks'] as string)    
+    let pagebreakContentFound = false    
 
     // If we have pagebreaks defined, we'll attempt to split
     // up, group, and subgroup content by header values
-    if (shouldUsePagebreaks) {
+    if (pagebreaks !== undefined) {
+
+      // Remove spaces from pagebreaks list
+      pagebreaks = pagebreaks.replace(/\s/g, '') 
+
       let $ = Cheerio.load(html)
       let cover: CheerioElement | undefined = undefined
       let pagesByHeader: { [slug: string]: ModuleEntity } = {}
@@ -431,6 +466,7 @@ export class Module {
         // Create Page from current HTML
         let page = new Page(headerText, this.moduleProjectInfo.id)
         page.content += $.html(element)
+        page.sort = order
 
         // If there is a cover image, apply to top current page
         if (cover) {
@@ -470,16 +506,26 @@ export class Module {
         if (parentElement) {
           let parentHeader = parentElement.text()
           page.parent = pagesByHeader[parentHeader]
+          pagesByHeader[parentHeader].children.push(page)
+          page.sort = undefined // Clear sort from nested pages
         }
 
         // If the page has no parent and there is a group,
         // make page belong to that group
         if ((parentElement === undefined || parentElement.length === 0) && parentGroup !== undefined) {
           page.parent = parentGroup
+          parentGroup.children.push(page)
         }
 
-        // Finally, add the page to the module
+        // Wrap page content in a page DIV when printing
         page.content = this.wrapPageInPrintDivs(page.content)
+        
+        // Assign page as child of root module if no parent assigned
+        if (!page.parent) {
+          this.children.push(page)
+        }
+        
+        // Finally, add the page to the module
         pages.push(page)
         pagebreakContentFound = true
       })
@@ -491,7 +537,15 @@ export class Module {
     if (!pagebreakContentFound) {
       let page = new Page(pageName, this.moduleProjectInfo.id)
       page.content = this.wrapPageInPrintDivs(html)
-      page.parent = parentGroup
+      page.sort = order
+      
+      if (parentGroup) {
+        page.parent = parentGroup
+        parentGroup.children.push(page)
+      } else {
+        this.children.push(page)
+      }
+      
       pages.push(page)
     }
 
