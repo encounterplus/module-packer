@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.10
 
 ### Added
 - `module-pagebreaks` attribute in front-matter for automatic pagebreaks specifically for EncounterPlus output.
