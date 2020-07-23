@@ -99,6 +99,8 @@ export class ModuleProjectProvider implements vscode.TreeDataProvider<vscode.Tre
       return FileSystem.statSync(childPath).isDirectory()
     })
 
+    // List each directory in the folders as a Group node
+    // (unless .ignoreGroup is present)
     subdirectoryNames.forEach((subdirectoryName) => {
       if (subdirectoryName === Module.buildFolderName) {
         return
@@ -106,7 +108,7 @@ export class ModuleProjectProvider implements vscode.TreeDataProvider<vscode.Tre
 
       let subdirectoryPath = Path.join(directoryPath, subdirectoryName)
       let ignoreFilePath = Path.join(subdirectoryPath, '.ignoreGroup')
-      let moduleProjectFilePath = Path.join(subdirectoryPath, 'Module.yaml')
+      let moduleProjectFilePath = Path.join(subdirectoryPath, Module.moduleProjectFileName)
       if (FileSystem.existsSync(ignoreFilePath) || FileSystem.existsSync(moduleProjectFilePath)) {
         return
       }

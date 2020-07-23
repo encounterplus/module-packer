@@ -1,5 +1,5 @@
-import { Module } from "./Module"
 import { v5 as UUIDV5 } from 'uuid'
+import { Module } from "./Module"
 
 /** Represents referencable entities in a module */
 export abstract class ModuleEntity {

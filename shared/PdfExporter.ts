@@ -1,10 +1,10 @@
-import { Page } from './Module Entities/Page'
-import { Module } from './Module Entities/Module'
-import * as Path from 'path'
 import * as FileSystem from 'fs-extra'
+import * as Path from 'path'
 import * as Puppeteer from 'puppeteer-core'
 import { pathToFileURL } from 'url'
+import { Module } from './Module Entities/Module'
 import { ModuleEntity } from './Module Entities/ModuleEntity'
+import { Page } from './Module Entities/Page'
 
 export class PdfExporter {
   /**

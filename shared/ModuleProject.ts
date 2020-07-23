@@ -1,7 +1,7 @@
-import * as Path from 'path'
 import * as FileSystem from 'fs-extra'
-import * as YAML from 'yaml'
+import * as Path from 'path'
 import { v4 as UUIDV4 } from 'uuid'
+import * as YAML from 'yaml'
 import { Module } from './Module Entities/Module'
 
 /** 
@@ -76,7 +76,7 @@ export class ModuleProject {
       })
     })
 
-    let moduleProjectPath = Path.join(rootDirectory, 'Module.yaml')
+    let moduleProjectPath = Path.join(rootDirectory, Module.moduleProjectFileName)
     if(FileSystem.existsSync(moduleProjectPath)) {
       let moduleProject = ModuleProject.parseModuleProject(moduleProjectPath)
       if(moduleProject !== undefined) {
@@ -164,6 +164,12 @@ export class ModuleProject {
       moduleProject.version = version
     }
 
+    // If autoIncrementVersion is specified in Module project file, use that
+    let autoIncrementVersion = moduleData['autoIncrementVersion'] as boolean
+    if (autoIncrementVersion) {
+      moduleProject.autoIncrementVersion = autoIncrementVersion
+    }
+
     // If cover image is specified in Module project file, use that.
     // Ensure cover image actually exists
     let imagePath = moduleData['cover'] as string
@@ -175,6 +181,7 @@ export class ModuleProject {
       }
       moduleProject.imagePath = imagePath
     }
+
     return moduleProject
   }
 
@@ -198,7 +205,6 @@ export class ModuleProject {
     newModule.category = 'adventure'
     newModule.author = 'Anonymous'
     newModule.referenceCode = ''
-    newModule.imagePath = 'cover.jpg'
     newModule.version = 1
     newModule.autoIncrementVersion = true
 

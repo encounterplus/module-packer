@@ -57,7 +57,8 @@ Below is an example of how you might srtucture your Module content.
 └── Group A              # A group for the module.
     ├── Page A.md        # A page in Group A of the module.
     ├── Page A Cover.jpg # An image used in Page A.
-    └── Page B.md        # A page in Group A of the module.
+    ├── Page B.md        # A page in Group A of the module.
+    └── Group.yaml       # Optional - can define attributes of the group (e.g., Name, Order, etc.)
 └── Group B              # A group for the module.
     ├── Page C.md        # A page in Group B of the module.
     └── Page D.md        # A page in Group B of the module.
@@ -74,7 +75,6 @@ Below is an example of how you might srtucture your Module content.
 In the root folder of your module project, you can create a file named `Module.yaml` to define properties about the module. If `Module.yaml` does not exist, essential properties like `name` and `slug` will be inferred from the module's folder name. A more thorough guide to `Module.yaml` is available.
 
 ```YAML
----
 id: <Random UUIDV4>
 name: Example Module
 slug: example-module
@@ -85,7 +85,6 @@ code: ABC-123
 cover: cover.jpg
 version: 4
 autoIncrementVersion: true
-...
 ```
 
 **Values:**
@@ -105,6 +104,20 @@ All `Module.yaml` values are optional - and default values will be used for anyt
 
 Subdirectories under the main module folder will automatically be turned into Groups in the module. To have a folder *not* be made into a Group, create a file named `.ignoregroup` in the folder. That folder and all subfolders will no longer be turned into groups. They will, however, be included as a resource folder in the module (e.g. for the `images` folder).
 
+Groups can have some properties defined by creating a `Group.yaml` file in the group's folder on the file system. 
+
+```YAML
+name: Example Group
+slug: example-grup
+order: 5
+```
+
+All `Group.yaml` values are optional - and default values will be used for anything not specified. 
+- `name`: The name of the group.
+- `slug`: The slug for the group. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
+- `order`: An order for the group. Lower numbers will be placed before higher numbers. If two groups share the same order value, their effective order may differ upon each import. Pages and groups placed at the same place in the tree will respect each other's group values.
+
+
 ## Markdown File Front-Matter
 
 Each markdown document can contain front matter block for additional configuration.
@@ -123,7 +136,7 @@ pdf-pagebreaks: h1
 All front-matter values are optional - and default values will be used for anything not specified.
 - `name`: The name of the page.
 - `slug`: The slug for the module. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
-- `order`: An order for the page. Lower numbers will be placed before higher numbers. If two pages share the same order value, their effective order may differ upon each import.
+- `order`: An order for the page. Lower numbers will be placed before higher numbers. If two pages share the same order value, their effective order may differ upon each import. Pages and groups placed at the same place in the tree will respect each other's group values.
 - `module-pagebreak`: Element tags that, when specified, will automatically result in the markdown being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to an EncounterPlus module.
 - `pdf-pagebreak`: Element tags that, when specified, will automatically result in the markdown output being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to a PDF.
 
@@ -213,6 +226,8 @@ An image is shown by using an exclamation point, followed by a description in br
   <img src="./documentation/Images.jpg" alt="Normal Image" width="400">
 </p>
 
+### Image Sizes
+
 By default, in markdown, an image will take the full width of the page, minus any default margins. An image can be more manually sized by adding a space, and equals sign, and dimensions after the image.
 
 ```Markdown
@@ -228,7 +243,7 @@ If you are only interested in specifying the width, and allowing the image to si
 ![My Image Description](ImageFile.png =300x)
 ```
 
-Finally, a special cover image style may be placed above the top header. This is specified by adding the text `{.size-cover}` after the image.
+A special cover image style may be placed above the top header. This is specified by adding the text `{.size-cover}` after the image.
 
 ```Markdown
 ![Cover Image](cover.jpg){.size-cover}
@@ -237,6 +252,18 @@ Finally, a special cover image style may be placed above the top header. This is
 ```
 <p align="left">
   <img src="./documentation/CoverImage.jpg" alt="Cover Image" width="400">
+</p>
+
+### Floating Images
+
+Images can be set to float on the left or right side of the view by using the `{.float-left}` and `{.float-right}` styles.
+
+```Markdown
+![My Image Description](ImageFile.png){.float-left}
+```
+
+<p align="left">
+  <img src="./documentation/ImageFloat.jpg" alt="Resized Image" width="400">
 </p>
 
 ## Text Blocks & Block Quotes
@@ -250,7 +277,7 @@ You can add default text block with standard block quote syntax:
   <img src="./documentation/TextBlock.jpg" alt="Text Block" width="400">
 </p>
 
-`Read Aloud` text by adding custom class `read` to standard block quote:
+A Read-aloud text style can be shown by adding custom class `read` to standard block quote:
 
 ```Markdown
 > Read aloud text
@@ -258,6 +285,31 @@ You can add default text block with standard block quote syntax:
 ```
 <p align="left">
   <img src="./documentation/ReadAloud.jpg" alt="Read-Aloud" width="400">
+</p>
+
+A paper/parchment text block style can be shown by adding custom class `paper` to standard block quotes:
+
+```Markdown
+> Text in paper
+{.paper}
+```
+<p align="left">
+  <img src="./documentation/Paper.jpg" alt="Paper" width="400">
+</p>
+
+A flowchart text block style can be shown by adding custom class `flowchart` and `flowchart-with-link` to standard block quotes:
+
+```Markdown
+> **Chapter 1** {.text-center}
+>
+> Text goes here. {.flowchart}
+
+> **Chapter 2** {.text-center}
+>
+> Text goes here. {.flowchart-with-link}
+```
+<p align="left">
+  <img src="./documentation/Flowchart.jpg" alt="Flowchart" width="400">
 </p>
 
 ## Links
@@ -288,7 +340,7 @@ The Module Packer and Visual Studio Code extension support the standard Markdown
 | 00       | Driftglobe                |
 ```
 
-In addition, table colors can be customized with by adding the `{.green}`, `{.red}`, `{.blue}`, `{.yellow}`, `{.gray}`. Additionally, the `{.headerTitle}` style can be added to change the header text appearance.
+In addition, table colors can be customized with by adding the `{.green}`, `{.red}`, `{.blue}`, `{.yellow}`, `{.gray}`, and `{.neutral}`. Additionally, the `{.headerTitle}` style can be added to change the header text appearance.
 
 ```Markdown
 |   d100   | Magic Item                |
@@ -304,10 +356,10 @@ In addition, table colors can be customized with by adding the `{.green}`, `{.re
 {.blue .headerTitle}
 ```
 <p align="left">
-  <img src="./documentation/Tables.jpg" alt="Tables">
+  <img src="./documentation/TableColors.jpg" alt="Tables" height="400">
 </p>
 
-A special, right-floating sidebar style table can be applied by using the `{.sidebar}` attribute
+A special, right-floating sidebar style table can be applied by using the `{.sidebar}` attribute.
 
 ```Markdown
 |  My Hero                         ||
@@ -323,6 +375,25 @@ A special, right-floating sidebar style table can be applied by using the `{.sid
 ```
 <p align="left">
   <img src="./documentation/Sidebar.jpg" alt="Sidebar" width="400">
+</p>
+
+A shop table style also exists with special header values for showing categories and subcategories of shop items. Mark the table with the `{.shop}` attrobite and use the `{.shopH1}` and `{.shopH2}` row styles for category headers.
+
+```Markdown
+|||
+|-------|-------|
+| Category      |{.shopH1}
+| Subcategory   |{.shopH2}
+| Item  | ## gp |
+| Item  | ## gp |
+| Subcategory   |{.shopH2}
+| Item  | ## gp |
+| Item  | ## gp |
+{.shop}
+```
+
+<p align="left">
+  <img src="./documentation/ShopTable.jpg" alt="Shop Table" width="400">
 </p>
 
 ## Page Breaks for Print

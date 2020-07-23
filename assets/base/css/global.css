@@ -199,34 +199,106 @@ blockquote.read {
   box-shadow: none;
 }
 
-blockquote.read:before {
-  width: 4px;
+blockquote.read:before,
+blockquote.read:after {
+  width: 4px;  
+  background-size: 4px 4px;
+  background-position: top center, bottom center;
+  top: -3px;
+  bottom: -3px;
   background-image: radial-gradient(
       circle at center,
       #58180d 2px,
       transparent 0px
     ),
     radial-gradient(circle at center, #58180d 2px, transparent 0px);
-  background-size: 4px 4px;
-  background-position: top center, bottom center;
-  top: -3px;
-  bottom: -3px;
+}
+
+blockquote.read:before {  
   left: -3px;
 }
 
 blockquote.read:after {
-  width: 4px;
-  background-image: radial-gradient(
-      circle at center,
-      #58180d 2px,
-      transparent 0px
-    ),
-    radial-gradient(circle at center, #58180d 2px, transparent 0px);
-  background-size: 4px 4px;
-  background-position: top center, bottom center;
-  top: -3px;
-  bottom: -3px;
   right: -3px;
+}
+
+/******** Paper Block Quote ********/
+
+.blockquote-paper-wrap {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  padding-left: 1px;
+  padding-right: 1px;
+  margin: 10px;
+  overflow: hidden;
+}
+
+blockquote.paper {
+  border-left: 1px solid #D7D2D0;
+  border-right: 1px solid #D7D2D0;
+  border-top: 0;
+  border-bottom: 0;
+  background-color: #FBF4DF;
+  padding: 20px;
+  box-shadow: none;
+}
+
+blockquote.paper:before,
+blockquote.paper:after {
+  content: '';
+  background-image: url('../img/note.png');
+  background-size: 100% 100%;
+  height: 15px;
+  position: absolute;
+  left: -1px;
+  right: -1px;
+  width: auto;
+}
+
+blockquote.paper:before {  
+  transform: rotateY(180deg); 
+  top: -15px;
+  bottom: unset;
+}
+
+blockquote.paper:after {
+  transform: rotateX(180deg);
+  bottom: -15px;
+  top: unset;
+}
+
+/******** Flowchart Block Quote ********/
+
+blockquote.flowchart,
+blockquote.flowchart-with-link {
+  box-shadow: none;
+  border-width: 16px 16px 16px 16px;
+  border-style: solid;
+  border-color: transparent;
+  border-image-repeat: repeat;
+  border-image-slice: 16 16 16 16 fill;
+  background-color: transparent;
+  padding: 10px;
+  position: relative;
+  border-image-source: url('../img/flowchart.png');
+  margin: 50px 25px;
+}
+
+blockquote.flowchart-with-link:before {
+  content: '';
+  border-left: 3px solid #58180D;
+  height: 100px;
+  left: 50%;
+  position: absolute;
+  margin-top: -80px;
+  z-index: -1;
+}
+
+blockquote.flowchart:before,
+blockquote.flowchart:after,
+blockquote.flowchart-with-link:before,
+blockquote.flowchart-with-link:after {
+  background-image: none;
 }
 
 /******** Marks ********/

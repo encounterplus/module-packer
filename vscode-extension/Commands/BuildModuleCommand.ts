@@ -1,8 +1,8 @@
-import * as vscode from 'vscode'
 import * as Path from 'path'
+import * as vscode from 'vscode'
 import { Module } from '../../shared/Module Entities/Module'
-import { CommandBase } from './CommandBase'
 import { ModuleProject } from '../../shared/ModuleProject'
+import { CommandBase } from './CommandBase'
 
 export class BuildModuleCommand extends CommandBase {
 

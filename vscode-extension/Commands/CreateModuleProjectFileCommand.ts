@@ -1,10 +1,10 @@
+import * as FileSystem from 'fs-extra'
+import * as Path from 'path'
+import { v4 as UUIDV4 } from 'uuid'
 import * as vscode from 'vscode'
+import * as YAML from 'yaml'
 import { Module } from '../../shared/Module Entities/Module'
 import { CommandBase } from './CommandBase'
-import * as YAML from 'yaml'
-import * as Path from 'path'
-import * as FileSystem from 'fs-extra'
-import { v4 as UUIDV4 } from 'uuid'
 
 export class CreateModuleProjectFileCommand extends CommandBase {
 
@@ -30,7 +30,7 @@ export class CreateModuleProjectFileCommand extends CommandBase {
     }
 
         // See if a Module.yaml file already exists
-    let moduleProjectFilePath = Path.join(projectPath, 'Module.yaml')
+    let moduleProjectFilePath = Path.join(projectPath, Module.moduleProjectFileName)
     if (FileSystem.existsSync(moduleProjectFilePath)) {
       throw Error('Module.yaml already exists.')
     }
@@ -69,5 +69,6 @@ export class CreateModuleProjectFileCommand extends CommandBase {
     // Write Module.yaml
     let outputProjectFile = YAML.stringify(moduleFileContent)
     FileSystem.writeFileSync(moduleProjectFilePath, outputProjectFile)
+    vscode.commands.executeCommand('encounterPlusMarkdown.refreshModules')
   }
 }

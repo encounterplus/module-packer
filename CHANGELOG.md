@@ -6,7 +6,11 @@
 - `module-pagebreaks` attribute in front-matter for automatic pagebreaks specifically for EncounterPlus output.
 - `pdf-pagebreaks` attribute in front-matter for automatic pagebreaks specifically for PDF output.
 - `order` attribute in page front-matter to specify the ordering of pages
+- Can now add a `Group.yaml` for group settings (like `name`, `slug`, and `order`)
 - New Styles:
+  - BlockQuotes
+    - paper
+    - flowchart, and flowchart-with-link
   - Images
     - float-left
     - float-right
@@ -17,7 +21,7 @@
     - shopH2 (row style)
 
 ### Changed
-- Visual Studio Extension engine target is no 1.45 for compatibiltiy with Coder
+- Visual Studio Extension engine target is now 1.45 for compatibiltiy with Coder
 
 ### Breaking
 - Table style `.statblock` is now `.sidebar`

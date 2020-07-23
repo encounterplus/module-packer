@@ -1,6 +1,6 @@
 import * as MarkdownIt from 'markdown-it'
-import * as Token from 'markdown-it/lib/token'
 import * as Renderer from 'markdown-it/lib/renderer'
+import * as Token from 'markdown-it/lib/token'
 
 export class MarkdownRenderer {
   // ---------------------------------------------------------------
@@ -85,7 +85,7 @@ export class MarkdownRenderer {
    * @param self The HTML renderer
    */
   private printPageBreak(tokens: Token[], idx: number, options: MarkdownIt.Options, env: any, self: Renderer) {
-    return '</div><div class="footer-page-number"></div></div><div class="print-page"><div class="page-content">'
+    return '</div><div class="footer-page-number"></div></div><div class="print-page"><div class="page-content-two-column">'
   }
 
   /**
@@ -100,12 +100,27 @@ export class MarkdownRenderer {
     let token = tokens[idx]
     let defaultBlockquoteOpenHtml = self.renderToken(tokens, idx, options)
 
-    let readValue = token.attrs?.find( (attribute) => {
+    let readValue = token.attrs?.find((attribute) => {
       return attribute[0] === 'class' && attribute[1].split(' ').includes('read')
+    })
+
+    let noteValue = token.attrs?.find((attribute) => {
+      return attribute[0] === 'class' && attribute[1].split(' ').includes('paper')
+    })
+
+    let flowchartValue = token.attrs?.find((attribute) => {
+      return (
+        attribute[0] === 'class' &&
+        (attribute[1].split(' ').includes('flowchart') || attribute[1].split(' ').includes('flowchart-with-link'))
+      )
     })
 
     if (readValue) {
       return '<div class="blockquote-read-wrap">' + defaultBlockquoteOpenHtml
+    } else if (noteValue) {
+      return '<div class="blockquote-paper-wrap">' + defaultBlockquoteOpenHtml
+    } else if (flowchartValue) {
+      return '<div class="blockquote-flowchart-wrap">' + defaultBlockquoteOpenHtml
     } else {
       return '<div class="blockquote-wrap">' + defaultBlockquoteOpenHtml
     }

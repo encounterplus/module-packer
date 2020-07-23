@@ -15,7 +15,7 @@
 			"outFiles": [
 				"${workspaceFolder}/extension-out/**/*.js"
 			],
-			"preLaunchTask": "npm: watch-extension"
+			"preLaunchTask": "build extension"
 		},
 		{
 			"name": "Debug Module-Packer App",
