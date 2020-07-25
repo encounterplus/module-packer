@@ -358,21 +358,33 @@ a[href*='/spell/'] {
 
 /******** Images ********/
 
+figure {
+  margin: 0;
+  padding: 0;
+}
+
+figcaption {
+  text-align: center;
+}
+
 img {
   max-width: 100%;
   height: auto;
 }
 
+figure.size-full,
 img.size-full {
   width: 100%;
   height: auto;
 }
 
+figure.float-left,
 img.float-left {
   float: left;
   margin-right: 10px;
 }
 
+figure.float-right,
 img.float-right {
   float: right;
   margin-left: 10px;
@@ -560,6 +572,7 @@ table.neutral tbody tr:nth-child(odd) {
     background: url('../img/bg.png') #FEFEFC repeat;
   }
 
+  figure.size-cover,
   img.size-cover {
     max-width: none;
     width: calc(100% + 40px);
@@ -590,6 +603,23 @@ table.neutral tbody tr:nth-child(odd) {
 /******** Print-Specific Styles ********/
 
 @media print {
+
+  p.size-cover,
+  p.size-full {
+    column-span: all;
+  }
+
+  figure.size-cover,
+  img.size-cover {
+    max-width: none;
+    width: calc(100% + 0.5in);
+    margin-top: -.5in;
+    margin-left: -.25in;
+    margin-right: -.25in;
+    margin-bottom: 0;
+    height: auto;
+  }
+
   .screen-only {
     display: none;
   }
@@ -630,18 +660,19 @@ table.neutral tbody tr:nth-child(odd) {
     text-rendering: optimizeLegibility;
   	page-break-before: always;
     page-break-after: always;
+    overflow: hidden;
   }
 
-  .print-page > .page-content {
-    overflow: hidden;
+  .print-page > .page-content {    
+    /* overflow: hidden; */
     height: 10.2in;
-    width: 8in;   
+    width: 8in;
     position: relative;
     z-index: 20;
   }
 
   .print-page > .page-content-two-column {
-    overflow: hidden;
+    /* overflow: hidden; */
     height: 10.2in;
     width: 8in;   
     position: relative;
@@ -654,7 +685,6 @@ table.neutral tbody tr:nth-child(odd) {
 	  -webkit-column-gap: 0.25in;
   	-moz-column-gap: 0.25in;
   }
-
 
   table.sidebar {
     margin-left: 0.1in;
@@ -672,18 +702,38 @@ table.neutral tbody tr:nth-child(odd) {
 		width: 8.5in;
 		background-size: 8.5in .50in;
   }
-  
+
+  .print-page > .footer-content {
+    font-family: 'Andada SC', '-apple-system', sans-serif;
+    position: absolute;
+    font-variant: small-caps;
+		bottom: 10px;
+		width: 8.5in;
+		font-size: 15px;
+    color: #AEA41A;
+    right: 2px;
+		text-align: center;
+  }
+
   .print-page > .footer-page-number {
+    font-family: 'Andada SC', '-apple-system', sans-serif;
     position: absolute;
 		bottom: 22px;
 		width: 50px;
 		font-size: 15px;
-    color: #58180d;
+    color: #AEA41A;
     right: 2px;
 		text-align: center;
   }
 
   .print-page > .footer-page-number:after {
     content: counter(page-numbers);
+  }
+
+  .print-column-break {
+    break-after: always;
+    display: flex;
+    -webkit-column-break-after: always;
+    -moz-column-break-after: always;
   }
 }

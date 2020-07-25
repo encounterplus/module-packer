@@ -25,6 +25,9 @@ export class Module {
   /** If true, exports the module in a format fit for print */
   private exportForPrint: boolean = false
 
+  /** The content to print in the footer */
+  private printFooterContent: string = ''
+
   // ---------------------------------------------------------------
   // Initialization & Cleanup
   // ---------------------------------------------------------------
@@ -207,12 +210,36 @@ export class Module {
     return module
   }
 
+  /** Gets the HTML elements that start a page when printing */
+  getPageOpenHTML(): string {
+    if (!this.exportForPrint) {
+      return ''
+    }
+
+    let html = '<div class="print-page">'
+    html += '<div class="page-content-two-column">'
+    return html
+  }
+
+  /** Gets the HTML elements that end a page when printing */
+  getPageCloseHTML(): string {
+    if (!this.exportForPrint) {
+      return ''
+    }
+
+    let html = '</div>'
+    html += `<div class="footer-content">${this.printFooterContent}</div>`
+    html += '<div class="footer-page-number"></div>'
+    html += '</div>'
+    return html
+  }
+
   // ---------------------------------------------------------------
   // Private Methods
   // ---------------------------------------------------------------
 
   /**
-   * Sorts an array of module enttiy by the "order" (or "sort") value.
+   * Sorts an array of module entity by the "order" (or "sort") value.
    * Also sorts all the children of the children recursively.
    * @param children The module entity children.
    */
@@ -404,7 +431,7 @@ export class Module {
     moduleBuildPath: string | undefined = undefined,
     parentGroup: Group | undefined = undefined
   ): Page[] {
-    let markdownRenderer = new MarkdownRenderer(this.exportForPrint)
+    let markdownRenderer = new MarkdownRenderer(this.exportForPrint, this)
     const forPrint = this.exportForPrint
     let markdown = markdownRenderer.getRenderer()
 
@@ -436,18 +463,26 @@ export class Module {
     // body of the page.
     let matter = GrayMatter(data)
 
-    // Convert markdown to HTML
-    let html = markdown.render(matter.content)
-
     // If defined in the front-matter, get the name
     // for the page there. Otherwise, get it from
     // the file name
-    let attributes = matter.data
-    let pageName = (attributes['name'] as string) || Path.basename(filePath)
-    let order = attributes['order'] as number
-
-    let pagebreaks = forPrint ? (attributes['pdf-pagebreaks'] as string) : (attributes['module-pagebreaks'] as string)
+    let frontMatter = matter.data
+    let pageName = (frontMatter['name'] as string) || Path.basename(filePath)
+    let order = frontMatter['order'] as number
+    let printMultiColumn = (frontMatter['pdf-page-style'] as string) !== 'single-column'
+    let pagebreaks = forPrint ? (frontMatter['pdf-pagebreaks'] as string) : (frontMatter['module-pagebreaks'] as string)
     let pagebreakContentFound = false
+
+    // Get footer text. By default, it will be "<Page Name> | <Parent Name>"
+    let parentName = parentGroup ? parentGroup.name : this.moduleProjectInfo.name
+    let footerText = (frontMatter['footer'] as string)
+    this.printFooterContent = footerText || `${pageName} | ${parentName}`
+    if ((frontMatter['hide-footer-text'] as boolean) === true) {
+      this.printFooterContent = ''
+    }
+
+    // Convert markdown to HTML
+    let html = markdown.render(matter.content)
 
     // If we have pagebreaks defined, we'll attempt to split
     // up, group, and subgroup content by header values
@@ -534,6 +569,9 @@ export class Module {
           this.children.push(page)
         }
 
+        // Process multi-column layout if printing
+        page.content = this.postProcessForPrint(page.content, printMultiColumn)
+
         // Finally, add the page to the module
         pages.push(page)
         pagebreakContentFound = true
@@ -555,10 +593,41 @@ export class Module {
         this.children.push(page)
       }
 
+      // Process multi-column layout if printing
+      page.content = this.postProcessForPrint(page.content, printMultiColumn)
+      
       pages.push(page)
     }
 
     return pages
+  }
+
+  /**
+   * Post-processes the HTML elements for print layout
+   * @param pageContent The current page HTML
+   * @param printMultiColumn If true, the print layout is two columns
+   */
+  private postProcessForPrint(pageContent: string, printMultiColumn: boolean): string {
+    if (!this.exportForPrint) {
+      return pageContent
+    }
+
+    let $ = Cheerio.load(pageContent)
+    if(!printMultiColumn) {
+      $('div.page-content-two-column').each((i, element) => { 
+        $(element).attr('class', 'page-content')
+      })
+    }
+
+    $('img.size-cover').each((i, element) => { 
+      $(element.parent).attr('class', 'size-cover')
+    })
+
+    $('img.size-full').each((i, element) => { 
+      $(element.parent).attr('class', 'size-full')
+    })
+    
+    return $.html()
   }
 
   /**
@@ -571,13 +640,9 @@ export class Module {
       return originalHTML
     }
 
-    let newHTML = '<div class="print-page">'
-    newHTML += '<div class="page-content-two-column">'
+    let newHTML = this.getPageOpenHTML()
     newHTML += originalHTML
-    newHTML += '</div>'
-    newHTML += '<div class="footer-page-number">'
-    newHTML += '</div>'
-    newHTML += '</div>'
+    newHTML += this.getPageCloseHTML()
     return newHTML
   }
 

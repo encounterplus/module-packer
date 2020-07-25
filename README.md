@@ -129,6 +129,8 @@ slug: page-name
 order: 3
 module-pagebreaks: h1, h2, h3
 pdf-pagebreaks: h1
+footer: My Custom Footer Text
+hide-footer-text: false
 ---
 ```
 
@@ -139,6 +141,8 @@ All front-matter values are optional - and default values will be used for anyth
 - `order`: An order for the page. Lower numbers will be placed before higher numbers. If two pages share the same order value, their effective order may differ upon each import. Pages and groups placed at the same place in the tree will respect each other's group values.
 - `module-pagebreak`: Element tags that, when specified, will automatically result in the markdown being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to an EncounterPlus module.
 - `pdf-pagebreak`: Element tags that, when specified, will automatically result in the markdown output being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to a PDF.
+- `footer`: If specified, allows custom footer text to be entered. Otherwise the footer text follows the format of `Page Name | Parent Name`.
+- `hide-footer-text`: If true, will hide footer text entirely.
 
 # Markdown Guide
 
@@ -396,7 +400,9 @@ A shop table style also exists with special header values for showing categories
   <img src="./documentation/ShopTable.jpg" alt="Shop Table" width="400">
 </p>
 
-## Page Breaks for Print
+## Special Tags for Print/PDF
+
+### Page Breaks
 
 When designing content for print, content will be clipped at a single page unless you manually specify a page break with the `(print-page)` tag in your markdown. The `(print-page)` tag will be hidden in the preview and in EncounterPlus.
 
@@ -408,10 +414,26 @@ This is some text.
 This is some more text.
 ```
 
+### Column Breaks
+
+If on the first column and you want to break to the next column, you can use the `(print-column)` tag. 
+
+```Markdown
+This is some text.
+
+(print-column)
+
+This is some more text.
+```
+
+### PDF-Only Content
+
 For elements that you want to show *only* in the print version, you can use the `{.print-only}` attribute.
 ```Markdown
 ![Image For Print](Image.png){.print-only}
 ```
+
+### EncounterPlus-Only Content
 
 Likewise, for elements that you to show *only* in EncounterPlus, you can use the `{.screen-only}` attribute.
 ```Markdown

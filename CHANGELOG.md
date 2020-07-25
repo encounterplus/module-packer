@@ -1,5 +1,12 @@
 # Change Log
 
+## [Unreleased]
+
+### Added
+- `(print-column)` tag for column breaks when exporting to PDF
+- `.caption` attribute for images to add a caption to images (by placing them in a Figure element)
+- `footer` and `hide-footer` front matter options for pages
+
 ## 1.0.10
 
 ### Added
