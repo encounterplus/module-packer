@@ -230,6 +230,18 @@
     "markdown.previewStyles": [
       "vscode-extension/resources/vscode.css",
       "assets/base/css/global.css"
+    ],
+    "grammars": [
+      {
+        "scopeName": "markdown.monster.codeblock",
+        "path": "vscode-extension/resources/monster-codeblock.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.monster": "yaml"
+        }
+      }
     ]
   },
   "scripts": {
@@ -241,9 +253,9 @@
   "devDependencies": {
     "@types/node": "^12.12.47",
     "@types/vscode": "^1.45.0",
-    "@typescript-eslint/eslint-plugin": "^3.3.0",
-    "@typescript-eslint/parser": "^3.3.0",
-    "eslint": "^7.4.0",
+    "@typescript-eslint/eslint-plugin": "^3.8.0",
+    "@typescript-eslint/parser": "^3.8.0",
+    "eslint": "^7.6.0",
     "typescript": "^3.9.4"
   },
   "dependencies": {

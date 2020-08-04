@@ -1,6 +1,6 @@
 import * as Path from 'path'
 import * as vscode from 'vscode'
-import { Module } from '../../shared/Module Entities/Module'
+import { Module, ModuleMode } from '../../shared/Module Entities/Module'
 import { ModuleProject } from '../../shared/ModuleProject'
 import { CommandBase } from './CommandBase'
 
@@ -36,7 +36,7 @@ export class BuildModuleCommand extends CommandBase {
     }
 
     let projectDirectory = Path.dirname(moduleProjectPath)
-    let module = await Module.createModuleFromPath(projectDirectory, Path.basename(projectDirectory))
+    let module = await Module.createModuleFromPath(projectDirectory, Path.basename(projectDirectory), ModuleMode.ModuleExport)
 
     let completeMessage = `Successfully created module: ${module.moduleProjectInfo.name}.`
     vscode.window.showInformationMessage(completeMessage, 'View Module File').then((selection) => {

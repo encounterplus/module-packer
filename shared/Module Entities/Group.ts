@@ -12,7 +12,7 @@ export class Group extends ModuleEntity {
   // ---------------------------------------------------------------
 
   /**
-   * Initiaizes an instance of `Group`
+   * Initializes an instance of `Group`
    * @param name The name of the group
    * @param moduleUUID The UUID of the module
    * @param groupPath The path of the group
@@ -25,7 +25,14 @@ export class Group extends ModuleEntity {
     let groupSettingsPath = Path.join(groupPath, Group.groupSettingsFileName)
     if (FileSystem.existsSync(groupSettingsPath)) {
       let groupDataBuffer = FileSystem.readFileSync(groupSettingsPath)
-      let groupData = YAML.parse(groupDataBuffer.toString())
+
+      let groupData: any = undefined
+      try {
+        groupData = YAML.parse(groupDataBuffer.toString())
+      } catch (error) {
+        throw Error(`Failed to parse ${groupSettingsPath}. Error: ${(error as Error).message}`)
+      }
+
       let groupName = groupData['name'] as string
       if (groupName) {
         effectiveName = groupName

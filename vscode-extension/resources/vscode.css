@@ -132,3 +132,13 @@ code {
   border-bottom-width: 1px;
   border-bottom-style: solid;
 }
+
+.vscode-light hr.statblock-border {
+	border-color: #000;
+	height: 5px;
+}
+
+.vscode-dark hr.statblock-border {
+	border-color: #000;
+	height: 5px;
+}

@@ -56,11 +56,11 @@
   "devDependencies": {
     "@types/node": "^12.12.47",
     "@types/vscode": "^1.46.0",
-    "@typescript-eslint/eslint-plugin": "^3.3.0",
-    "@typescript-eslint/parser": "^3.3.0",
+    "@typescript-eslint/eslint-plugin": "^3.8.0",
+    "@typescript-eslint/parser": "^3.8.0",
     "electron": "^9.0.5",
     "electron-builder": "^22.7.0",
-    "eslint": "^7.4.0",
+    "eslint": "^7.6.0",
     "typescript": "^3.9.4"
   },
   "dependencies": {

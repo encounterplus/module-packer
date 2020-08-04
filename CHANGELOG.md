@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Added
+- `Monster` code-fence style for creating Monster Stat blocks in YAML.
 - `(print-column)` tag for column breaks when exporting to PDF
 - `.caption` attribute for images to add a caption to images (by placing them in a Figure element)
 - `footer` and `hide-footer` front matter options for pages

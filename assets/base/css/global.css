@@ -547,6 +547,189 @@ table.neutral tbody tr:nth-child(odd) {
   background: #d8d6d2;
 }
 
+/******** Statblock Div Styles ********/
+
+.statblock {
+  text-align: left;
+  margin: 10px;
+  display: inline-block;
+  vertical-align: top;
+  width: 280px;
+  background: #FDF1DC;
+  padding: 5px 10px 20px;
+  page-break-inside: avoid;
+}
+
+.statblock.wide {
+  width: 560px;
+  text-align: center;
+}
+
+.statblock.wide .statblock-section-left,
+.statblock.wide .statblock-section-right {
+  display: inline-block;
+  vertical-align: top;
+  width: 48%;
+  text-align: left;
+}
+
+.statblock.wide .statblock-section-left {
+  margin-right: 1.5%;
+}
+.statblock.wide .statblock-section-right {
+  margin-left: 1.5%;
+}
+
+.statblock.float-left {
+  float: left;
+}
+
+.statblock.float-right {
+  float: right;
+}
+
+.statblock h2,
+.statblock h3,
+.statblock h4 {
+  font-family: '-apple-system', sans-serif;
+  color: #7A200D;
+  font-weight: bold;
+}
+
+.statblock-border {
+  display: block;
+  background: #E69A28;
+  border: 1px solid #000;
+  height: 5px;
+  padding: 0 10px 0;
+  margin: -10px -10px 0;
+  box-sizing: initial;
+}
+
+.statblock-border.bottom {
+  margin: 15px -10px -20px;
+}
+
+.statblock-tapered-rule {
+  display: block;
+  width: 100%;
+  height: 5px;
+  border: none;
+  color: #922610;
+  fill: #922610;
+  stroke: #922610;
+}
+
+.statblock-creature-heading h1 {
+  font-family: 'Andada SC', '-apple-system', sans-serif;
+  color: #922610;
+  font-size: 23px;
+  line-height: 1.2em;
+  margin: 10px 0 0;
+  letter-spacing: 1px;
+  font-variant: small-caps;
+  font-weight: bold;
+}
+
+.statblock-creature-heading h2 {
+  font-weight: normal;
+  font-style: italic;
+  font-size: 12px;
+  line-height: 1.2em;
+  margin: 0 0 10px;
+}
+
+
+.statblock-property-line h4,
+.statblock-property-line p {
+  display: inline;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.2em;
+}
+
+.statblock-property-line p {
+  color: #922610;
+}
+
+.statblock-property-line {
+  text-indent: -1em;
+  padding-left: 1.1em;
+  line-height: 1.4em;
+}
+
+.statblock-property-line.first {
+  margin: 8px 0 0
+}
+
+.statblock-property-line.last {
+  margin: 0 0 10px;
+}
+
+.statblock-abilities {
+  text-align: center;
+  color: #922610;
+}
+
+.statblock-abilities > div {
+  display: inline-block;
+  vertical-align: middle;
+  width: 15.5%;
+  min-width: 40px; 
+  font-size: 12px;
+  line-height: 1em;
+}
+
+.statblock-abilities h4 {
+  margin: 10px 0 2px;
+  font-size: 13px;
+  line-height: 1.2em;
+  text-transform: uppercase;
+  color: #922610;
+}
+
+.statblock-abilities p {
+  margin: 0 0 10px;
+  line-height: 1.2em;
+  font-weight: lighter;
+}
+
+.statblock-property-block h4,
+.statblock-property-block p {
+  color: black;
+  font-size: 13.5px;
+  line-height: 1.2em;
+  display: inline;
+  margin: 0;
+}
+
+.statblock-property-block h4 {
+  font-style: italic;
+}
+
+.statblock-property-block {
+  padding: 10px 2px 0;
+}
+
+.statblock-actions h3 {
+  border-bottom: 1px solid #922610;
+  font-size: 21px;
+  font-variant: small-caps;
+  font-weight: normal;
+  letter-spacing: 1px;
+  margin: 20px 0 0;
+  padding: 0 0 10px;
+  text-indent: 5px;
+}
+
+.statblock-actions {
+  margin: 0 0 20px;
+}
+
+.statblock-actions:last-child {
+  margin: 0;
+}
+
 /******** Screen-Specific Styles ********/
 
 @media screen {
@@ -570,6 +753,11 @@ table.neutral tbody tr:nth-child(odd) {
     margin: 0px;
     color: black;
     background: url('../img/bg.png') #FEFEFC repeat;
+  }
+
+  .statblock {
+    box-shadow: 0 0 1.5em #867453;
+    margin: 20px;
   }
 
   figure.size-cover,
@@ -635,8 +823,8 @@ table.neutral tbody tr:nth-child(odd) {
   }
 
   /* Enable this if you want to print with
-     drop shadows on blockquotes - this will
-     cause text to be unselectable in blockquotes */  
+     drop shadows on block quotes - this will
+     cause text to be non-selectable in block quotes */  
   /*blockquote {
     box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.3);
     filter: opacity(1);
@@ -686,10 +874,37 @@ table.neutral tbody tr:nth-child(odd) {
   	-moz-column-gap: 0.25in;
   }
 
+  .print-page > .half-page-content {    
+    /* overflow: hidden; */
+    height: 5.1in;
+    width: 8in;
+    position: relative;
+    z-index: 20;
+  }
+
+  .print-page > .half-page-content-two-column {    
+    /* overflow: hidden; */
+    height: 5.1in;
+    width: 8in;
+    position: relative;
+    z-index: 20;
+    column-count: 2;
+    column-gap: 0.25in;
+    column-fill: auto;
+    -webkit-column-count: 2;
+	  -moz-column-count: 2;
+	  -webkit-column-gap: 0.25in;
+  	-moz-column-gap: 0.25in;
+  }
+
   table.sidebar {
     margin-left: 0.1in;
     margin-right: 0.1in;
     width: calc(100% - 0.2in);
+  }
+
+  .statblock {
+    width: 3.5in;
   }
 
   .print-page:after {

@@ -2,6 +2,7 @@ import * as MarkdownIt from 'markdown-it'
 import * as Renderer from 'markdown-it/lib/renderer'
 import * as Token from 'markdown-it/lib/token'
 import { Module } from './Module Entities/Module'
+import { Monster } from './Module Entities/Monster'
 
 export class MarkdownRenderer {
   // ---------------------------------------------------------------
@@ -14,6 +15,9 @@ export class MarkdownRenderer {
   /** The default image rendering rule */
   private static defaultImageRenderer: Renderer.RenderRule | undefined = undefined
 
+  /** The default fence rendering rule */
+  private static defaultFence: Renderer.RenderRule | undefined = undefined
+
   // ---------------------------------------------------------------
   // Initialization and Cleanup
   // ---------------------------------------------------------------
@@ -24,6 +28,13 @@ export class MarkdownRenderer {
    * @param module The module for which this class is rendering
    */
   constructor(readonly forPrint: boolean, readonly module: Module | undefined = undefined) {}
+
+  // ---------------------------------------------------------------
+  // Monsters
+  // ---------------------------------------------------------------
+
+  /** Monsters parsed when parsing the markdown file */
+  monsters: Monster[] = []
 
   // ---------------------------------------------------------------
   // Public Methods
@@ -55,14 +66,16 @@ export class MarkdownRenderer {
 
       this.markdown.block.ruler.after('blockquote', 'printbreaks', (state, startLine, endLine) => {
         let startPos = state.bMarks[startLine] + state.tShift[startLine]
+        let endLinePos = state.eMarks[startLine]
 
         // Optimization: Check line starts with '('
-        if (state.src.charCodeAt(startPos) !== 0x28) {          
+        if (state.src.charCodeAt(startPos) !== 0x28) {
           return false
         }
 
-        let possiblePageString = state.src.substr(startPos, 12).toLowerCase()
-        if (possiblePageString === '(print-page)') {
+        let lineString = state.src.substr(startPos, endLinePos).toLowerCase()
+
+        if (lineString.startsWith('(print-page)')) {
           state.line = startLine + 1
           let token = state.push('print_page_break', '', 0)
           token.markup = '(print-page)'
@@ -70,8 +83,7 @@ export class MarkdownRenderer {
           return true
         }
 
-        let possibeColumnString = state.src.substr(startPos, 14).toLowerCase()
-        if (possibeColumnString === '(print-column)') {
+        if (lineString.startsWith('(print-column)')) {
           state.line = startLine + 1
           let token = state.push('print_column_break', '', 0)
           token.markup = '(print-column)'
@@ -88,6 +100,8 @@ export class MarkdownRenderer {
       this.markdown.renderer.rules.image = this.renderImage
       this.markdown.renderer.rules.print_page_break = this.forPrint ? this.printPageBreak : this.renderEmpty
       this.markdown.renderer.rules.print_column_break = this.forPrint ? this.printColumnBreak : this.renderEmpty
+      MarkdownRenderer.defaultFence = this.markdown.renderer.rules.fence
+      this.markdown.renderer.rules.fence = this.renderFence
     }
 
     return this.markdown
@@ -100,7 +114,7 @@ export class MarkdownRenderer {
   /**
    * Renders an empty value for a token
    */
-  private renderEmpty(tokens: Token[], idx: number, options: MarkdownIt.Options, env: any, self: Renderer) {
+  private renderEmpty = (tokens: Token[], idx: number, options: MarkdownIt.Options, env: any, self: Renderer) => {
     return ''
   }
 
@@ -113,10 +127,52 @@ export class MarkdownRenderer {
    * @param env The environment
    * @param self The HTML renderer
    */
-  private renderImage(tokens: Token[], idx: number, options: MarkdownIt.Options, env: any, self: Renderer) {    
+  private renderFence = (tokens: Token[], idx: number, options: MarkdownIt.Options, env: any, self: Renderer) => {
     let token = tokens[idx]
 
-    if(MarkdownRenderer.defaultImageRenderer === undefined) {
+    if (MarkdownRenderer.defaultFence === undefined) {
+      return ''
+    }
+
+    let defaultFenceHTML = MarkdownRenderer.defaultFence(tokens, idx, options, env, self) || ''
+
+    if (!token.info.toLowerCase().includes('monster')) {
+      return defaultFenceHTML
+    }
+
+    let monster: Monster | undefined = undefined
+    let monsterHTML = ''
+
+    try {
+      monster = Monster.fromYAMLContent(token.content)
+      this.monsters.push(monster)
+      monsterHTML = monster.getHTML(MarkdownRenderer.getTokenClasses(token))
+    } catch (error) {
+      monsterHTML = '<div class="statblock">'
+      monsterHTML += '<hr class="statblock-border" />'
+      monsterHTML += `<h1>Error</h1>`
+      monsterHTML += `Error in Monster Stats: ${error}`
+      monsterHTML += '<hr class="statblock-border bottom" />'
+      monsterHTML += '</div>' // statblock
+      return monsterHTML
+    }
+
+    return monsterHTML
+  }
+
+  /**
+   * Renders an image with as a figured caption if specified
+   * split between pages when printing.
+   * @param tokens The Markdown tokens collection
+   * @param idx The index of the token being rendered
+   * @param options The markdown-it options
+   * @param env The environment
+   * @param self The HTML renderer
+   */
+  private renderImage = (tokens: Token[], idx: number, options: MarkdownIt.Options, env: any, self: Renderer) => {
+    let token = tokens[idx]
+
+    if (MarkdownRenderer.defaultImageRenderer === undefined) {
       return ''
     }
 
@@ -159,7 +215,7 @@ export class MarkdownRenderer {
    * @param env The environment
    * @param self The HTML renderer
    */
-  private printColumnBreak(tokens: Token[], idx: number, options: MarkdownIt.Options, env: any, self: Renderer) {
+  private printColumnBreak = (tokens: Token[], idx: number, options: MarkdownIt.Options, env: any, self: Renderer) => {
     return '<div class="print-column-break"></div>'
   }
 
@@ -173,13 +229,21 @@ export class MarkdownRenderer {
    * @param env The environment
    * @param self The HTML renderer
    */
-  private renderBlockquoteOpen(tokens: Token[], idx: number, options: MarkdownIt.Options, env: any, self: Renderer) {    
+  private renderBlockquoteOpen = (
+    tokens: Token[],
+    idx: number,
+    options: MarkdownIt.Options,
+    env: any,
+    self: Renderer
+  ) => {
     let token = tokens[idx]
     let defaultBlockquoteOpenHtml = self.renderToken(tokens, idx, options)
 
     let hasReadStyle = MarkdownRenderer.getTokenHasClass(token, 'read')
     let hasPaperStyle = MarkdownRenderer.getTokenHasClass(token, 'paper')
-    let hasFlowChartStyle = MarkdownRenderer.getTokenHasClass(token, 'flowchart') || MarkdownRenderer.getTokenHasClass(token, 'flowchart-with-link')
+    let hasFlowChartStyle =
+      MarkdownRenderer.getTokenHasClass(token, 'flowchart') ||
+      MarkdownRenderer.getTokenHasClass(token, 'flowchart-with-link')
 
     if (hasReadStyle) {
       return '<div class="blockquote-read-wrap">' + defaultBlockquoteOpenHtml
@@ -200,9 +264,33 @@ export class MarkdownRenderer {
    * @param env The environment
    * @param self The HTML renderer
    */
-  private renderBlockquoteClose(tokens: Token[], idx: number, options: MarkdownIt.Options, env: any, self: Renderer) {
+  private renderBlockquoteClose = (
+    tokens: Token[],
+    idx: number,
+    options: MarkdownIt.Options,
+    env: any,
+    self: Renderer
+  ) => {
     let defaultBlockquoteCloseHtml = self.renderToken(tokens, idx, options)
     return defaultBlockquoteCloseHtml + '</div>'
+  }
+
+  private static getTokenClasses(token: Token): string[] {
+    let classes: string[] = []
+    if (!token.attrs || token.attrs.length == 0) {
+      return classes
+    }
+
+    token.attrs.forEach((attribute) => {
+      if (attribute[0] !== 'class') {
+        return
+      }
+
+      attribute[1].split(' ').forEach((elementClass) => {
+        classes.push(elementClass)
+      })
+    })
+    return classes
   }
 
   /**
@@ -211,14 +299,7 @@ export class MarkdownRenderer {
    * @param className The name of the class to check the token for
    */
   private static getTokenHasClass(token: Token, className: string): boolean {
-    let attribute = token.attrs?.find((attribute) => {
-      return attribute[0] === 'class' && attribute[1].split(' ').includes(className)
-    })
-
-    if(attribute) {
-      return true
-    }
-
-    return false
+    let classNames = MarkdownRenderer.getTokenClasses(token)
+    return classNames.includes(className)
   }
 }

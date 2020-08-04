@@ -8,17 +8,12 @@ export class Page extends ModuleEntity {
   // ---------------------------------------------------------------
 
   /**
-   * Initiaizes an instance of `Page`
+   * Initializes an instance of `Page`
    * @param name The name of the page
    * @param moduleUUID The UUID of the module
    * @param slug A manually specified slug (optional - will be auto-generated if undefined)
    */
-  constructor(
-    name: string,
-    moduleUUID: string,
-    slug: string | undefined = undefined,
-    
-  ) {    
+  constructor(name: string, moduleUUID: string, slug: string | undefined = undefined) {
     super(name, moduleUUID, slug)
   }
 
@@ -27,5 +22,5 @@ export class Page extends ModuleEntity {
   // ---------------------------------------------------------------
 
   /** The HTML Content of the page */
-  content: string = ""
+  content: string = ''
 }

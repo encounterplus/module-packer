@@ -2,7 +2,7 @@ import * as FileSystem from 'fs-extra'
 import * as Path from 'path'
 import * as Puppeteer from 'puppeteer-core'
 import { pathToFileURL } from 'url'
-import { Module } from './Module Entities/Module'
+import { Module, ModuleMode } from './Module Entities/Module'
 import { ModuleEntity } from './Module Entities/ModuleEntity'
 import { Page } from './Module Entities/Page'
 
@@ -16,7 +16,7 @@ export class PdfExporter {
     projectDirectory: string,
     transformPageLocation?: (path: string) => string
   ): Promise<string> {
-    let module = await Module.createModuleFromPath(projectDirectory, Path.basename(projectDirectory), true)
+    let module = await Module.createModuleFromPath(projectDirectory, Path.basename(projectDirectory), ModuleMode.PrintToPDF)
     let moduleOutputPath = Path.join(projectDirectory, 'ModuleBuild')
     let customStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'custom.css')
     let globalStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'global.css')

@@ -11,6 +11,7 @@ import { MarkdownRenderer } from '../MarkdownRenderer'
 import { ModuleProject } from '../ModuleProject'
 import { Group } from './Group'
 import { ModuleEntity } from './ModuleEntity'
+import { Monster } from './Monster'
 import { Page } from './Page'
 
 /**
@@ -21,9 +22,6 @@ export class Module {
   // ---------------------------------------------------------------
   // Private Properties
   // ---------------------------------------------------------------
-
-  /** If true, exports the module in a format fit for print */
-  private exportForPrint: boolean = false
 
   /** The content to print in the footer */
   private printFooterContent: string = ''
@@ -69,8 +67,17 @@ export class Module {
   /** The encounters of the module */
   encounters: ModuleEntity[] = []
 
+  /** The monster associated with the module */
+  monsters: Monster[] = []
+
   /** The path for the module archive (after it is created) */
   moduleArchivePath: string | undefined = undefined
+
+  /** The path where the module creates temporary build files */
+  moduleBuildPath: string | undefined = undefined
+
+  /** The mode of export for the module */
+  exportMode: ModuleMode = ModuleMode.ScanModule
 
   // ---------------------------------------------------------------
   // Public & Protected Methods
@@ -116,13 +123,18 @@ export class Module {
     }
 
     // Check for Module.yaml
-    let modulePrijectFilePath = Path.join(projectDirectory, Module.moduleProjectFileName)
-    if (!FileSystem.existsSync(modulePrijectFilePath)) {
+    let moduleProjectFilePath = Path.join(projectDirectory, Module.moduleProjectFileName)
+    if (!FileSystem.existsSync(moduleProjectFilePath)) {
       return undefined
     }
 
-    let moduleDataBuffer = FileSystem.readFileSync(modulePrijectFilePath)
-    let moduleData = YAML.parse(moduleDataBuffer.toString())
+    let moduleDataBuffer = FileSystem.readFileSync(moduleProjectFilePath)
+    let moduleData: any = undefined
+    try {
+      moduleData = YAML.parse(moduleDataBuffer.toString())
+    } catch (error) {
+      throw Error(`Failed to parse ${moduleProjectFilePath}. Error: ${(error as Error).message}`)
+    }
 
     return moduleData['name']
   }
@@ -131,12 +143,14 @@ export class Module {
    * Builds modules from markdown at a specified directory.
    * @param projectDirectory The module project directory.
    * @param name The name of the module.
-   * @param forPrint If true, formats the module for printing
+   * @param mode The mode for creating the module. Valid values are 'module' -
+   * for creating a module file, 'pdf' for creating a print PDF, and
+   * 'scan' - for scanning the directory
    */
   static async createModuleFromPath(
     projectDirectory: string,
     name: string,
-    forPrint: boolean = false
+    mode: ModuleMode = ModuleMode.ScanModule
   ): Promise<Module> {
     // Ensure the path we're parsing is a directory
     if (!FileSystem.statSync(projectDirectory).isDirectory()) {
@@ -146,7 +160,9 @@ export class Module {
     // Create a new module object and reset the list of
     // existing slugs as we're parsing a new module project
     let module = new Module()
-    module.exportForPrint = forPrint
+    module.exportMode = mode
+    let forPrint = mode == ModuleMode.PrintToPDF
+    let scanOnly = mode == ModuleMode.ScanModule
     Module.existingSlugs = []
 
     // Parse the module project file. If one doesn't exist - create it.
@@ -170,7 +186,11 @@ export class Module {
     // Create a Module Build folder so the main
     // folder gets minimally altered
     let moduleBuildPath = Path.join(projectDirectory, Module.buildFolderName)
-    if (!FileSystem.existsSync(moduleBuildPath)) {
+    module.moduleBuildPath = moduleBuildPath
+    if (!scanOnly && FileSystem.existsSync(moduleBuildPath)) {
+      FileSystem.removeSync(moduleBuildPath)
+    }
+    if (!scanOnly) {
       FileSystem.mkdirSync(moduleBuildPath)
     }
 
@@ -178,16 +198,26 @@ export class Module {
     // always be replaced. They can be overridden by a user by having
     // an assets folder in their module.
     let assetsOutputPath = Path.join(moduleBuildPath, 'assets')
-    if (FileSystem.existsSync(assetsOutputPath)) {
+    if (!scanOnly && FileSystem.existsSync(assetsOutputPath)) {
       FileSystem.removeSync(assetsOutputPath)
     }
-    let baseAssets = Path.join(__dirname, '../../assets/base')
-    FileSystem.copySync(baseAssets, assetsOutputPath)
+    if (!scanOnly) {
+      let baseAssets = Path.join(__dirname, '../../assets/base')
+      FileSystem.copySync(baseAssets, assetsOutputPath)
+    }
 
-    if (forPrint) {
+    // Copy print assets if doing the module for print.
+    if (!scanOnly && forPrint) {
       let printAssets = Path.join(__dirname, '../../assets/print')
       FileSystem.copySync(printAssets, assetsOutputPath)
     }
+
+    // Create Compendium Entries
+    module.moduleProjectInfo.monsterFilePaths.forEach((monsterFilePath) => {
+      let fullMonsterFilePath = Path.join(projectDirectory, monsterFilePath)
+      let monster = Monster.fromYAMLFile(fullMonsterFilePath, module)
+      module.monsters.push(monster)
+    })
 
     // Parse the project directory - navigating through
     // all subdirectories (which become groups unless they
@@ -196,23 +226,24 @@ export class Module {
     module.children = module.sortChildren(module.children)
 
     // Export module.xml file
-    if (!forPrint) {
-      module.exportXML(Path.join(moduleBuildPath, 'module.xml'))
+    if (mode == ModuleMode.ModuleExport) {
+      module.exportXML(moduleBuildPath)
       let moduleArchivePath = Path.join(projectDirectory, `${module.moduleProjectInfo.slug}.module`)
       await module.createArchive(moduleArchivePath, moduleBuildPath)
       module.moduleArchivePath = moduleArchivePath
     }
 
-    if (module.moduleProjectInfo.autoIncrementVersion) {
+    // If incrementing version, we need to rewrite Module project file.
+    if (!scanOnly && module.moduleProjectInfo.autoIncrementVersion) {
       module.moduleProjectInfo.writeModuleProjectFile(moduleProjectFilePath)
     }
-    
+
     return module
   }
 
   /** Gets the HTML elements that start a page when printing */
-  getPageOpenHTML(): string {
-    if (!this.exportForPrint) {
+  getPageOpenHTML = (): string => {
+    if (this.exportMode !== ModuleMode.PrintToPDF) {
       return ''
     }
 
@@ -222,8 +253,8 @@ export class Module {
   }
 
   /** Gets the HTML elements that end a page when printing */
-  getPageCloseHTML(): string {
-    if (!this.exportForPrint) {
+  getPageCloseHTML = (): string => {
+    if (this.exportMode !== ModuleMode.PrintToPDF) {
       return ''
     }
 
@@ -293,10 +324,13 @@ export class Module {
 
   /**
    * Exports the module XML
-   * @param outputPath The path where the XML file will be created
+   * @param outputPath The path where the XML files will be created
    */
-  private exportXML(outputPath: string) {
+  private exportXML = (outputPath: string) => {
     console.log(`Exporting module to XML: ${outputPath}`)
+
+    let modulePath = Path.join(outputPath, 'module.xml')
+    let compendiumPath = Path.join(outputPath, 'compendium.xml')
 
     // Map page data
     let pages = this.pages.map((page) => {
@@ -323,6 +357,52 @@ export class Module {
       return { $: groupAttributes, name: group.name, slug: group.slug }
     })
 
+    // Map monster data
+    let monsters = this.monsters.map((monster) => {
+      let monsterAttributes = {
+        id: monster.id,
+      }
+
+      let monsterObj: any = {
+        $: monsterAttributes,
+        name: monster.name,
+        slug: monster.slug,
+        size: Module.getCompendiumSize(monster),
+        type: monster.type,
+        alignment: monster.alignment,
+        ac: monster.ac,
+        hp: monster.hp,
+        speed: monster.speed,
+        str: monster.str,
+        dex: monster.dex,
+        con: monster.con,
+        int: monster.int,
+        wis: monster.wis,
+        cha: monster.cha,
+        role: monster.role,
+        save: monster.saves,
+        skill: monster.skills,
+        senses: monster.senses,
+        passive: monster.passivePerception,
+        languages: monster.languages,
+        cr: monster.challenge,
+        environment: monster.environments,
+        image: monster.image,
+        token: monster.token,
+        trait: monster.traits,
+        action: monster.actions,
+        legendary: monster.legendaryActions,
+      }
+
+      // Delete undefined fields
+      Object.keys(monsterObj).forEach((key) => {
+        if (monsterObj[key] === undefined) {
+          delete monsterObj[key]
+        }
+      })
+      return monsterObj
+    })
+
     // Layout root module data structure
     let moduleData = {
       $: { id: this.moduleProjectInfo.id },
@@ -337,9 +417,40 @@ export class Module {
       page: pages,
     }
 
-    let xmlBuilder = new XML2JS.Builder({ rootName: 'module' })
-    let xml = xmlBuilder.buildObject(moduleData)
-    FileSystem.writeFileSync(outputPath, xml)
+    let compendiumData = {
+      monster: monsters,
+    }
+
+    let moduleBuilder = new XML2JS.Builder({ rootName: 'module' })
+    let moduleXML = moduleBuilder.buildObject(moduleData)
+
+    let compendiumBuilder = new XML2JS.Builder({ rootName: 'compendium' })
+    let compendiumXML = compendiumBuilder.buildObject(compendiumData)
+
+    FileSystem.writeFileSync(modulePath, moduleXML)
+    FileSystem.writeFileSync(compendiumPath, compendiumXML)
+  }
+
+  /**
+   * Converts a monster's size description to a compendium-compatible entry
+   * @param monster The monster
+   */
+  private static getCompendiumSize(monster: Monster): string {
+    switch (monster.size.toLowerCase()) {
+      case 'tiny':
+        return 'T'
+      case 'small':
+        return 'S'
+      case 'medium':
+        return 'M'
+      case 'large':
+        return 'L'
+      case 'huge':
+        return 'H'
+      case 'gargantuan':
+        return 'G'
+    }
+    return 'M'
   }
 
   /**
@@ -348,7 +459,12 @@ export class Module {
    * @param moduleBuildPath The module build folder path
    * @param parentGroup The parent group (optional)
    */
-  private processDirectory(directoryPath: string, moduleBuildPath: string, parentGroup: Group | undefined = undefined) {
+  private processDirectory = (
+    directoryPath: string,
+    moduleBuildPath: string,
+    parentGroup: Group | undefined = undefined
+  ) => {
+    const scanOnly = this.exportMode === ModuleMode.ScanModule
     console.log(`Processing directory: ${directoryPath}`)
 
     // Get all subdirectories - we will recursively scan
@@ -394,7 +510,7 @@ export class Module {
       // image or resource folder) if they're in the root level.
       let ignoreFilePath = Path.join(subdirectoryPath, '.ignoreGroup')
       if (FileSystem.existsSync(ignoreFilePath)) {
-        if (parentGroup === undefined) {
+        if (!scanOnly && parentGroup === undefined) {
           // If a root-level ignored folder, copy to output
           FileSystem.copySync(subdirectoryPath, Path.join(moduleBuildPath, subdirectoryName))
         }
@@ -426,13 +542,14 @@ export class Module {
    * @param moduleBuildPath The module build folder path
    * @param parentGroup The parent group (optional)
    */
-  public processFile(
+  public processFile = (
     filePath: string,
     moduleBuildPath: string | undefined = undefined,
     parentGroup: Group | undefined = undefined
-  ): Page[] {
-    let markdownRenderer = new MarkdownRenderer(this.exportForPrint, this)
-    const forPrint = this.exportForPrint
+  ): Page[] => {
+    const forPrint = this.exportMode === ModuleMode.PrintToPDF
+    const scanOnly = this.exportMode === ModuleMode.ScanModule
+    let markdownRenderer = new MarkdownRenderer(forPrint, this)
     let markdown = markdownRenderer.getRenderer()
 
     let pages: Page[] = []
@@ -443,7 +560,7 @@ export class Module {
     // references when authoring markdown
     const imageExtensions = ['.gif', '.jpeg', '.jpg', '.png']
     let extension = Path.extname(filePath)
-    if (moduleBuildPath !== undefined && imageExtensions.includes(extension)) {
+    if (!scanOnly && moduleBuildPath !== undefined && imageExtensions.includes(extension)) {
       let filename = Path.basename(filePath)
       let newDestination = Path.join(moduleBuildPath, filename)
       FileSystem.copyFileSync(filePath, newDestination)
@@ -475,7 +592,7 @@ export class Module {
 
     // Get footer text. By default, it will be "<Page Name> | <Parent Name>"
     let parentName = parentGroup ? parentGroup.name : this.moduleProjectInfo.name
-    let footerText = (frontMatter['footer'] as string)
+    let footerText = frontMatter['footer'] as string
     this.printFooterContent = footerText || `${pageName} | ${parentName}`
     if ((frontMatter['hide-footer-text'] as boolean) === true) {
       this.printFooterContent = ''
@@ -483,6 +600,12 @@ export class Module {
 
     // Convert markdown to HTML
     let html = markdown.render(matter.content)
+
+    // Add monsters parsed from the markdown page into
+    // the module's monster list.
+    markdownRenderer.monsters.forEach((monster) => {
+      this.monsters.push(monster)
+    })
 
     // If we have pagebreaks defined, we'll attempt to split
     // up, group, and subgroup content by header values
@@ -595,11 +718,35 @@ export class Module {
 
       // Process multi-column layout if printing
       page.content = this.postProcessForPrint(page.content, printMultiColumn)
-      
+
       pages.push(page)
     }
 
     return pages
+  }
+
+  /** Copies an image to the root of the module build folder */
+  copyImageFileToRoot = (imagePath: string) => {
+    const scanOnly = this.exportMode === ModuleMode.ScanModule
+    if (scanOnly) {
+      return
+    }
+
+    if (!this.moduleBuildPath) {
+      throw Error('Module Build Path is not yet defined.')
+    }
+
+    if (!FileSystem.existsSync(imagePath)) {
+      throw Error(`Image ${imagePath} could not be located.`)
+    }
+
+    let filename = Path.basename(imagePath)
+    let newDestination = Path.join(this.moduleBuildPath, filename)
+    if (FileSystem.existsSync(newDestination)) {
+      throw Error('Duplicate image names used - ensure all images in module have unique names.')
+    }
+
+    FileSystem.copyFileSync(imagePath, newDestination)
   }
 
   /**
@@ -607,26 +754,28 @@ export class Module {
    * @param pageContent The current page HTML
    * @param printMultiColumn If true, the print layout is two columns
    */
-  private postProcessForPrint(pageContent: string, printMultiColumn: boolean): string {
-    if (!this.exportForPrint) {
+  private postProcessForPrint = (pageContent: string, printMultiColumn: boolean): string => {
+    const forPrint = this.exportMode === ModuleMode.PrintToPDF
+
+    if (!forPrint) {
       return pageContent
     }
 
     let $ = Cheerio.load(pageContent)
-    if(!printMultiColumn) {
-      $('div.page-content-two-column').each((i, element) => { 
+    if (!printMultiColumn) {
+      $('div.page-content-two-column').each((i, element) => {
         $(element).attr('class', 'page-content')
       })
     }
 
-    $('img.size-cover').each((i, element) => { 
+    $('img.size-cover').each((i, element) => {
       $(element.parent).attr('class', 'size-cover')
     })
 
-    $('img.size-full').each((i, element) => { 
+    $('img.size-full').each((i, element) => {
       $(element.parent).attr('class', 'size-full')
     })
-    
+
     return $.html()
   }
 
@@ -635,8 +784,9 @@ export class Module {
    * when the `exportForPrint` flag is true.
    * @param originalHTML The original HTML
    */
-  private wrapPageInPrintDivs(originalHTML: string): string {
-    if (!this.exportForPrint) {
+  private wrapPageInPrintDivs = (originalHTML: string): string => {
+    const forPrint = this.exportMode === ModuleMode.PrintToPDF
+    if (!forPrint) {
       return originalHTML
     }
 
@@ -657,4 +807,16 @@ export class Module {
     if (character === '\\') character = '\\\\'
     return value.replace(new RegExp('^[' + character + ']+|[' + character + ']+$', 'g'), '')
   }
+}
+
+/** The module creation mode */
+export enum ModuleMode {
+  /** Exports a module to a .module file */
+  ModuleExport = 1,
+
+  /** Exports a module to a PDF file */
+  PrintToPDF,
+
+  /** Does not create a module file - simply scans the module info */
+  ScanModule,
 }

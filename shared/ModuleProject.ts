@@ -49,6 +49,9 @@ export class ModuleProject {
   /** Whether the module project auto-increments its version */
   autoIncrementVersion: boolean | undefined = undefined
 
+  /** The paths of monster definition files */
+  monsterFilePaths: string[] = []
+
   // ---------------------------------------------------------------
   // Public Methods
   // ---------------------------------------------------------------
@@ -100,7 +103,13 @@ export class ModuleProject {
 
     let moduleProject = new ModuleProject()
     let moduleDataBuffer = FileSystem.readFileSync(projectFilePath)
-    let moduleData = YAML.parse(moduleDataBuffer.toString())
+    let moduleData: any = undefined
+    try {
+      moduleData = YAML.parse(moduleDataBuffer.toString())
+    } catch (error) {
+      throw Error(`Failed to parse ${projectFilePath}. Error: ${(error as Error).message}`)
+    }
+    
     moduleProject.moduleProjectPath = projectFilePath
 
     // If ID is specified in Module project file, ensure it is a UUID and use that
@@ -182,6 +191,11 @@ export class ModuleProject {
       moduleProject.imagePath = imagePath
     }
 
+    let monsterPaths = moduleData['monsters'] as string[]
+    if (monsterPaths) {
+      moduleProject.monsterFilePaths = monsterPaths
+    }
+
     return moduleProject
   }
 
@@ -248,6 +262,10 @@ export class ModuleProject {
     }
     newModuleProject['version'] = this.version
     newModuleProject['autoIncrementVersion'] = true
+
+    if(this.monsterFilePaths && this.monsterFilePaths.length > 0) {
+      newModuleProject['monsters'] = this.monsterFilePaths
+    }
 
     let outputYAML = YAML.stringify(newModuleProject)
     FileSystem.writeFileSync(projectFilePath, outputYAML)
