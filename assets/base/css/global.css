@@ -802,7 +802,8 @@ table.neutral tbody tr:nth-child(odd) {
 @media print {
 
   p.size-cover,
-  p.size-full {
+  p.size-full,
+  div.size-full {
     column-span: all;
   }
 

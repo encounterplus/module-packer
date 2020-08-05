@@ -18,6 +18,7 @@
   - [Text Blocks & Block Quotes](#text-blocks--block-quotes)
   - [Links](#links)
   - [Tables](#tables)
+  - [Monsters](#monsters)
   - [Page Breaks for Print](#page-breaks-for-print)
 - [Visual Studio Code Extension](#visual-studio-code-extension)
 - [Other Editors](#other-editors)
@@ -399,6 +400,70 @@ A shop table style also exists with special header values for showing categories
 <p align="left">
   <img src="./documentation/ShopTable.jpg" alt="Shop Table" width="400">
 </p>
+
+## Monsters
+
+Monster stat blocks can be created within a Markdown file. The Monster stat blocks are specified using standard [YAML](https://en.wikipedia.org/wiki/YAML) just like the Front-Matter on each page.
+
+~~~Markdown
+```Monster {.two-column}
+id: 2c011c22-0f0c-4cc8-95de-9f53a9b89df5
+name: Evil McEvilface
+slug: evil-mcevilface
+size: Medium
+type: humanoid
+alignment: neutral evil
+ac: 15
+hp: 30 (10d6)
+speed: 30 ft.
+str: 17
+dex: 13
+con: 12
+int: 10
+wis: 6
+cha: 8
+role: enemy
+saves: Str + 2
+skills: Stealth +6
+vulnerabilities: radiant
+resistances: bludgeoning, piercing
+damageImmunities: poison
+conditionImmunities: poisoned, petrified
+senses: darkvision 60 ft., passive Perception 9
+languages: Common, Celestial
+challenge: 1/4
+environments: forest, grassland, hill, underdark
+image: Monster.jpg
+token: MonsterToken.png
+traits:
+  - name: Smells Bad
+    description: The Evil McEvilface smells pretty ripe. This doesn't do anything to the party, but makes unarmed combat and grappling far less pleasant.
+actions:
+  - name: Novelty-Sized Plunger
+    description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 7 (1d6 + 4) suction damage."  
+  - name: Open-carry Trebuchet
+    description: "Ranged Weapon Attack: +5 to hit, range 80/320 ft., one target. Hit: 7 (1d6 + 4) bludgeon damage."
+reactions:
+  - name: Indignant Glare
+    description: If the Evil McEvilface makes a successful spell saving throw, the Evil McEvilface glares at you disapprovingly and you feel shame. Your next ability check must be rolled with disadvantage.
+legendaryActions:
+  - description: The Evil McEvilface can take 1 legendary actions, using the Explosion option below.
+  - name: Explosion
+    description: "The Evil McEvilface suddenly explodes doing 1d20 damage to all creatures within 10 ft. This kills the Evil McEvilface."    
+```
+~~~
+
+<p align="left">
+  <img src="./documentation/Monster-SingleColumn.jpg" alt="Shop Table" width="250">
+</p>
+
+There are two styles of stat blocks available: a standard single-column stat block (default) and a two-column stat block (specified with the `.two-column` attribute as shown above).
+
+<p align="left">
+  <img src="./documentation/Monster-TwoColumn.jpg" alt="Shop Table" width="500">
+</p>
+
+Like images, monster stat blocks may be used with the standard `.float-left` and `.float-right` style attributes.
 
 ## Special Tags for Print/PDF
 

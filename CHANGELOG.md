@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.11
 
 ### Added
 - `Monster` code-fence style for creating Monster Stat blocks in YAML
