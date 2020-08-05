@@ -8,12 +8,14 @@
     "editor.tabSize": 2,
     "prettier.semi": false,
     "prettier.singleQuote": true,
-    "prettier.printWidth": 120,
+    "prettier.printWidth": 140,
     "cSpell.words": [
       "autohiding",
+      "ignoregroup",
       "ms",
       "ms autohiding scrollbar",
       "opentype",
+      "pagebreaks",
       "scrollbar",
       "solbera",
       "statblock"

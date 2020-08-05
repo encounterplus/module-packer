@@ -1,6 +1,7 @@
 import * as vscode from 'vscode'
 import * as glob from 'glob'
 import * as Markdown from 'markdown-it'
+import * as FileSystem from 'fs-extra'
 import { BuildModuleCommand } from './Commands/BuildModuleCommand'
 import { CreateModuleProjectFileCommand } from './Commands/CreateModuleProjectFileCommand'
 import { ExportToPdfCommand } from './Commands/ExportToPdfCommand'
@@ -33,7 +34,32 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('encounterPlusMarkdown.openPage', async (pagePath) => {
+      if (!FileSystem.existsSync(pagePath)) { 
+        return 
+      }
       let uri = vscode.Uri.file(pagePath)
+      let doc = await vscode.workspace.openTextDocument(uri)
+      vscode.window.showTextDocument(doc, vscode.ViewColumn.One)
+    })
+  )
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('encounterPlusMarkdown.openModuleProjectFile', async (moduleProjectPath) => {
+      if (!FileSystem.existsSync(moduleProjectPath)) { 
+        return 
+      }
+      let uri = vscode.Uri.file(moduleProjectPath)
+      let doc = await vscode.workspace.openTextDocument(uri)
+      vscode.window.showTextDocument(doc, vscode.ViewColumn.One)
+    })
+  )
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('encounterPlusMarkdown.openGroupFile', async (groupFilePath) => {
+      if (!FileSystem.existsSync(groupFilePath)) { 
+        return 
+      }
+      let uri = vscode.Uri.file(groupFilePath)
       let doc = await vscode.workspace.openTextDocument(uri)
       vscode.window.showTextDocument(doc, vscode.ViewColumn.One)
     })

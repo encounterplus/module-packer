@@ -27,7 +27,7 @@ export class Monster extends ModuleEntity {
 
   /** The monster size. Valid values are: T (Tiny),
    * S (Small), M (Medium), L (Large), H (Huge),
-   * and G (Gargantuan)  */
+   * G (Gargantuan), and C (Colossal)  */
   size: string = 'M'
 
   /** The type of monster */
@@ -399,12 +399,24 @@ export class Monster extends ModuleEntity {
    */
   getHTML = (classes: string[] = []): string => {
     function drawTaperRule(): string {
-      return '<svg height="5" width="100%" class="statblock-tapered-rule"><polyline points="0,0 300,2 0,4"></polyline></svg>'
+      return '<svg height="5" width="100%" class="statblock-tapered-rule" preserveAspectRatio="xMidYMid meet" viewBox="0 0 400 4"><polyline points="0,0 400,2 0,4"></polyline></svg>'
     }
 
     function getAbilityMod(ability: number): string {
-      let abilityMod = ((ability - 10) / 2) as number
+      let abilityMod = Math.floor((ability - 10) / 2)
       return abilityMod >= 0 ? `+${abilityMod}` : `${abilityMod}`
+    }
+
+    function italicsActionDescription(description: string): string {
+      let newDescription = description
+      newDescription = newDescription.replace('Melee or Ranged Weapon Attack: ', '<i>Melee or Ranged Weapon Attack:</i> ')
+      newDescription = newDescription.replace('Melee Weapon Attack: ', '<i>Melee Weapon Attack:</i> ')
+      newDescription = newDescription.replace('Ranged Weapon Attack: ', '<i>Ranged Weapon Attack:</i> ')
+      newDescription = newDescription.replace('Melee or Ranged Spell Attack: ', '<i>Melee or Ranged Spell Attack:</i> ')
+      newDescription = newDescription.replace('Melee Spell Attack: ', '<i>Melee Spell Attack:</i> ')
+      newDescription = newDescription.replace('Ranged Spell Attack: ', '<i>Ranged Spell Attack:</i> ')
+      newDescription = newDescription.replace('Hit: ', '<i>Hit:</i> ')
+      return newDescription
     }
 
     function getChallengeXP(xp: string): string {
@@ -489,6 +501,9 @@ export class Monster extends ModuleEntity {
     if (this.skills !== undefined) {
       properties.push({ name: 'Skills', description: this.skills })
     }
+    if (this.vulnerabilities !== undefined) {
+      properties.push({ name: 'Damage Vulnerabilities', description: this.vulnerabilities })
+    }
     if (this.resistances !== undefined) {
       properties.push({ name: 'Damage Resistances', description: this.resistances })
     }
@@ -512,7 +527,7 @@ export class Monster extends ModuleEntity {
     monsterHTML += '<div class="statblock-section-left">'
     monsterHTML += '<div class="statblock-creature-heading">'
     monsterHTML += `<h1>${this.name}</h1>`
-    monsterHTML += `<h2>${this.size}, ${this.alignment}</h2>`
+    monsterHTML += `<h2>${this.size} ${this.type}, ${this.alignment}</h2>`
     monsterHTML += '</div>' // statblock-creature-heading
     monsterHTML += drawTaperRule()
     monsterHTML += '<div class="statblock-top-stats">'
@@ -522,24 +537,12 @@ export class Monster extends ModuleEntity {
     monsterHTML += '</div>' // statblock-top-stats
     monsterHTML += drawTaperRule()
     monsterHTML += '<div class="statblock-abilities">'
-    monsterHTML += `<div class="statblock-ability-strength"><h4>STR</h4> <p>${this.str} (${getAbilityMod(
-      this.str
-    )})</p></div>`
-    monsterHTML += `<div class="statblock-ability-dexterity"><h4>DEX</h4> <p>${this.dex} (${getAbilityMod(
-      this.dex
-    )})</p></div>`
-    monsterHTML += `<div class="statblock-ability-constitution"><h4>CON</h4> <p>${this.con} (${getAbilityMod(
-      this.con
-    )})</p></div>`
-    monsterHTML += `<div class="statblock-ability-intelligence"><h4>INT</h4> <p>${this.int} (${getAbilityMod(
-      this.int
-    )})</p></div>`
-    monsterHTML += `<div class="statblock-ability-wisdom"><h4>WIS</h4> <p>${this.wis} (${getAbilityMod(
-      this.wis
-    )})</p></div>`
-    monsterHTML += `<div class="statblock-ability-charisma"><h4>CHA</h4> <p>${this.cha} (${getAbilityMod(
-      this.cha
-    )})</p></div>`
+    monsterHTML += `<div class="statblock-ability-strength"><h4>STR</h4> <p>${this.str} (${getAbilityMod(this.str)})</p></div>`
+    monsterHTML += `<div class="statblock-ability-dexterity"><h4>DEX</h4> <p>${this.dex} (${getAbilityMod(this.dex)})</p></div>`
+    monsterHTML += `<div class="statblock-ability-constitution"><h4>CON</h4> <p>${this.con} (${getAbilityMod(this.con)})</p></div>`
+    monsterHTML += `<div class="statblock-ability-intelligence"><h4>INT</h4> <p>${this.int} (${getAbilityMod(this.int)})</p></div>`
+    monsterHTML += `<div class="statblock-ability-wisdom"><h4>WIS</h4> <p>${this.wis} (${getAbilityMod(this.wis)})</p></div>`
+    monsterHTML += `<div class="statblock-ability-charisma"><h4>CHA</h4> <p>${this.cha} (${getAbilityMod(this.cha)})</p></div>`
     monsterHTML += '</div>' // statblock-abilities
     monsterHTML += drawTaperRule()
     properties.forEach((property, index) => {
@@ -554,7 +557,12 @@ export class Monster extends ModuleEntity {
     })
     monsterHTML += drawTaperRule()
     this.traits.forEach((trait, index) => {
-      monsterHTML += `<div class="statblock-property-block"><h4>${trait.name}.</h4> <p>${trait.description}</p></div>`
+      monsterHTML += '<div class="statblock-property-block">'
+      if (trait.name) {
+        monsterHTML += `<h4>${trait.name}.</h4> `
+      } 
+      monsterHTML += `<p>${trait.description}</p>`
+      monsterHTML += '</div>' // statblock-property-block
     })
     monsterHTML += '</div>' // statblock-section-left
     monsterHTML += '<div class="statblock-section-right">'
@@ -562,23 +570,38 @@ export class Monster extends ModuleEntity {
       monsterHTML += '<div class="statblock-actions">'
       monsterHTML += '<h3>Actions</h3>'
       this.actions.forEach((action, index) => {
-        monsterHTML += `<div class="statblock-property-block"><h4>${action.name}.</h4> <p>${action.description}</p></div>`
+        monsterHTML += '<div class="statblock-property-block">'
+        if (action.name) {
+          monsterHTML += `<h4>${action.name}.</h4> `
+        } 
+        monsterHTML += `<p>${italicsActionDescription(action.description)}</p>`
+        monsterHTML += '</div>' // statblock-property-block
       })
       monsterHTML += '</div>' // statblock-actions
     }
     if (this.reactions.length > 0) {
       monsterHTML += '<div class="statblock-reactions">'
       monsterHTML += '<h3>Reactions</h3>'
-      this.actions.forEach((reaction, index) => {
-        monsterHTML += `<div class="statblock-property-block"><h4>${reaction.name}.</h4> <p>${reaction.description}</p></div>`
+      this.reactions.forEach((reaction, index) => {
+        monsterHTML += '<div class="statblock-property-block">'
+        if (reaction.name) {
+          monsterHTML += `<h4>${reaction.name}.</h4> `
+        } 
+        monsterHTML += `<p>${italicsActionDescription(reaction.description)}</p>`
+        monsterHTML += '</div>' // statblock-property-block
       })
       monsterHTML += '</div>' // statblock-reactions
     }
     if (this.legendaryActions.length > 0) {
-      monsterHTML += '<div class="statblock-legendaryActions">'
+      monsterHTML += '<div class="statblock-legendary-actions">'
       monsterHTML += '<h3>Legendary Actions</h3>'
-      this.actions.forEach((legendaryAction, index) => {
-        monsterHTML += `<div class="statblock-property-block"><h4>${legendaryAction.name}.</h4> <p>${legendaryAction.description}</p></div>`
+      this.legendaryActions.forEach((legendaryAction, index) => {
+        monsterHTML += '<div class="statblock-property-block">'
+        if (legendaryAction.name) {
+          monsterHTML += `<h4>${legendaryAction.name}.</h4> `
+        } 
+        monsterHTML += `<p>${italicsActionDescription(legendaryAction.description)}</p>`
+        monsterHTML += '</div>' // statblock-property-block
       })
       monsterHTML += '</div>' // statblock-legendaryActions
     }

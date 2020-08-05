@@ -3,10 +3,17 @@
 ## [Unreleased]
 
 ### Added
-- `Monster` code-fence style for creating Monster Stat blocks in YAML.
+- `Monster` code-fence style for creating Monster Stat blocks in YAML
 - `(print-column)` tag for column breaks when exporting to PDF
 - `.caption` attribute for images to add a caption to images (by placing them in a Figure element)
 - `footer` and `hide-footer` front matter options for pages
+
+### Changed
+- Building a module or Exporting a module to PDF now save all files in the VS Code workspace
+- In VS Code, when clicking on Module or Group items in the Module View Panel, the relevant YAML file will be shown for edit
+
+### Fixed
+- Fixed "Create Module Project File" message not being dismissed after a module project file was created.
 
 ## 1.0.10
 

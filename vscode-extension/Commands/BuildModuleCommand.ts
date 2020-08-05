@@ -28,6 +28,7 @@ export class BuildModuleCommand extends CommandBase {
    * Contains execution code for the command
    */
   protected async executeCommand() {
+    await vscode.workspace.saveAll(false)
     let moduleProjectPath = this.moduleProject?.moduleProjectPath
 
     // Ensure we have a proper project path

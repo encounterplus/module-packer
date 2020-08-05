@@ -147,11 +147,7 @@ export class Module {
    * for creating a module file, 'pdf' for creating a print PDF, and
    * 'scan' - for scanning the directory
    */
-  static async createModuleFromPath(
-    projectDirectory: string,
-    name: string,
-    mode: ModuleMode = ModuleMode.ScanModule
-  ): Promise<Module> {
+  static async createModuleFromPath(projectDirectory: string, name: string, mode: ModuleMode = ModuleMode.ScanModule): Promise<Module> {
     // Ensure the path we're parsing is a directory
     if (!FileSystem.statSync(projectDirectory).isDirectory()) {
       throw Error('Specified module project path is not a directory.')
@@ -318,7 +314,7 @@ export class Module {
     })
 
     archive.pipe(archiveStream)
-    archive.glob('./**/*', { cwd: moduleBuildPath })
+    archive.glob('./**/!(compendium.xml)', { cwd: moduleBuildPath }) // Ignore compendium.xml for now
     await archive.finalize()
   }
 
@@ -359,9 +355,19 @@ export class Module {
 
     // Map monster data
     let monsters = this.monsters.map((monster) => {
+      let monsterImageFolder = Path.join(outputPath, 'monsters')
+      if(!FileSystem.existsSync(monsterImageFolder)) {
+        FileSystem.mkdir(monsterImageFolder)
+      }
+
       let monsterAttributes = {
         id: monster.id,
       }
+
+      let traits = monster.traits.map((trait) => { return { name: trait.name, text: trait.description }})
+      let actions = monster.actions.map((action) => { return { name: action.name, text: action.description }})
+      let reactions = monster.reactions.map((reaction) => { return { name: reaction.name, text: reaction.description }})
+      let legendaryActions = monster.legendaryActions.map((legendaryAction) => { return { name: legendaryAction.name, text: legendaryAction.description }})
 
       let monsterObj: any = {
         $: monsterAttributes,
@@ -382,6 +388,10 @@ export class Module {
         role: monster.role,
         save: monster.saves,
         skill: monster.skills,
+        vulnerable: monster.vulnerabilities,
+        resist: monster.resistances,
+        immune: monster.damageImmunities,
+        conditionImmune: monster.conditionImmunities,
         senses: monster.senses,
         passive: monster.passivePerception,
         languages: monster.languages,
@@ -389,9 +399,22 @@ export class Module {
         environment: monster.environments,
         image: monster.image,
         token: monster.token,
-        trait: monster.traits,
-        action: monster.actions,
-        legendary: monster.legendaryActions,
+        trait: traits,
+        action: actions,
+        reaction: reactions,
+        legendary: legendaryActions,
+      }
+
+      if(monster.image) {
+        let imageSource = Path.join(outputPath, monster.image)
+        let imageDestination = Path.join(monsterImageFolder, monster.image)
+        FileSystem.copyFileSync(imageSource, imageDestination)
+      }
+
+      if(monster.token) {
+        let imageSource = Path.join(outputPath, monster.token)
+        let imageDestination = Path.join(monsterImageFolder, monster.token)
+        FileSystem.copyFileSync(imageSource, imageDestination)
       }
 
       // Delete undefined fields
@@ -449,6 +472,8 @@ export class Module {
         return 'H'
       case 'gargantuan':
         return 'G'
+      case 'colossal':
+        return 'C'
     }
     return 'M'
   }
@@ -459,11 +484,7 @@ export class Module {
    * @param moduleBuildPath The module build folder path
    * @param parentGroup The parent group (optional)
    */
-  private processDirectory = (
-    directoryPath: string,
-    moduleBuildPath: string,
-    parentGroup: Group | undefined = undefined
-  ) => {
+  private processDirectory = (directoryPath: string, moduleBuildPath: string, parentGroup: Group | undefined = undefined) => {
     const scanOnly = this.exportMode === ModuleMode.ScanModule
     console.log(`Processing directory: ${directoryPath}`)
 
@@ -536,7 +557,7 @@ export class Module {
   }
 
   /**
-   * Processes a markdown file and converts it to module-appopriate
+   * Processes a markdown file and converts it to module-appropriate
    * HTML.
    * @param filePath The path of the markdown file to process
    * @param moduleBuildPath The module build folder path
@@ -774,6 +795,11 @@ export class Module {
 
     $('img.size-full').each((i, element) => {
       $(element.parent).attr('class', 'size-full')
+    })
+
+    $('div.statblock.two-column').each((i, element) => {
+      let oldClasses = $(element).attr('class')
+      $(element).attr('class', oldClasses + ' size-full')
     })
 
     return $.html()

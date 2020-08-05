@@ -4,6 +4,7 @@ import * as FileSystem from 'fs-extra'
 import * as GrayMatter from 'gray-matter'
 import { ModuleProject } from '../../shared/ModuleProject'
 import { Module } from '../../shared/Module Entities/Module'
+import { Group } from '../../shared/Module Entities/Group'
 
 /** A TreeView proivider for module projects and their pages/groups */
 export class ModuleProjectProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
@@ -151,6 +152,12 @@ class GroupTreeItem extends vscode.TreeItem {
    */
   constructor(public readonly groupName: string, public readonly groupPath: string) {
     super(groupName, vscode.TreeItemCollapsibleState.Collapsed)
+    const groupFilePath = Path.join(groupPath, Group.groupSettingsFileName)
+    this.command = {
+      command: 'encounterPlusMarkdown.openGroupFile',
+      title: 'Open Group',
+      arguments: [groupFilePath],
+    }   
     this.contextValue = 'moduleGroup'
   }
 
@@ -202,6 +209,11 @@ class ModuleTreeItem extends vscode.TreeItem {
    */
   constructor(public readonly moduleProject: ModuleProject) {
     super(moduleProject.name, vscode.TreeItemCollapsibleState.Collapsed)
+    this.command = {
+      command: 'encounterPlusMarkdown.openModuleProjectFile',
+      title: 'Open Module',
+      arguments: [moduleProject.moduleProjectPath],
+    }    
     this.contextValue = 'moduleProject'
   }
 
