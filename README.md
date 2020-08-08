@@ -454,16 +454,22 @@ legendaryActions:
 ~~~
 
 <p align="left">
-  <img src="./documentation/Monster-SingleColumn.jpg" alt="Shop Table" width="250">
+  <img src="./documentation/Monster-SingleColumn.jpg" alt="Monster Stat Block" width="250">
 </p>
 
 There are two styles of stat blocks available: a standard single-column stat block (default) and a two-column stat block (specified with the `.two-column` attribute as shown above).
 
 <p align="left">
-  <img src="./documentation/Monster-TwoColumn.jpg" alt="Shop Table" width="500">
+  <img src="./documentation/Monster-TwoColumn.jpg" alt="Monster Stat Block with Two Columns" width="500">
 </p>
 
 Like images, monster stat blocks may be used with the standard `.float-left` and `.float-right` style attributes.
+
+Monster stat blocks can be rendered in a variety of colors with the `.blue`, `.green`, `.red`, `.yellow`, `.gray`, and `.neutral` tags.
+
+<p align="left">
+  <img src="./documentation/StatblockColors.jpg" alt="Monster Stat Block Colors" width="500">
+</p>
 
 ## Special Tags for Print/PDF
 

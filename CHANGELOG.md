@@ -1,11 +1,14 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.12
 
 ### Added
 - `.square` bullet style for unordered lists
 - `print-only` option for front-matter
+- `.blue, .green, .yellow, .red, .gray, .neutral` styles for monster stat blocks
 
+### Fixed
+- Fixed `Cannot read property 'children' of undefined` error
 
 ## 1.0.11
 
