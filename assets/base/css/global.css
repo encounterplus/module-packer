@@ -307,6 +307,12 @@ mark {
   background: #e4c3c3;
 }
 
+/******** List Styles ********/
+
+ul.square {
+  list-style-type: square;
+}
+
 /******** Code Blocks ********/
 
 code,
@@ -592,12 +598,43 @@ table.neutral tbody tr:nth-child(odd) {
   float: right;
 }
 
-.statblock h2,
-.statblock h3,
-.statblock h4 {
+.statblock-title {
+  font-family: 'Andada SC', '-apple-system', sans-serif;
+  color: #922610;
+  font-size: 23px;
+  line-height: 1.2em;
+  margin: 10px 0 0;
+  letter-spacing: 1px;
+  font-variant: small-caps;
+  font-weight: bold;
+}
+
+.statblock-subtitle,
+.statblock-trait-name,
+.statblock-topstat-name,
+.statblock-property-name,
+.statblock-property-name,
+.statblock-section-title,
+.statblock-property-value {
   font-family: '-apple-system', sans-serif;
   color: #7A200D;
+}
+
+.statblock-trait-name,
+.statblock-topstat-name,
+.statblock-ability-abbrev,
+.statblock-property-name {
   font-weight: bold;
+}
+
+.statblock-trait-description,
+.statblock-action-description,
+.statblock-property-value,
+.statblock-property-name,
+.statblock-trait-name,
+.statblock-topstat-name,
+.statblock-topstat-value {
+  display: inline;
 }
 
 .statblock-border {
@@ -624,18 +661,7 @@ table.neutral tbody tr:nth-child(odd) {
   stroke: #922610;
 }
 
-.statblock-creature-heading h1 {
-  font-family: 'Andada SC', '-apple-system', sans-serif;
-  color: #922610;
-  font-size: 23px;
-  line-height: 1.2em;
-  margin: 10px 0 0;
-  letter-spacing: 1px;
-  font-variant: small-caps;
-  font-weight: bold;
-}
-
-.statblock-creature-heading h2 {
+.statblock-subtitle {
   font-weight: normal;
   font-style: italic;
   font-size: 12px;
@@ -643,15 +669,14 @@ table.neutral tbody tr:nth-child(odd) {
   margin: 0 0 10px;
 }
 
-.statblock-property-line h4,
-.statblock-property-line p {
-  display: inline;
+.statblock-topstat-name,
+.statblock-topstat-value {
   margin: 0;
   font-size: 13px;
   line-height: 1.2em;
 }
 
-.statblock-property-line p {
+.statblock-topstat-value {
   color: #922610;
 }
 
@@ -683,7 +708,7 @@ table.neutral tbody tr:nth-child(odd) {
   line-height: 1em;
 }
 
-.statblock-abilities h4 {
+.statblock-ability-abbrev {
   margin: 10px 0 2px;
   font-size: 13px;
   line-height: 1.2em;
@@ -691,14 +716,14 @@ table.neutral tbody tr:nth-child(odd) {
   color: #922610;
 }
 
-.statblock-abilities p {
+.statblock-ability-value {
   margin: 0 0 10px;
   line-height: 1.2em;
   font-weight: lighter;
 }
 
-.statblock-property-block h4,
-.statblock-property-block p {
+.statblock-action-name,
+.statblock-trait-name {
   color: black;
   font-size: 13.5px;
   line-height: 1.2em;
@@ -706,8 +731,10 @@ table.neutral tbody tr:nth-child(odd) {
   margin: 0;
 }
 
-.statblock-property-block h4 {
+.statblock-action-name,
+.statblock-trait-name {
   font-style: italic;
+  font-weight: bold;
 }
 
 .statblock-property-block {
@@ -720,9 +747,7 @@ table.neutral tbody tr:nth-child(odd) {
   margin: 0 0 20px;
 }
 
-.statblock-actions h3,
-.statblock-reactions h3,
-.statblock-legendary-actions h3 {
+.statblock-section-title {
   border-bottom: 1px solid #922610;
   font-size: 21px;
   font-variant: small-caps;
@@ -737,6 +762,228 @@ table.neutral tbody tr:nth-child(odd) {
 .statblock-reactions:last-child,
 .statblock-legendary-actions:last-child {
   margin: 0;
+}
+
+/* Blue Stat Blocks */
+.blue .statblock-title,
+.blue .statblock-tapered-rule,
+.blue .statblock-topstat-value,
+.blue .statblock-abilities,
+.blue .statblock-ability-abbrev,
+.blue .statblock-section-title {
+  color: #105a92;
+}
+
+.blue .statblock-tapered-rule {
+  fill: #105a92;
+  stroke: #105a92;
+}
+
+.blue .statblock-section-title {
+  border-bottom-color: #105a92;
+}
+
+.blue .statblock-subtitle,
+.blue .statblock-trait-name,
+.blue .statblock-topstat-name,
+.blue .statblock-property-name,
+.blue .statblock-property-name,
+.blue .statblock-section-title,
+.blue .statblock-property-value {
+  color: #0d3e7a;
+}
+
+.blue .statblock-border {
+  background: #7C9EBA;
+}
+
+.blue.statblock {
+  background: #E5EDF4;
+}
+
+/* Green Stat Blocks */
+.green .statblock-title,
+.green .statblock-tapered-rule,
+.green .statblock-topstat-value,
+.green .statblock-abilities,
+.green .statblock-ability-abbrev,
+.green .statblock-section-title {
+  color: #099D43;
+}
+
+.green .statblock-tapered-rule {
+  fill: #099D43;
+  stroke: #099D43;
+}
+
+.green .statblock-section-title {
+  border-bottom-color: #099D43;
+}
+
+.green .statblock-subtitle,
+.green .statblock-trait-name,
+.green .statblock-topstat-name,
+.green .statblock-property-name,
+.green .statblock-property-name,
+.green .statblock-section-title,
+.green .statblock-property-value {
+  color: #068347;
+}
+
+.green .statblock-border {
+  background: #78BF94;
+}
+
+.green.statblock {
+  background: #E4F5EB;
+}
+
+/* Red Stat Blocks */
+.red .statblock-title,
+.red .statblock-tapered-rule,
+.red .statblock-topstat-value,
+.red .statblock-abilities,
+.red .statblock-ability-abbrev,
+.red .statblock-section-title {
+  color: #9D0E09;
+}
+
+.red .statblock-tapered-rule {
+  fill: #9D0E09;
+  stroke: #9D0E09;
+}
+
+.red .statblock-section-title {
+  border-bottom-color: #9D0E09;
+}
+
+.red .statblock-subtitle,
+.red .statblock-trait-name,
+.red .statblock-topstat-name,
+.red .statblock-property-name,
+.red .statblock-property-name,
+.red .statblock-section-title,
+.red .statblock-property-value {
+  color: #831A06;
+}
+
+.red .statblock-border {
+  background: #BF7A78;
+}
+
+.red.statblock {
+  background: #F5E4E4;
+}
+
+/* Yellow Stat Blocks */
+.yellow .statblock-title,
+.yellow .statblock-tapered-rule,
+.yellow .statblock-topstat-value,
+.yellow .statblock-abilities,
+.yellow .statblock-ability-abbrev,
+.yellow .statblock-section-title {
+  color: #D77E20;
+}
+
+.yellow .statblock-tapered-rule {
+  fill: #D77E20;
+  stroke: #D77E20;
+}
+
+.yellow .statblock-section-title {
+  border-bottom-color: #D77E20;
+}
+
+.yellow .statblock-subtitle,
+.yellow .statblock-trait-name,
+.yellow .statblock-topstat-name,
+.yellow .statblock-property-name,
+.yellow .statblock-property-name,
+.yellow .statblock-section-title,
+.yellow .statblock-property-value {
+  color: #DD712F;
+}
+
+.yellow .statblock-border {
+  background: #CDB4A5;
+}
+
+.yellow.statblock {
+  background: #F7F1ED;
+}
+
+/* Gray Stat Blocks */
+.gray .statblock-title,
+.gray .statblock-tapered-rule,
+.gray .statblock-topstat-value,
+.gray .statblock-abilities,
+.gray .statblock-ability-abbrev,
+.gray .statblock-section-title {
+  color: #535353;
+}
+
+.gray .statblock-tapered-rule {
+  fill: #535353;
+  stroke: #535353;
+}
+
+.gray .statblock-section-title {
+  border-bottom-color: #535353;
+}
+
+.gray .statblock-subtitle,
+.gray .statblock-trait-name,
+.gray .statblock-topstat-name,
+.gray .statblock-property-name,
+.gray .statblock-property-name,
+.gray .statblock-section-title,
+.gray .statblock-property-value {
+  color: #454545;
+}
+
+.gray .statblock-border {
+  background: #9C9C9C;
+}
+
+.gray.statblock {
+  background: #EDEDED;
+}
+
+/* Neutral Stat Blocks */
+.neutral .statblock-title,
+.neutral .statblock-tapered-rule,
+.neutral .statblock-topstat-value,
+.neutral .statblock-abilities,
+.neutral .statblock-ability-abbrev,
+.neutral .statblock-section-title {
+  color: #51423d;
+}
+
+.neutral .statblock-tapered-rule {
+  fill: #51423d;
+  stroke: #51423d;
+}
+
+.neutral .statblock-section-title {
+  border-bottom-color: #51423d;
+}
+
+.neutral .statblock-subtitle,
+.neutral .statblock-trait-name,
+.neutral .statblock-topstat-name,
+.neutral .statblock-property-name,
+.neutral .statblock-property-name,
+.neutral .statblock-section-title,
+.neutral .statblock-property-value {
+  color: #452727;
+}
+
+.neutral .statblock-border {
+  background: #bda099;
+}
+
+.neutral.statblock {
+  background: #edebe8;
 }
 
 /******** Screen-Specific Styles ********/
@@ -765,7 +1012,7 @@ table.neutral tbody tr:nth-child(odd) {
   }
 
   .statblock {
-    box-shadow: 0 0 0.5em #61543a;
+    box-shadow: 0 0 0.5em #616161;
     margin: 20px;
   }
 
@@ -816,6 +1063,18 @@ table.neutral tbody tr:nth-child(odd) {
     margin-right: -.25in;
     margin-bottom: 0;
     height: auto;
+  }
+
+  img.bottom-right {
+    position: absolute;
+    bottom: 0; 
+    right: 0; 
+  }
+
+  img.bottom-left {
+    position: absolute;
+    bottom: 0; 
+    right: 0; 
   }
 
   .screen-only {

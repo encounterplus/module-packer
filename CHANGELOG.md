@@ -1,5 +1,12 @@
 # Change Log
 
+## [Unreleased]
+
+### Added
+- `.square` bullet style for unordered lists
+- `print-only` option for front-matter
+
+
 ## 1.0.11
 
 ### Added

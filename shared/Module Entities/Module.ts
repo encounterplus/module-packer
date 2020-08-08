@@ -611,6 +611,11 @@ export class Module {
     let pagebreaks = forPrint ? (frontMatter['pdf-pagebreaks'] as string) : (frontMatter['module-pagebreaks'] as string)
     let pagebreakContentFound = false
 
+    let printOnly = frontMatter['print-only'] === true
+    if(printOnly && this.exportMode === ModuleMode.ModuleExport) {
+      return pages
+    }
+
     // Get footer text. By default, it will be "<Page Name> | <Parent Name>"
     let parentName = parentGroup ? parentGroup.name : this.moduleProjectInfo.name
     let footerText = frontMatter['footer'] as string
@@ -691,11 +696,16 @@ export class Module {
 
         // If we found a parent page break, we can assign that as the
         // parent for this group
-        if (parentElement) {
+        if (parentElement !== undefined && parentElement.length !== 0) {
           let parentHeader = parentElement.text()
-          page.parent = pagesByHeader[parentHeader]
-          pagesByHeader[parentHeader].children.push(page)
-          page.sort = undefined // Clear sort from nested pages
+          const pageParent = pagesByHeader[parentHeader]
+          if(pageParent) {
+            page.parent = pageParent
+            pageParent.children.push(page)
+            page.sort = undefined // Clear sort from nested pages
+          } else {
+            console.error(`Page for header "${parentHeader}" was not found. This is a bug in the module packer.`)
+          }
         }
 
         // If the page has no parent and there is a group,

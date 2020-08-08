@@ -526,23 +526,23 @@ export class Monster extends ModuleEntity {
     monsterHTML += '<hr class="statblock-border" />'
     monsterHTML += '<div class="statblock-section-left">'
     monsterHTML += '<div class="statblock-creature-heading">'
-    monsterHTML += `<h1>${this.name}</h1>`
-    monsterHTML += `<h2>${this.size} ${this.type}, ${this.alignment}</h2>`
+    monsterHTML += `<p class="statblock-title">${this.name}</p>`
+    monsterHTML += `<p class="statblock-subtitle">${this.size} ${this.type}, ${this.alignment}</p>`
     monsterHTML += '</div>' // statblock-creature-heading
     monsterHTML += drawTaperRule()
     monsterHTML += '<div class="statblock-top-stats">'
-    monsterHTML += `<div class="statblock-property-line first"><h4>Armor Class</h4> <p>${this.ac}</p></div>`
-    monsterHTML += `<div class="statblock-property-line"><h4>Hit Points</h4> <p>${this.hp}</p></div>`
-    monsterHTML += `<div class="statblock-property-line last"><h4>Speed</h4> <p>${this.speed}</p></div>`
+    monsterHTML += `<div class="statblock-property-line first"><p class="statblock-topstat-name">Armor Class</p> <p class="statblock-topstat-value">${this.ac}</p></div>`
+    monsterHTML += `<div class="statblock-property-line"><p class="statblock-topstat-name">Hit Points</p> <p class="statblock-topstat-value">${this.hp}</p></div>`
+    monsterHTML += `<div class="statblock-property-line last"><p class="statblock-topstat-name">Speed</p> <p class="statblock-topstat-value">${this.speed}</p></div>`
     monsterHTML += '</div>' // statblock-top-stats
     monsterHTML += drawTaperRule()
     monsterHTML += '<div class="statblock-abilities">'
-    monsterHTML += `<div class="statblock-ability-strength"><h4>STR</h4> <p>${this.str} (${getAbilityMod(this.str)})</p></div>`
-    monsterHTML += `<div class="statblock-ability-dexterity"><h4>DEX</h4> <p>${this.dex} (${getAbilityMod(this.dex)})</p></div>`
-    monsterHTML += `<div class="statblock-ability-constitution"><h4>CON</h4> <p>${this.con} (${getAbilityMod(this.con)})</p></div>`
-    monsterHTML += `<div class="statblock-ability-intelligence"><h4>INT</h4> <p>${this.int} (${getAbilityMod(this.int)})</p></div>`
-    monsterHTML += `<div class="statblock-ability-wisdom"><h4>WIS</h4> <p>${this.wis} (${getAbilityMod(this.wis)})</p></div>`
-    monsterHTML += `<div class="statblock-ability-charisma"><h4>CHA</h4> <p>${this.cha} (${getAbilityMod(this.cha)})</p></div>`
+    monsterHTML += `<div class="statblock-ability-strength"><p class="statblock-ability-abbrev">STR</p> <p class="statblock-ability-value">${this.str} (${getAbilityMod(this.str)})</p></div>`
+    monsterHTML += `<div class="statblock-ability-dexterity"><p class="statblock-ability-abbrev">DEX</p> <p class="statblock-ability-value">${this.dex} (${getAbilityMod(this.dex)})</p></div>`
+    monsterHTML += `<div class="statblock-ability-constitution"><p class="statblock-ability-abbrev">CON</p> <p class="statblock-ability-value">${this.con} (${getAbilityMod(this.con)})</p></div>`
+    monsterHTML += `<div class="statblock-ability-intelligence"><p class="statblock-ability-abbrev">INT</p> <p class="statblock-ability-value">${this.int} (${getAbilityMod(this.int)})</p></div>`
+    monsterHTML += `<div class="statblock-ability-wisdom"><p class="statblock-ability-abbrev">WIS</p> <p class="statblock-ability-value">${this.wis} (${getAbilityMod(this.wis)})</p></div>`
+    monsterHTML += `<div class="statblock-ability-charisma"><p class="statblock-ability-abbrev">CHA</p> <p class="statblock-ability-value">${this.cha} (${getAbilityMod(this.cha)})</p></div>`
     monsterHTML += '</div>' // statblock-abilities
     monsterHTML += drawTaperRule()
     properties.forEach((property, index) => {
@@ -553,54 +553,54 @@ export class Monster extends ModuleEntity {
       } else {
         monsterHTML += '<div class="statblock-property-line">'
       }
-      monsterHTML += `<h4>${property.name}</h4> <p>${property.description}</p></div>`
+      monsterHTML += `<p class="statblock-property-name">${property.name}</p> <p class="statblock-property-value">${property.description}</p></div>`
     })
     monsterHTML += drawTaperRule()
     this.traits.forEach((trait, index) => {
       monsterHTML += '<div class="statblock-property-block">'
       if (trait.name) {
-        monsterHTML += `<h4>${trait.name}.</h4> `
+        monsterHTML += `<p class="statblock-trait-name">${trait.name}.</p> `
       } 
-      monsterHTML += `<p>${trait.description}</p>`
+      monsterHTML += `<p class="statblock-trait-description">${trait.description}</p>`
       monsterHTML += '</div>' // statblock-property-block
     })
     monsterHTML += '</div>' // statblock-section-left
     monsterHTML += '<div class="statblock-section-right">'
     if (this.actions.length > 0) {
       monsterHTML += '<div class="statblock-actions">'
-      monsterHTML += '<h3>Actions</h3>'
+      monsterHTML += '<p class="statblock-section-title">Actions</p>'
       this.actions.forEach((action, index) => {
         monsterHTML += '<div class="statblock-property-block">'
         if (action.name) {
-          monsterHTML += `<h4>${action.name}.</h4> `
+          monsterHTML += `<p class="statblock-action-name">${action.name}.</p> `
         } 
-        monsterHTML += `<p>${italicsActionDescription(action.description)}</p>`
+        monsterHTML += `<p class="statblock-action-description">${italicsActionDescription(action.description)}</p>`
         monsterHTML += '</div>' // statblock-property-block
       })
       monsterHTML += '</div>' // statblock-actions
     }
     if (this.reactions.length > 0) {
       monsterHTML += '<div class="statblock-reactions">'
-      monsterHTML += '<h3>Reactions</h3>'
+      monsterHTML += '<p class="statblock-section-title">Reactions</p>'
       this.reactions.forEach((reaction, index) => {
         monsterHTML += '<div class="statblock-property-block">'
         if (reaction.name) {
-          monsterHTML += `<h4>${reaction.name}.</h4> `
+          monsterHTML += `<p class="statblock-action-name">${reaction.name}.</p> `
         } 
-        monsterHTML += `<p>${italicsActionDescription(reaction.description)}</p>`
+        monsterHTML += `<p class="statblock-action-description">${italicsActionDescription(reaction.description)}</p>`
         monsterHTML += '</div>' // statblock-property-block
       })
       monsterHTML += '</div>' // statblock-reactions
     }
     if (this.legendaryActions.length > 0) {
       monsterHTML += '<div class="statblock-legendary-actions">'
-      monsterHTML += '<h3>Legendary Actions</h3>'
+      monsterHTML += '<p class="statblock-section-title">Legendary Actions</p>'
       this.legendaryActions.forEach((legendaryAction, index) => {
         monsterHTML += '<div class="statblock-property-block">'
         if (legendaryAction.name) {
-          monsterHTML += `<h4>${legendaryAction.name}.</h4> `
+          monsterHTML += `<p class="statblock-action-name">${legendaryAction.name}.</p> `
         } 
-        monsterHTML += `<p>${italicsActionDescription(legendaryAction.description)}</p>`
+        monsterHTML += `<p class="statblock-action-description">${italicsActionDescription(legendaryAction.description)}</p>`
         monsterHTML += '</div>' // statblock-property-block
       })
       monsterHTML += '</div>' // statblock-legendaryActions
