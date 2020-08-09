@@ -612,9 +612,6 @@ export class Module {
     let pagebreakContentFound = false
 
     let printOnly = frontMatter['print-only'] === true
-    if(printOnly && this.exportMode === ModuleMode.ModuleExport) {
-      return pages
-    }
 
     // Get footer text. By default, it will be "<Page Name> | <Parent Name>"
     let parentName = parentGroup ? parentGroup.name : this.moduleProjectInfo.name
@@ -632,6 +629,13 @@ export class Module {
     markdownRenderer.monsters.forEach((monster) => {
       this.monsters.push(monster)
     })
+
+    // Do not parse the page for a module if it is print-only. However,
+    // ensure this is done after any monsters are added to the module's
+    // monster list so they may be added to the compendium.
+    if(printOnly && this.exportMode === ModuleMode.ModuleExport) {
+      return pages
+    }
 
     // If we have pagebreaks defined, we'll attempt to split
     // up, group, and subgroup content by header values
