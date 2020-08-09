@@ -185,7 +185,7 @@ export class Monster extends ModuleEntity {
     // Get monster challenge rating
     const challenge = monsterData['challenge'] as string
     if (challenge) {
-      monster.challenge = challenge
+      monster.challenge = challenge.toString()
     }
 
     // Get monster Armor Class
