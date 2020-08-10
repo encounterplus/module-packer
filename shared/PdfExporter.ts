@@ -20,7 +20,7 @@ export class PdfExporter {
     let moduleOutputPath = Path.join(projectDirectory, 'ModuleBuild')
     let customStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'custom.css')
     let globalStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'global.css')
-    let printImageStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'print-img.css')
+    let printImageStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'print.css')
     let pageLocation = Path.join(moduleOutputPath, 'printPage.html')
     let saveLocation = Path.join(projectDirectory, `${module.moduleProjectInfo.slug}.pdf`)
 

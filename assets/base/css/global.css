@@ -47,6 +47,20 @@ html {
   -webkit-print-color-adjust: exact;
 }
 
+/******** Multi-column Div ********/
+
+div.two-column:not(.statblock) {
+  width: 7.5in;   
+  position: relative;
+  column-count: 2;
+  column-gap: 0.25in;
+  column-fill: auto;
+  -webkit-column-count: 2;
+  -moz-column-count: 2;
+  -webkit-column-gap: 0.25in;
+  -moz-column-gap: 0.25in;
+}
+
 /******** Headings ********/
 
 h1,
@@ -556,6 +570,7 @@ table.neutral tbody tr:nth-child(odd) {
 /******** Statblock Div Styles ********/
 
 .statblock {
+  font-family: '-apple-system', sans-serif;
   text-align: left;
   margin: 10px;
   display: inline-block;
@@ -616,7 +631,6 @@ table.neutral tbody tr:nth-child(odd) {
 .statblock-property-name,
 .statblock-section-title,
 .statblock-property-value {
-  font-family: '-apple-system', sans-serif;
   color: #7A200D;
 }
 
@@ -643,7 +657,7 @@ table.neutral tbody tr:nth-child(odd) {
   border: 1px solid #000;
   height: 5px;
   padding: 0 10px 0;
-  margin: -10px -10px 0;
+  margin: -5px -10px 0;
   box-sizing: initial;
 }
 
@@ -956,16 +970,16 @@ table.neutral tbody tr:nth-child(odd) {
 .neutral .statblock-abilities,
 .neutral .statblock-ability-abbrev,
 .neutral .statblock-section-title {
-  color: #51423d;
+  color: #631d07;
 }
 
 .neutral .statblock-tapered-rule {
-  fill: #51423d;
-  stroke: #51423d;
+  fill: #631d07;
+  stroke: #631d07;
 }
 
 .neutral .statblock-section-title {
-  border-bottom-color: #51423d;
+  border-bottom-color: #631d07;
 }
 
 .neutral .statblock-subtitle,
@@ -975,7 +989,7 @@ table.neutral tbody tr:nth-child(odd) {
 .neutral .statblock-property-name,
 .neutral .statblock-section-title,
 .neutral .statblock-property-value {
-  color: #452727;
+  color: #75240b;
 }
 
 .neutral .statblock-border {
@@ -1013,7 +1027,7 @@ table.neutral tbody tr:nth-child(odd) {
 
   .statblock {
     box-shadow: 0 0 0.5em #616161;
-    margin: 20px;
+    margin: 0.5em;
   }
 
   figure.size-cover,
@@ -1083,7 +1097,6 @@ table.neutral tbody tr:nth-child(odd) {
 
   body {
     counter-reset: page-numbers;
-    font-family: '-apple-system', sans-serif;
     font-size: 13px;
     line-height: 18px;
     padding: 0px;
@@ -1092,13 +1105,27 @@ table.neutral tbody tr:nth-child(odd) {
   }
 
   /* Enable this if you want to print with
-     drop shadows on block quotes - this will
+     drop shadows on elements - this will
      cause text to be non-selectable in block quotes */  
   /*blockquote {
     box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.3);
     filter: opacity(1);
     -webkit-filter: opacity(1);
-  }*/
+  }
+  .statblock {
+    box-shadow: 0 0 0.5em #616161;
+    margin: 20px;
+    filter: opacity(1);
+    -webkit-filter: opacity(1);
+  }
+  */
+
+  .statblock {
+    box-shadow: 0 0 0.5em #616161;
+    margin: 0.25em;
+    filter: opacity(1);
+    -webkit-filter: opacity(1);
+  }
 
   .print-page {
     counter-increment: page-numbers;
@@ -1110,10 +1137,10 @@ table.neutral tbody tr:nth-child(odd) {
     width: 8.5in;   
     z-index: 10;
     box-sizing: border-box; 
-    padding-top: 0.25in;
-    padding-bottom: 0.55in;
-    padding-left: 0.25in;
-    padding-right: 0.25in;
+    padding-top: 0.5in;
+    padding-bottom: 0.6in;
+    padding-left: 0.5in;
+    padding-right: 0.5in;
     text-rendering: optimizeLegibility;
   	page-break-before: always;
     page-break-after: always;
@@ -1121,15 +1148,15 @@ table.neutral tbody tr:nth-child(odd) {
   }
 
   .print-page > .page-content {    
-    height: 10.2in;
-    width: 8in;
+    height: 9.9in;
+    width: 7.5in;
     position: relative;
     z-index: 20;
   }
 
   .print-page > .page-content-two-column {
-    height: 10.2in;
-    width: 8in;   
+    height: 9.9in;
+    width: 7.5in; 
     position: relative;
     z-index: 20;
     column-count: 2;
@@ -1148,13 +1175,13 @@ table.neutral tbody tr:nth-child(odd) {
   }
 
   .statblock {
-    width: 3.5in;
+    width: 3.25in;
   }
 
   .print-page:after {
     content: "";
 		position: fixed;
-		bottom: 0;
+		bottom: 0.1in;
 		left: 0;
     z-index: 100;
 		height: .50in;
@@ -1166,7 +1193,7 @@ table.neutral tbody tr:nth-child(odd) {
     font-family: 'Andada SC', '-apple-system', sans-serif;
     position: absolute;
     font-variant: small-caps;
-		bottom: 10px;
+		bottom: 0.20in;
 		width: 8.5in;
 		font-size: 15px;
     color: #AEA41A;
@@ -1177,7 +1204,7 @@ table.neutral tbody tr:nth-child(odd) {
   .print-page > .footer-page-number {
     font-family: 'Andada SC', '-apple-system', sans-serif;
     position: absolute;
-		bottom: 22px;
+		bottom: 0.3in;
 		width: 50px;
 		font-size: 15px;
     color: #AEA41A;

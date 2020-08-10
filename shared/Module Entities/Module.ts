@@ -244,7 +244,7 @@ export class Module {
     }
 
     let html = '<div class="print-page">'
-    html += '<div class="page-content-two-column">'
+    html += '<div class="page-content two-column">'
     return html
   }
 
@@ -276,13 +276,14 @@ export class Module {
     })
 
     return children.sort((a, b) => {
-      if (a.sort === undefined) {
-        return -1
+      let aVal = (a.sort === undefined) ? 1000 : a.sort
+      let bVal = (b.sort === undefined) ? 1000 : b.sort
+
+      if (aVal === bVal) {
+        return 0
       }
-      if (b.sort === undefined) {
-        return 1
-      }
-      return a.sort < b.sort ? -1 : 1
+
+      return aVal < bVal ? -1 : 1
     })
   }
 
@@ -798,7 +799,7 @@ export class Module {
 
     let $ = Cheerio.load(pageContent)
     if (!printMultiColumn) {
-      $('div.page-content-two-column').each((i, element) => {
+      $('div.page-content.two-column').each((i, element) => {
         $(element).attr('class', 'page-content')
       })
     }
