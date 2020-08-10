@@ -1,5 +1,16 @@
 # Change Log
 
+## [Unreleased]
+
+### Added
+- Bookinsanity font as body for export to PDF
+- `.two-column` div style
+
+### Fixed
+- Fixed same-order page sort being reversed when exporting to PDF 
+- Fixed challenge ratings not showing XP value if value was over 1
+- Fixed auto-italics in monster stat block being case sensitive
+
 ## 1.0.12
 
 ### Added

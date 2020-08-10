@@ -409,13 +409,13 @@ export class Monster extends ModuleEntity {
 
     function italicsActionDescription(description: string): string {
       let newDescription = description
-      newDescription = newDescription.replace('Melee or Ranged Weapon Attack: ', '<i>Melee or Ranged Weapon Attack:</i> ')
-      newDescription = newDescription.replace('Melee Weapon Attack: ', '<i>Melee Weapon Attack:</i> ')
-      newDescription = newDescription.replace('Ranged Weapon Attack: ', '<i>Ranged Weapon Attack:</i> ')
-      newDescription = newDescription.replace('Melee or Ranged Spell Attack: ', '<i>Melee or Ranged Spell Attack:</i> ')
-      newDescription = newDescription.replace('Melee Spell Attack: ', '<i>Melee Spell Attack:</i> ')
-      newDescription = newDescription.replace('Ranged Spell Attack: ', '<i>Ranged Spell Attack:</i> ')
-      newDescription = newDescription.replace('Hit: ', '<i>Hit:</i> ')
+      newDescription = newDescription.replace(/Melee or Ranged Weapon Attack: /i, '<i>Melee or Ranged Weapon Attack:</i> ')
+      newDescription = newDescription.replace(/Melee Weapon Attack: /i, '<i>Melee Weapon Attack:</i> ')
+      newDescription = newDescription.replace(/Ranged Weapon Attack: /i, '<i>Ranged Weapon Attack:</i> ')
+      newDescription = newDescription.replace(/Melee or Ranged Spell Attack: /i, '<i>Melee or Ranged Spell Attack:</i> ')
+      newDescription = newDescription.replace(/Melee Spell Attack: /i, '<i>Melee Spell Attack:</i> ')
+      newDescription = newDescription.replace(/Ranged Spell Attack: /i, '<i>Ranged Spell Attack:</i> ')
+      newDescription = newDescription.replace(/Hit: /i, '<i>Hit:</i> ')
       return newDescription
     }
 
