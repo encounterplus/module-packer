@@ -47,6 +47,11 @@ html {
   -webkit-print-color-adjust: exact;
 }
 
+p {
+  margin-block-start: 0;
+  margin-block-end: 1em;
+}
+
 /******** Multi-column Div ********/
 
 div.two-column:not(.statblock) {
@@ -312,6 +317,34 @@ blockquote.flowchart:before,
 blockquote.flowchart:after,
 blockquote.flowchart-with-link:before,
 blockquote.flowchart-with-link:after {
+  background-image: none;
+}
+
+/******** Flavor Text Block Quote ********/
+
+.blockquote-flavortext-wrap {
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+  overflow: visible;
+}
+
+blockquote.flavortext {
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  border-bottom: 0;
+  background-image: url('../img/flavortext.png');
+  background-size: cover;
+  padding: 20px;
+  filter: opacity(1);
+  -webkit-filter: opacity(1);
+  transform: rotate(-7deg);
+}
+
+blockquote.flavortext:before,
+blockquote.flavortext:after {
   background-image: none;
 }
 
@@ -1088,7 +1121,7 @@ table.neutral tbody tr:nth-child(odd) {
   img.bottom-left {
     position: absolute;
     bottom: 0; 
-    right: 0; 
+    left: 0; 
   }
 
   .screen-only {

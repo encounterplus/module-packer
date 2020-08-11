@@ -94,6 +94,77 @@ export class MarkdownRenderer {
         return false
       })
 
+      // Create containers from ::: character
+      this.markdown.block.ruler.after('fence', 'container', (state, startLine, endLine) => {
+        let startLinePos = state.bMarks[startLine] + state.tShift[startLine]
+        let endLinePos = state.eMarks[startLine]
+        let foundEndMarker = false
+
+        const markerCount = 3
+        if (startLinePos + markerCount > endLinePos) {
+          return false
+        }
+
+        let marker = state.src.charCodeAt(startLinePos)
+        if (marker !== 0x3a /* : */) {
+          return false
+        }
+
+        let currentPosition = state.skipChars(startLinePos, marker)
+        let markup = state.src.slice(startLinePos, currentPosition)
+        let params = state.src.slice(currentPosition, endLinePos)
+        let nextLine = startLine
+
+        while (nextLine < endLine) {
+          nextLine += 1
+
+          startLinePos = currentPosition = state.bMarks[nextLine] + state.tShift[nextLine]
+          endLinePos = state.eMarks[nextLine]
+
+          if (startLinePos < endLinePos && state.sCount[nextLine] < state.blkIndent) {
+            break
+          }
+
+          if (state.src.charCodeAt(startLinePos) !== marker) {
+            continue
+          }
+
+          currentPosition = state.skipChars(currentPosition, marker)
+          if (currentPosition - startLinePos < markerCount) {
+            continue
+          }
+
+          currentPosition = state.skipSpaces(currentPosition)
+          if (currentPosition < endLinePos) {
+            continue
+          }
+
+          foundEndMarker = true
+          break
+        }
+
+        let oldParentType = state.parentType;
+        let oldLineMax = state.lineMax;
+
+        state.lineMax = nextLine
+
+        let token = state.push('container_open', 'div', 1)
+        token.markup = markup
+        token.block  = true
+        token.info = params
+        token.map = [startLine, nextLine]
+        state.md.block.tokenize(state, startLine + 1, nextLine)
+
+        token = state.push('container_close', 'div', -1)
+        token.markup = state.src.slice(startLinePos, currentPosition)
+        token.block = true
+
+        state.parentType = oldParentType
+        state.lineMax = oldLineMax
+        state.line = nextLine + (foundEndMarker ? 1 : 0)
+        return true
+      })
+
       this.markdown.renderer.rules.blockquote_open = this.renderBlockquoteOpen
       this.markdown.renderer.rules.blockquote_close = this.renderBlockquoteClose
       MarkdownRenderer.defaultImageRenderer = this.markdown.renderer.rules.image
@@ -229,26 +300,22 @@ export class MarkdownRenderer {
    * @param env The environment
    * @param self The HTML renderer
    */
-  private renderBlockquoteOpen = (
-    tokens: Token[],
-    idx: number,
-    options: MarkdownIt.Options,
-    env: any,
-    self: Renderer
-  ) => {
+  private renderBlockquoteOpen = (tokens: Token[], idx: number, options: MarkdownIt.Options, env: any, self: Renderer) => {
     let token = tokens[idx]
     let defaultBlockquoteOpenHtml = self.renderToken(tokens, idx, options)
 
     let hasReadStyle = MarkdownRenderer.getTokenHasClass(token, 'read')
     let hasPaperStyle = MarkdownRenderer.getTokenHasClass(token, 'paper')
+    let hasFlavortextStyle = MarkdownRenderer.getTokenHasClass(token, 'flavortext')
     let hasFlowChartStyle =
-      MarkdownRenderer.getTokenHasClass(token, 'flowchart') ||
-      MarkdownRenderer.getTokenHasClass(token, 'flowchart-with-link')
+      MarkdownRenderer.getTokenHasClass(token, 'flowchart') || MarkdownRenderer.getTokenHasClass(token, 'flowchart-with-link')
 
     if (hasReadStyle) {
       return '<div class="blockquote-read-wrap">' + defaultBlockquoteOpenHtml
     } else if (hasPaperStyle) {
       return '<div class="blockquote-paper-wrap">' + defaultBlockquoteOpenHtml
+    } else if (hasFlavortextStyle) {
+      return '<div class="blockquote-flavortext-wrap">' + defaultBlockquoteOpenHtml
     } else if (hasFlowChartStyle) {
       return '<div class="blockquote-flowchart-wrap">' + defaultBlockquoteOpenHtml
     } else {
@@ -264,13 +331,7 @@ export class MarkdownRenderer {
    * @param env The environment
    * @param self The HTML renderer
    */
-  private renderBlockquoteClose = (
-    tokens: Token[],
-    idx: number,
-    options: MarkdownIt.Options,
-    env: any,
-    self: Renderer
-  ) => {
+  private renderBlockquoteClose = (tokens: Token[], idx: number, options: MarkdownIt.Options, env: any, self: Renderer) => {
     let defaultBlockquoteCloseHtml = self.renderToken(tokens, idx, options)
     return defaultBlockquoteCloseHtml + '</div>'
   }

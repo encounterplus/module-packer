@@ -31,7 +31,8 @@
   font-style: italic;
 }
 
-body {
+body,
+blockquote.flavortext {
   font-family: 'Bookinsanity', '-apple-system', sans-serif !important; 
 }
 
