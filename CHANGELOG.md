@@ -1,12 +1,15 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.13
 
 ### Added
 - Bookinsanity font as body for export to PDF
 - `.two-column` div style
 - `.flavortext` blockquote style
 - `.print-bottom-left` and `.print-bottom-right` image styles (for PDF export)
+
+### Changed
+- Changed statblock dimensions to allow a bit more room for attributes with two digit modifiers.
 
 ### Fixed
 - Fixed same-order page sort being reversed when exporting to PDF 

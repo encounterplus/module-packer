@@ -323,11 +323,12 @@ blockquote.flowchart-with-link:after {
 /******** Flavor Text Block Quote ********/
 
 .blockquote-flavortext-wrap {
-  padding-top: 0.25em;
-  padding-bottom: 0.25em;
-  padding-left: 0.25em;
-  padding-right: 0.25em;
-  overflow: visible;
+  padding-top: 50px;
+  padding-bottom: 50px;
+  padding-left: 15px;
+  padding-right: 15px;
+  overflow: hidden;
+  display: table;
 }
 
 blockquote.flavortext {
@@ -339,8 +340,10 @@ blockquote.flavortext {
   background-size: cover;
   padding: 20px;
   filter: opacity(1);
+  max-width: 500px;
   -webkit-filter: opacity(1);
   transform: rotate(-7deg);
+  margin: 0px;
 }
 
 blockquote.flavortext:before,
@@ -608,7 +611,7 @@ table.neutral tbody tr:nth-child(odd) {
   margin: 10px;
   display: inline-block;
   vertical-align: top;
-  width: 280px;
+  width: 300px;
   background: #FDF1DC;
   padding: 5px 10px 20px;
   page-break-inside: avoid;
@@ -749,7 +752,7 @@ table.neutral tbody tr:nth-child(odd) {
 .statblock-abilities > div {
   display: inline-block;
   vertical-align: middle;
-  width: 15.5%;
+  width: 16.5%;
   min-width: 40px; 
   font-size: 12px;
   line-height: 1em;

@@ -302,6 +302,16 @@ A paper/parchment text block style can be shown by adding custom class `paper` t
   <img src="./documentation/Paper.jpg" alt="Paper" width="400">
 </p>
 
+A flavor-text text block style can be shown by adding custom class `flavortext` to standard block quotes:
+
+```Markdown
+> Flavor text
+{.flavortext}
+```
+<p align="left">
+  <img src="./documentation/Flavortext.jpg" alt="Flavortext" width="400">
+</p>
+
 A flowchart text block style can be shown by adding custom class `flowchart` and `flowchart-with-link` to standard block quotes:
 
 ```Markdown
