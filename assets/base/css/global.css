@@ -1112,16 +1112,16 @@ table.neutral tbody tr:nth-child(odd) {
     height: auto;
   }
 
-  img.bottom-right {
+  .print-bottom-right {
     position: absolute;
-    bottom: 0; 
-    right: 0; 
+    bottom: 1px; 
+    right: 1px; 
   }
 
-  img.bottom-left {
+  .print-bottom-left {
     position: absolute;
-    bottom: 0; 
-    left: 0; 
+    bottom: 1px; 
+    left: 1px; 
   }
 
   .screen-only {

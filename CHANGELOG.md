@@ -6,6 +6,7 @@
 - Bookinsanity font as body for export to PDF
 - `.two-column` div style
 - `.flavortext` blockquote style
+- `.print-bottom-left` and `.print-bottom-right` image styles (for PDF export)
 
 ### Fixed
 - Fixed same-order page sort being reversed when exporting to PDF 
