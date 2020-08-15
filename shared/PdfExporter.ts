@@ -110,6 +110,7 @@ export class PdfExporter {
     let html = ''
     moduleEntities.forEach((child) => {
       if (child instanceof Page) {
+        html += `<a id="${child.slug}"></a>`
         html += child.content
       }
       html += PdfExporter.getChildPageContent(child.children)

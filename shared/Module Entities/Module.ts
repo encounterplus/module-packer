@@ -817,6 +817,13 @@ export class Module {
       $(element).attr('class', oldClasses + ' size-full')
     })
 
+    $('a').each((i, element) => {
+      let oldHref = $(element).attr('href')
+      if (oldHref && !oldHref.includes('/')) {
+        $(element).attr('href', `#${oldHref}`)
+      }
+    })
+
     return $.html()
   }
 
