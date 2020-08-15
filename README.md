@@ -329,13 +329,13 @@ A flowchart text block style can be shown by adding custom class `flowchart` and
 
 ## Links
 
-Normally, in markdown, links would be used to link to other webpages. However, in EncounterPlus, you can add links to any monster, player, item and spell in the compendium or to other pages or maps.
+Normally, in markdown, links would be used to link to other webpages. However, in EncounterPlus, you can add links to any monster, player, item and spell in the compendium or to other pages or maps. Always link to the item's slug. Slugs are absolute and do not need paths or groups specified when linking. Monster links should be prefaced with `/monster/`. Item links should be prefaced with `/item/`. Spell links should be prefaced with `/spell/`. 
 
 ```Markdown
+[Example page](example-page)
 [Goblin](/monster/goblin)
 [Staff of Power](/item/staff-of-power)
 [Fireball](/spell/fireball)
-[Example page](example-page)
 ```
 
 ## Tables

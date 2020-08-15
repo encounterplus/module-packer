@@ -1,5 +1,12 @@
 # Change Log
 
+## [Unreleased]
+
+## Added
+- Better handling for relative image links (particularly useful for shared images)
+- Ability for PDF export to link to pages
+- Added `parent-page` front matter attribute to allow pages to be nested under other pages without pagebreaks
+
 ## 1.0.13
 
 ### Added

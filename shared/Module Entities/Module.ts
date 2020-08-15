@@ -212,6 +212,33 @@ export class Module {
     // all subdirectories (which become groups unless they
     // are explicitly ignored).
     module.processDirectory(projectDirectory, moduleBuildPath)
+
+    // Reassign page parents
+    module.pages.forEach ((page) => {
+      if(!page.parentPageSlug) {
+        return
+      }
+
+      let newParent = module.pages.filter( (parentPage) => {
+        return parentPage.slug == page.parentPageSlug
+      })[0]
+
+      if(!newParent) {
+        return
+      }
+
+      if(page.parent) {
+        page.parent.children = page.parent.children.filter ( (childPage) => {
+          return childPage !== page
+        })
+      }
+
+      page.parent = newParent
+      newParent.children.push(page)
+    })
+    // TODO: add cyclic dependency detection
+
+    // Sort module children
     module.children = module.sortChildren(module.children)
 
     // Export module.xml file
@@ -612,6 +639,7 @@ export class Module {
     let order = frontMatter['order'] as number
     let printMultiColumn = (frontMatter['pdf-page-style'] as string) !== 'single-column'
     let pagebreaks = forPrint ? (frontMatter['pdf-pagebreaks'] as string) : (frontMatter['module-pagebreaks'] as string)
+    let parentPage = (frontMatter['parent-page'] as string)
     let pagebreakContentFound = false
 
     let printOnly = frontMatter['print-only'] === true
@@ -653,7 +681,7 @@ export class Module {
 
     // If we have pagebreaks defined, we'll attempt to split
     // up, group, and subgroup content by header values
-    if (pagebreaks !== undefined) {
+    if (pagebreaks !== undefined && parentPage === undefined) {
       // Remove spaces from pagebreaks list
       pagebreaks = pagebreaks.replace(/\s/g, '')
 
@@ -760,6 +788,7 @@ export class Module {
       let page = new Page(pageName, this.moduleProjectInfo.id)
       page.content = this.wrapPageInPrintDivs(html)
       page.sort = order
+      page.parentPageSlug = parentPage
 
       if (parentGroup) {
         page.parent = parentGroup
