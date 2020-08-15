@@ -12,10 +12,7 @@ export class PdfExporter {
    * @param projectDirectory The project directory
    * @param transformPageLocation An optional function to transform the page's location (needed for tools like VSCode)
    */
-  public static async exportToPdf(
-    projectDirectory: string,
-    transformPageLocation?: (path: string) => string
-  ): Promise<string> {
+  public static async exportToPdf(projectDirectory: string, transformPageLocation?: (path: string) => string): Promise<string> {
     let module = await Module.createModuleFromPath(projectDirectory, Path.basename(projectDirectory), ModuleMode.PrintToPDF)
     let moduleOutputPath = Path.join(projectDirectory, 'ModuleBuild')
     let customStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'custom.css')
@@ -117,5 +114,4 @@ export class PdfExporter {
     })
     return html
   }
-
 }

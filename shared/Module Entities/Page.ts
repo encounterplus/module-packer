@@ -23,4 +23,7 @@ export class Page extends ModuleEntity {
 
   /** The HTML Content of the page */
   content: string = ''
+
+  /** The slug of a parent page (within the given group) */
+  parentPageSlug: string = ''
 }

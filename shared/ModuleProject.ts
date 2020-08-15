@@ -43,14 +43,14 @@ export class ModuleProject {
   /** The path for the module archive (after it is created) */
   moduleArchivePath: string | undefined = undefined
 
+  /** The root directory for the module project */
+  moduleProjectDirectory: string | undefined = undefined
+
   /** The path for the module project definition file */
   moduleProjectPath: string | undefined = undefined
 
   /** Whether the module project auto-increments its version */
   autoIncrementVersion: boolean | undefined = undefined
-
-  /** The paths of monster definition files */
-  monsterFilePaths: string[] = []
 
   // ---------------------------------------------------------------
   // Public Methods
@@ -111,6 +111,7 @@ export class ModuleProject {
     }
     
     moduleProject.moduleProjectPath = projectFilePath
+    moduleProject.moduleProjectDirectory = Path.dirname(projectFilePath)
 
     // If ID is specified in Module project file, ensure it is a UUID and use that
     let id = moduleData['id'] as string
@@ -149,7 +150,7 @@ export class ModuleProject {
     }
 
     // If category is specified in Module project file, use that.
-    // Ensure values are 'adevnture' or 'other'
+    // Ensure values are 'adventure' or 'other'
     let category = moduleData['category'] as string
     if (category === 'adventure' || category === 'other') {
       moduleProject.category = category
@@ -189,11 +190,6 @@ export class ModuleProject {
         throw Error(`Module cover image path does not exist: ${fullImagePath}`)
       }
       moduleProject.imagePath = imagePath
-    }
-
-    let monsterPaths = moduleData['monsters'] as string[]
-    if (monsterPaths) {
-      moduleProject.monsterFilePaths = monsterPaths
     }
 
     return moduleProject
@@ -262,10 +258,6 @@ export class ModuleProject {
     }
     newModuleProject['version'] = this.version
     newModuleProject['autoIncrementVersion'] = true
-
-    if(this.monsterFilePaths && this.monsterFilePaths.length > 0) {
-      newModuleProject['monsters'] = this.monsterFilePaths
-    }
 
     let outputYAML = YAML.stringify(newModuleProject)
     FileSystem.writeFileSync(projectFilePath, outputYAML)

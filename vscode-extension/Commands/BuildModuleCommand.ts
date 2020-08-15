@@ -30,13 +30,16 @@ export class BuildModuleCommand extends CommandBase {
   protected async executeCommand() {
     await vscode.workspace.saveAll(false)
     let moduleProjectPath = this.moduleProject?.moduleProjectPath
+    let projectDirectory = this.moduleProject?.moduleProjectDirectory
 
     // Ensure we have a proper project path
     if (moduleProjectPath === undefined) {
       throw Error('Could not locate module project path.')
     }
+    if (projectDirectory === undefined) {
+      throw Error('Could not locate module project directory.')
+    }
 
-    let projectDirectory = Path.dirname(moduleProjectPath)
     let module = await Module.createModuleFromPath(projectDirectory, Path.basename(projectDirectory), ModuleMode.ModuleExport)
 
     let completeMessage = `Successfully created module: ${module.moduleProjectInfo.name}.`

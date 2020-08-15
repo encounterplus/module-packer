@@ -208,13 +208,6 @@ export class Module {
       FileSystem.copySync(printAssets, assetsOutputPath)
     }
 
-    // Create Compendium Entries
-    module.moduleProjectInfo.monsterFilePaths.forEach((monsterFilePath) => {
-      let fullMonsterFilePath = Path.join(projectDirectory, monsterFilePath)
-      let monster = Monster.fromYAMLFile(fullMonsterFilePath, module)
-      module.monsters.push(monster)
-    })
-
     // Parse the project directory - navigating through
     // all subdirectories (which become groups unless they
     // are explicitly ignored).
@@ -276,8 +269,8 @@ export class Module {
     })
 
     return children.sort((a, b) => {
-      let aVal = (a.sort === undefined) ? 1000 : a.sort
-      let bVal = (b.sort === undefined) ? 1000 : b.sort
+      let aVal = a.sort === undefined ? 1000 : a.sort
+      let bVal = b.sort === undefined ? 1000 : b.sort
 
       if (aVal === bVal) {
         return 0
@@ -357,7 +350,7 @@ export class Module {
     // Map monster data
     let monsters = this.monsters.map((monster) => {
       let monsterImageFolder = Path.join(outputPath, 'monsters')
-      if(!FileSystem.existsSync(monsterImageFolder)) {
+      if (!FileSystem.existsSync(monsterImageFolder)) {
         FileSystem.mkdir(monsterImageFolder)
       }
 
@@ -365,10 +358,18 @@ export class Module {
         id: monster.id,
       }
 
-      let traits = monster.traits.map((trait) => { return { name: trait.name, text: trait.description }})
-      let actions = monster.actions.map((action) => { return { name: action.name, text: action.description }})
-      let reactions = monster.reactions.map((reaction) => { return { name: reaction.name, text: reaction.description }})
-      let legendaryActions = monster.legendaryActions.map((legendaryAction) => { return { name: legendaryAction.name, text: legendaryAction.description }})
+      let traits = monster.traits.map((trait) => {
+        return { name: trait.name, text: trait.description }
+      })
+      let actions = monster.actions.map((action) => {
+        return { name: action.name, text: action.description }
+      })
+      let reactions = monster.reactions.map((reaction) => {
+        return { name: reaction.name, text: reaction.description }
+      })
+      let legendaryActions = monster.legendaryActions.map((legendaryAction) => {
+        return { name: legendaryAction.name, text: legendaryAction.description }
+      })
 
       let monsterObj: any = {
         $: monsterAttributes,
@@ -404,18 +405,6 @@ export class Module {
         action: actions,
         reaction: reactions,
         legendary: legendaryActions,
-      }
-
-      if(monster.image) {
-        let imageSource = Path.join(outputPath, monster.image)
-        let imageDestination = Path.join(monsterImageFolder, monster.image)
-        FileSystem.copyFileSync(imageSource, imageDestination)
-      }
-
-      if(monster.token) {
-        let imageSource = Path.join(outputPath, monster.token)
-        let imageDestination = Path.join(monsterImageFolder, monster.token)
-        FileSystem.copyFileSync(imageSource, imageDestination)
       }
 
       // Delete undefined fields
@@ -489,6 +478,17 @@ export class Module {
     const scanOnly = this.exportMode === ModuleMode.ScanModule
     console.log(`Processing directory: ${directoryPath}`)
 
+    let moduleProjectDirectory = this.moduleProjectInfo.moduleProjectDirectory
+    if (!moduleProjectDirectory) {
+      throw Error('Could not resolve module project directory')
+    }
+
+    let relativeDirectoryPath = Path.relative(moduleProjectDirectory, directoryPath)
+    let moduleBuildClonePath = Path.join(moduleBuildPath, relativeDirectoryPath)
+    if (!FileSystem.existsSync(moduleBuildClonePath)) {
+      FileSystem.mkdirSync(moduleBuildClonePath)
+    }
+
     // Get all subdirectories - we will recursively scan
     // through these, creating Groups.
     let subdirectoryNames: string[] = FileSystem.readdirSync(directoryPath).filter(function (file) {
@@ -504,6 +504,19 @@ export class Module {
       let fullPath = Path.join(directoryPath, itemName)
       if (!FileSystem.statSync(fullPath).isFile()) {
         return
+      }
+
+      if (!moduleProjectDirectory) {
+        throw Error('Could not resolve module project directory')
+      }
+
+      // Copy images to their clone path in the module build folder
+      const imageExtensions = ['.gif', '.jpeg', '.jpg', '.png']
+      let extension = Path.extname(fullPath)
+      let imageRelativePath = Path.relative(moduleProjectDirectory, fullPath)
+      let imageClonePath = Path.join(moduleBuildPath, imageRelativePath)
+      if (!scanOnly && imageExtensions.includes(extension)) {
+        FileSystem.copyFileSync(fullPath, imageClonePath)
       }
 
       let newPages = this.processFile(fullPath, moduleBuildPath, parentGroup)
@@ -532,10 +545,6 @@ export class Module {
       // image or resource folder) if they're in the root level.
       let ignoreFilePath = Path.join(subdirectoryPath, '.ignoreGroup')
       if (FileSystem.existsSync(ignoreFilePath)) {
-        if (!scanOnly && parentGroup === undefined) {
-          // If a root-level ignored folder, copy to output
-          FileSystem.copySync(subdirectoryPath, Path.join(moduleBuildPath, subdirectoryName))
-        }
         return
       }
 
@@ -564,29 +573,22 @@ export class Module {
    * @param moduleBuildPath The module build folder path
    * @param parentGroup The parent group (optional)
    */
-  public processFile = (
-    filePath: string,
-    moduleBuildPath: string | undefined = undefined,
-    parentGroup: Group | undefined = undefined
-  ): Page[] => {
+  public processFile = (filePath: string, moduleBuildPath: string, parentGroup: Group | undefined = undefined): Page[] => {
     const forPrint = this.exportMode === ModuleMode.PrintToPDF
-    const scanOnly = this.exportMode === ModuleMode.ScanModule
+    const forModuleExport = this.exportMode === ModuleMode.ModuleExport
     let markdownRenderer = new MarkdownRenderer(forPrint, this)
     let markdown = markdownRenderer.getRenderer()
 
     let pages: Page[] = []
     console.log(`Processing file: ${filePath}`)
 
-    // Copy all images to the base ModuleBuild folder
-    // This allows you to create same-directory image
-    // references when authoring markdown
-    const imageExtensions = ['.gif', '.jpeg', '.jpg', '.png']
     let extension = Path.extname(filePath)
-    if (!scanOnly && moduleBuildPath !== undefined && imageExtensions.includes(extension)) {
-      let filename = Path.basename(filePath)
-      let newDestination = Path.join(moduleBuildPath, filename)
-      FileSystem.copyFileSync(filePath, newDestination)
+
+    let monsterModulePath = Path.join(moduleBuildPath, 'monsters')
+    if (forModuleExport && !FileSystem.existsSync(monsterModulePath)) {
+      FileSystem.mkdirSync(monsterModulePath)
     }
+    let fileFolderPath = Path.dirname(filePath)
 
     // All code below is for parsing markdown files,
     // so ignore any non-markdown files
@@ -628,13 +630,24 @@ export class Module {
     // Add monsters parsed from the markdown page into
     // the module's monster list.
     markdownRenderer.monsters.forEach((monster) => {
+      if (forModuleExport && monster.image) {
+        let imageAbsolutePath = Path.join(fileFolderPath, monster.image)
+        let imageDestinationPath = Path.join(monsterModulePath, monster.image)
+        FileSystem.copyFileSync(imageAbsolutePath, imageDestinationPath)
+      }
+      if (forModuleExport && monster.token) {
+        let tokenAbsolutePath = Path.join(fileFolderPath, monster.token)
+        let tokenDestinationPath = Path.join(monsterModulePath, monster.token)
+        FileSystem.copyFileSync(tokenAbsolutePath, tokenDestinationPath)
+      }
+
       this.monsters.push(monster)
     })
 
     // Do not parse the page for a module if it is print-only. However,
     // ensure this is done after any monsters are added to the module's
     // monster list so they may be added to the compendium.
-    if(printOnly && this.exportMode === ModuleMode.ModuleExport) {
+    if (printOnly && this.exportMode === ModuleMode.ModuleExport) {
       return pages
     }
 
@@ -704,7 +717,7 @@ export class Module {
         if (parentElement !== undefined && parentElement.length !== 0) {
           let parentHeader = parentElement.text()
           const pageParent = pagesByHeader[parentHeader]
-          if(pageParent) {
+          if (pageParent) {
             page.parent = pageParent
             pageParent.children.push(page)
             page.sort = undefined // Clear sort from nested pages
@@ -728,7 +741,10 @@ export class Module {
           this.children.push(page)
         }
 
-        // Process multi-column layout if printing
+        // Process image links to handle relative paths
+        page.content = this.postProcessImageLinks(page.content, filePath)
+
+        // Process elements for print layouts
         page.content = this.postProcessForPrint(page.content, printMultiColumn)
 
         // Finally, add the page to the module
@@ -752,7 +768,10 @@ export class Module {
         this.children.push(page)
       }
 
-      // Process multi-column layout if printing
+      // Process image links to handle relative paths
+      page.content = this.postProcessImageLinks(page.content, filePath)
+
+      // Process elements for print layouts
       page.content = this.postProcessForPrint(page.content, printMultiColumn)
 
       pages.push(page)
@@ -761,28 +780,43 @@ export class Module {
     return pages
   }
 
-  /** Copies an image to the root of the module build folder */
-  copyImageFileToRoot = (imagePath: string) => {
+  /**
+   * Converts all image sources into the relative links they need to be
+   * after conversion to a module (which places all pages in the root folder
+   * effectively)
+   * @param pageContent The page content
+   * @param markdownFilePath The path of the markdown file being processed
+   */
+  private postProcessImageLinks = (pageContent: string, markdownFilePath: string): string => {
     const scanOnly = this.exportMode === ModuleMode.ScanModule
+
     if (scanOnly) {
-      return
+      return pageContent
     }
 
-    if (!this.moduleBuildPath) {
-      throw Error('Module Build Path is not yet defined.')
+    let moduleProjectDirectory = this.moduleProjectInfo.moduleProjectDirectory
+    if (!moduleProjectDirectory) {
+      throw Error('Could not process image link, invalid module project directory')
     }
 
-    if (!FileSystem.existsSync(imagePath)) {
-      throw Error(`Image ${imagePath} could not be located.`)
-    }
+    let fileFolder = Path.dirname(markdownFilePath)
+    let relativeFolderPath = Path.relative(moduleProjectDirectory, fileFolder)
 
-    let filename = Path.basename(imagePath)
-    let newDestination = Path.join(this.moduleBuildPath, filename)
-    if (FileSystem.existsSync(newDestination)) {
-      throw Error('Duplicate image names used - ensure all images in module have unique names.')
-    }
+    let $ = Cheerio.load(pageContent)
+    $('img').each((i, element) => {
+      let oldSrc = $(element).attr('src')
+      if (!oldSrc) {
+        return
+      }
 
-    FileSystem.copyFileSync(imagePath, newDestination)
+      let srcIsAbsolute = /^https?:\/\//i.test(oldSrc)
+      if (!srcIsAbsolute) {
+        let newSrc = Path.join(relativeFolderPath, oldSrc)
+        $(element).attr('src', newSrc)
+      }
+    })
+
+    return $.html()
   }
 
   /**

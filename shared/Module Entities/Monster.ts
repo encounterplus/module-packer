@@ -1,5 +1,3 @@
-import * as FileSystem from 'fs-extra'
-import * as Path from 'path'
 import { v4 as UUIDV4 } from 'uuid'
 import * as YAML from 'yaml'
 import { ModuleEntity } from './ModuleEntity'
@@ -131,13 +129,8 @@ export class Monster extends ModuleEntity {
    * Gets a Monster object instance from a YAML representation
    * @param monsterYamlContent The YAML content that represents the monster
    * @param module The module to which the monster belongs
-   * @param monsterFilePath The monster file parsing path, if parsing from a file
    */
-  static fromYAMLContent(
-    monsterYamlContent: string,
-    module: Module | undefined = undefined,
-    monsterFilePath: string | undefined = undefined
-  ) {
+  static fromYAMLContent(monsterYamlContent: string, module: Module | undefined = undefined) {
     // Parse Monster from YAML
     let monsterData: any = undefined
     try {
@@ -350,13 +343,7 @@ export class Monster extends ModuleEntity {
     // be taken care of for us.
     const image = monsterData['image'] as string
     if (image) {
-      if (monsterFilePath && module) {
-        let imagePath = Path.join(monsterFilePath, image)
-        module.copyImageFileToRoot(imagePath)
-        monster.image = Path.basename(imagePath)
-      } else {
-        monster.image = image
-      }
+      monster.image = image
     }
 
     // Get monster token image - copy image file to root
@@ -365,33 +352,10 @@ export class Monster extends ModuleEntity {
     // be taken care of for us.
     const token = monsterData['token'] as string
     if (token) {
-      if (monsterFilePath && module) {
-        let tokenPath = Path.join(monsterFilePath, image)
-        module.copyImageFileToRoot(tokenPath)
-        monster.token = Path.basename(tokenPath)
-      } else {
-        monster.token = token
-      }
+      monster.token = token
     }
 
     return monster
-  }
-
-  /**
-   * Gets a monster from a YAML file
-   * @param monsterFilePath The monster YAML file path
-   * @param module The parent module
-   */
-  static fromYAMLFile(monsterFilePath: string, module: Module | undefined = undefined): Monster {
-    // Check for Module.yaml
-    if (!FileSystem.existsSync(monsterFilePath)) {
-      throw Error(`Could not locate monster file: ${monsterFilePath}`)
-    }
-
-    //const monsterFileDirectory = Path.dirname(monsterFilePath)
-    const monsterDataBuffer = FileSystem.readFileSync(monsterFilePath)
-    let monsterDataBufferString = monsterDataBuffer.toString()
-    return Monster.fromYAMLContent(monsterDataBufferString, module)
   }
 
   /**
@@ -537,12 +501,24 @@ export class Monster extends ModuleEntity {
     monsterHTML += '</div>' // statblock-top-stats
     monsterHTML += drawTaperRule()
     monsterHTML += '<div class="statblock-abilities">'
-    monsterHTML += `<div class="statblock-ability-strength"><p class="statblock-ability-abbrev">STR</p> <p class="statblock-ability-value">${this.str} (${getAbilityMod(this.str)})</p></div>`
-    monsterHTML += `<div class="statblock-ability-dexterity"><p class="statblock-ability-abbrev">DEX</p> <p class="statblock-ability-value">${this.dex} (${getAbilityMod(this.dex)})</p></div>`
-    monsterHTML += `<div class="statblock-ability-constitution"><p class="statblock-ability-abbrev">CON</p> <p class="statblock-ability-value">${this.con} (${getAbilityMod(this.con)})</p></div>`
-    monsterHTML += `<div class="statblock-ability-intelligence"><p class="statblock-ability-abbrev">INT</p> <p class="statblock-ability-value">${this.int} (${getAbilityMod(this.int)})</p></div>`
-    monsterHTML += `<div class="statblock-ability-wisdom"><p class="statblock-ability-abbrev">WIS</p> <p class="statblock-ability-value">${this.wis} (${getAbilityMod(this.wis)})</p></div>`
-    monsterHTML += `<div class="statblock-ability-charisma"><p class="statblock-ability-abbrev">CHA</p> <p class="statblock-ability-value">${this.cha} (${getAbilityMod(this.cha)})</p></div>`
+    monsterHTML += `<div class="statblock-ability-strength"><p class="statblock-ability-abbrev">STR</p> <p class="statblock-ability-value">${
+      this.str
+    } (${getAbilityMod(this.str)})</p></div>`
+    monsterHTML += `<div class="statblock-ability-dexterity"><p class="statblock-ability-abbrev">DEX</p> <p class="statblock-ability-value">${
+      this.dex
+    } (${getAbilityMod(this.dex)})</p></div>`
+    monsterHTML += `<div class="statblock-ability-constitution"><p class="statblock-ability-abbrev">CON</p> <p class="statblock-ability-value">${
+      this.con
+    } (${getAbilityMod(this.con)})</p></div>`
+    monsterHTML += `<div class="statblock-ability-intelligence"><p class="statblock-ability-abbrev">INT</p> <p class="statblock-ability-value">${
+      this.int
+    } (${getAbilityMod(this.int)})</p></div>`
+    monsterHTML += `<div class="statblock-ability-wisdom"><p class="statblock-ability-abbrev">WIS</p> <p class="statblock-ability-value">${
+      this.wis
+    } (${getAbilityMod(this.wis)})</p></div>`
+    monsterHTML += `<div class="statblock-ability-charisma"><p class="statblock-ability-abbrev">CHA</p> <p class="statblock-ability-value">${
+      this.cha
+    } (${getAbilityMod(this.cha)})</p></div>`
     monsterHTML += '</div>' // statblock-abilities
     monsterHTML += drawTaperRule()
     properties.forEach((property, index) => {
@@ -560,7 +536,7 @@ export class Monster extends ModuleEntity {
       monsterHTML += '<div class="statblock-property-block">'
       if (trait.name) {
         monsterHTML += `<p class="statblock-trait-name">${trait.name}.</p> `
-      } 
+      }
       monsterHTML += `<p class="statblock-trait-description">${trait.description}</p>`
       monsterHTML += '</div>' // statblock-property-block
     })
@@ -573,7 +549,7 @@ export class Monster extends ModuleEntity {
         monsterHTML += '<div class="statblock-property-block">'
         if (action.name) {
           monsterHTML += `<p class="statblock-action-name">${action.name}.</p> `
-        } 
+        }
         monsterHTML += `<p class="statblock-action-description">${italicsActionDescription(action.description)}</p>`
         monsterHTML += '</div>' // statblock-property-block
       })
@@ -586,7 +562,7 @@ export class Monster extends ModuleEntity {
         monsterHTML += '<div class="statblock-property-block">'
         if (reaction.name) {
           monsterHTML += `<p class="statblock-action-name">${reaction.name}.</p> `
-        } 
+        }
         monsterHTML += `<p class="statblock-action-description">${italicsActionDescription(reaction.description)}</p>`
         monsterHTML += '</div>' // statblock-property-block
       })
@@ -599,7 +575,7 @@ export class Monster extends ModuleEntity {
         monsterHTML += '<div class="statblock-property-block">'
         if (legendaryAction.name) {
           monsterHTML += `<p class="statblock-action-name">${legendaryAction.name}.</p> `
-        } 
+        }
         monsterHTML += `<p class="statblock-action-description">${italicsActionDescription(legendaryAction.description)}</p>`
         monsterHTML += '</div>' // statblock-property-block
       })
