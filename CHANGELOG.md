@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.14
 
 ### Added
 - Better handling for relative image links (particularly useful for shared images)
