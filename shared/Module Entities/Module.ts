@@ -588,6 +588,8 @@ export class Module {
       // image or resource folder) if they're in the root level.
       let ignoreFilePath = Path.join(subdirectoryPath, '.ignoreGroup')
       if (FileSystem.existsSync(ignoreFilePath)) {
+        let copyPath = Path.join(moduleBuildClonePath, subdirectoryName)
+        FileSystem.copySync(subdirectoryPath, copyPath)
         return
       }
 
