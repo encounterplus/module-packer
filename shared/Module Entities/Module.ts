@@ -236,7 +236,23 @@ export class Module {
       page.parent = newParent
       newParent.children.push(page)
     })
-    // TODO: add cyclic dependency detection
+
+    // Check for cyclic dependencies
+    module.pages.forEach ((page) => {
+      const maxCycles = 50
+      let currentParent: ModuleEntity | undefined = page.parent
+
+      let cycleCount = 0
+      while (currentParent !== undefined) {        
+        if (currentParent === page) {
+          throw Error(`The parent of the page "${[page.slug]}" is cyclic. Check the page-parent properties.`)
+        }
+        if (cycleCount > maxCycles) { // Shouldn't hit this.
+          throw Error(`The nested count of the page "${[page.slug]}" is exceeded ${maxCycles}. Page may be cyclic. Reduce or remove nesting.`)
+        }
+        currentParent = currentParent.parent
+      }
+    })
 
     // Sort module children
     module.children = module.sortChildren(module.children)
