@@ -58,4 +58,35 @@ export abstract class ModuleEntity {
 
   /** The children of this module */
   children: ModuleEntity[] = []
+
+  /** Which build targets to include in */
+  includeIn: IncludeMode = IncludeMode.All
+
+  // ---------------------------------------------------------------
+  // Public Methods
+  // ---------------------------------------------------------------
+
+  /** Gets the include mode from a string */
+  static getIncludeModeFromString(includeString: string): IncludeMode {
+    switch(includeString) {
+      case 'print':
+        return IncludeMode.Print
+      case 'module':
+        return IncludeMode.Module
+      default:
+        return IncludeMode.All
+    }
+  }
+}
+
+/** The module include mode */
+export enum IncludeMode {
+  /** All module targets include the entity */
+  All = 1,
+
+  /** Only print targets include the entity */
+  Print,
+
+  /** Only Encounter+ module targets include the entity */
+  Module,
 }

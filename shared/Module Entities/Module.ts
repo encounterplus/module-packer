@@ -10,7 +10,7 @@ import * as YAML from 'yaml'
 import { MarkdownRenderer } from '../MarkdownRenderer'
 import { ModuleProject } from '../ModuleProject'
 import { Group } from './Group'
-import { ModuleEntity } from './ModuleEntity'
+import { ModuleEntity, IncludeMode } from './ModuleEntity'
 import { Monster } from './Monster'
 import { Page } from './Page'
 
@@ -157,8 +157,9 @@ export class Module {
     // existing slugs as we're parsing a new module project
     let module = new Module()
     module.exportMode = mode
-    let forPrint = mode == ModuleMode.PrintToPDF
-    let scanOnly = mode == ModuleMode.ScanModule
+    let forPrint = mode === ModuleMode.PrintToPDF
+    let scanOnly = mode === ModuleMode.ScanModule
+    let forModule = mode === ModuleMode.ModuleExport
     Module.existingSlugs = []
 
     // Parse the module project file. If one doesn't exist - create it.
@@ -213,42 +214,91 @@ export class Module {
     // are explicitly ignored).
     module.processDirectory(projectDirectory, moduleBuildPath)
 
-    // Reassign page parents
-    module.pages.forEach ((page) => {
-      if(!page.parentPageSlug) {
+    // Reassign page parents when they are manually specified.
+    module.pages.forEach((page) => {
+      // If a new parent was not manually assigned, ignore
+      if (!page.parentPageSlug) {
         return
       }
 
-      let newParent = module.pages.filter( (parentPage) => {
+      // Find the requested new parent. If it doesn't exist
+      // ignore the parent assignment.
+      let newParent = module.pages.filter((parentPage) => {
         return parentPage.slug == page.parentPageSlug
       })[0]
 
-      if(!newParent) {
+      if (!newParent) {
+        console.warn(`The specified parent, ${page.parentPageSlug}, for page ${page.slug} could not be found.`)
         return
       }
 
-      if(page.parent) {
-        page.parent.children = page.parent.children.filter ( (childPage) => {
+      // Assign the new parent and append the page to the children of the new parent
+      page.parent = newParent
+      if (page.parent) {
+        page.parent.children = page.parent.children.filter((childPage) => {
           return childPage !== page
         })
       }
-
-      page.parent = newParent
       newParent.children.push(page)
     })
 
+    // Prunes an entity and children from the tree
+    function removeEntityAndChildren(entity: ModuleEntity) {
+      // Recursively remove children of children
+      entity.children.forEach((child) => {        
+        removeEntityAndChildren(child)
+      })
+      
+      module.pages = module.pages.filter((page) => { return page !== entity })
+      module.groups = module.groups.filter((group) => { return group !== entity })
+      module.monsters = module.monsters.filter((monster) => { return monster !== entity })
+      entity.children = []
+
+      if (entity.parent) {
+        entity.parent.children = entity.parent.children.filter((child) => { return child !== entity })
+      } else {
+        module.children = module.children.filter((child) => { return child !== entity })
+      }
+      
+    }
+
+    function getEntitiesToRemove(entities: ModuleEntity[]): ModuleEntity[] {
+      return entities.filter((entity) => {
+        let keepEntity =
+          scanOnly ||
+          entity.includeIn === IncludeMode.All ||
+          (entity.includeIn === IncludeMode.Module && forModule) ||
+          (entity.includeIn === IncludeMode.Print && forPrint)
+
+        return !keepEntity
+      })
+    }
+
+    // Filter entities based on whether they are marked for inclusion
+    // in the particular build target
+    let entitiesToRemove: ModuleEntity[] = []
+    entitiesToRemove.push(...getEntitiesToRemove(module.pages))
+    entitiesToRemove.push(...getEntitiesToRemove(module.groups))
+    entitiesToRemove.push(...getEntitiesToRemove(module.monsters))
+    entitiesToRemove.forEach((entity) => {
+      removeEntityAndChildren(entity)
+    })
+
     // Check for cyclic dependencies
-    module.pages.forEach ((page) => {
+    module.pages.forEach((page) => {
       const maxCycles = 50
       let currentParent: ModuleEntity | undefined = page.parent
 
       let cycleCount = 0
-      while (currentParent !== undefined) {        
+      while (currentParent !== undefined) {
         if (currentParent === page) {
           throw Error(`The parent of the page "${[page.slug]}" is cyclic. Check the page-parent properties.`)
         }
-        if (cycleCount > maxCycles) { // Shouldn't hit this.
-          throw Error(`The nested count of the page "${[page.slug]}" is exceeded ${maxCycles}. Page may be cyclic. Reduce or remove nesting.`)
+        if (cycleCount > maxCycles) {
+          // Shouldn't hit this unless someone nested crazy-deep, but it's a safety so the cyclic check doesn't spin forever.
+          throw Error(
+            `The nested count of the page "${[page.slug]}" is exceeded ${maxCycles}. Page may be cyclic. Reduce or remove nesting.`
+          )
         }
         currentParent = currentParent.parent
       }
@@ -657,10 +707,13 @@ export class Module {
     let order = frontMatter['order'] as number
     let printMultiColumn = (frontMatter['pdf-page-style'] as string) !== 'single-column'
     let pagebreaks = forPrint ? (frontMatter['pdf-pagebreaks'] as string) : (frontMatter['module-pagebreaks'] as string)
-    let parentPage = (frontMatter['parent-page'] as string)
+    let parentPage = frontMatter['parent-page'] as string
     let pagebreakContentFound = false
 
-    let printOnly = frontMatter['print-only'] === true
+    let includeIn = frontMatter['include-in']
+    if (includeIn === undefined) {
+      includeIn = 'all'
+    }
 
     // Get footer text. By default, it will be "<Page Name> | <Parent Name>"
     let parentName = parentGroup ? parentGroup.name : this.moduleProjectInfo.name
@@ -690,13 +743,6 @@ export class Module {
       this.monsters.push(monster)
     })
 
-    // Do not parse the page for a module if it is print-only. However,
-    // ensure this is done after any monsters are added to the module's
-    // monster list so they may be added to the compendium.
-    if (printOnly && this.exportMode === ModuleMode.ModuleExport) {
-      return pages
-    }
-
     // If we have pagebreaks defined, we'll attempt to split
     // up, group, and subgroup content by header values
     if (pagebreaks !== undefined && parentPage === undefined) {
@@ -722,6 +768,7 @@ export class Module {
 
         // Create Page from current HTML
         let page = new Page(headerText, this.moduleProjectInfo.id)
+        page.includeIn = ModuleEntity.getIncludeModeFromString(includeIn)
         page.content += $.html(element)
         page.sort = order
 
@@ -805,6 +852,7 @@ export class Module {
     if (!pagebreakContentFound) {
       let page = new Page(pageName, this.moduleProjectInfo.id)
       page.content = this.wrapPageInPrintDivs(html)
+      page.includeIn = ModuleEntity.getIncludeModeFromString(includeIn)
       page.sort = order
       page.parentPageSlug = parentPage
 

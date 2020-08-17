@@ -18,10 +18,11 @@ export class Group extends ModuleEntity {
    * @param groupPath The path of the group
    */
   constructor(name: string = 'Unnamed Group', moduleUUID: string, groupPath: string) {
-    let effectiveName = name
+    let effectiveName = name    
     let slug: string | undefined = undefined
     let order: number | undefined = undefined
 
+    let includeIn = 'all'
     let groupSettingsPath = Path.join(groupPath, Group.groupSettingsFileName)
     if (FileSystem.existsSync(groupSettingsPath)) {
       let groupDataBuffer = FileSystem.readFileSync(groupSettingsPath)
@@ -43,6 +44,11 @@ export class Group extends ModuleEntity {
         slug = slugFromSettings
       }
 
+      let includeInFromSettings = groupData['include-in']
+      if(includeInFromSettings) {
+        includeIn = includeInFromSettings
+      }
+
       order = groupData['order'] as number
     }
 
@@ -51,6 +57,7 @@ export class Group extends ModuleEntity {
     }
     super(effectiveName, moduleUUID, slug)
     this.groupPath = groupPath
+    this.includeIn = ModuleEntity.getIncludeModeFromString(includeIn) 
 
     if(order) {
       this.sort = order
