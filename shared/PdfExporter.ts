@@ -1,3 +1,4 @@
+import * as Cheerio from 'cheerio'
 import * as FileSystem from 'fs-extra'
 import * as Path from 'path'
 import * as Puppeteer from 'puppeteer-core'
@@ -5,6 +6,7 @@ import { pathToFileURL } from 'url'
 import { Module, ModuleMode } from './Module Entities/Module'
 import { ModuleEntity } from './Module Entities/ModuleEntity'
 import { Page } from './Module Entities/Page'
+import { Group } from './Module Entities/Group'
 
 export class PdfExporter {
   /**
@@ -36,6 +38,7 @@ export class PdfExporter {
 
     html += PdfExporter.getChildPageContent(module.children)
     html += `</head><body>`
+    html = PdfExporter.formatTableOfContents(html)
     FileSystem.writeFileSync(pageLocation, html)
 
     if (transformPageLocation) {
@@ -100,12 +103,64 @@ export class PdfExporter {
   }
 
   /**
+   * Modify an unordered list that is a table of contents by replacing
+   * the links with the page numbers
+   * @param html The current page HTML
+   */
+  private static formatTableOfContents(html: string): string {
+    let $ = Cheerio.load(html)
+    let currentPage = 1
+    let anchorPageDictionary: { [anchor: string]: number } = {}
+
+    // Use the footer-page-number elements to determine the
+    // page count.
+    $('.footer-page-number,a').each((i, element) => {
+      let isAnchor = $(element)[0]?.tagName === 'a'
+      if (isAnchor && $(element)[0].attribs['id']) {
+        let anchorID = $(element)[0].attribs['id']
+        anchorPageDictionary['#' + anchorID] = currentPage
+      }
+
+      let isPageNumber = $(element).hasClass('footer-page-number')
+      if (isPageNumber) {
+        currentPage += 1
+      }
+    })
+
+    // Replace the list items in an unordered list marked as a table of contents
+    // with actual item and page numbers.
+    $('ul.toc').each((i, element) => {
+      $(element).find('li').each((i, listElement) => {
+        $(listElement).find('a').each((i, linkElement) => {
+          let linkHref = linkElement.attribs['href']          
+          if(!linkHref) {
+            return
+          }
+
+          let pageNumber = anchorPageDictionary[linkHref]
+          let linkContent = linkElement.children[0]?.data
+          if(!pageNumber || !linkContent) {
+            return
+          }
+          
+          $(linkElement).replaceWith(`<span class="toc-title"><a href="${linkHref}">${linkContent}</a></span><span class="toc-page-number"><a href="${linkHref}">${pageNumber}</a></span>`)
+        })
+      })
+    })
+    return $.html()
+  }
+
+  /**
    * Gets the page content from an array of module entity children
    * @param moduleEntities The module entity children
    */
   private static getChildPageContent(moduleEntities: ModuleEntity[]): string {
     let html = ''
     moduleEntities.forEach((child) => {
+      if (child instanceof Group) {
+        html += `<a id="${child.slug}"></a>`
+      }
+
       if (child instanceof Page) {
         html += `<a id="${child.slug}"></a>`
         html += child.content

@@ -6,10 +6,12 @@
 - `print-only` option on pages changed to use new `include-in` option
 
 ### Added
+- `.toc` style for unordered lists. Creates table of content entries with automatic page numbers.
 - `include-in` YAML option available for both group and page definitions to allow inclusion of groups and/or pages in specific targets. Valid values are `all` (default), `print`, and `module`.
 
 ### Fixed
 - Fixed broken drop caps lettering
+- Pages were not respecting manual slug definitions
 
 ## 1.0.14
 

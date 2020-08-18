@@ -233,12 +233,12 @@ export class Module {
       }
 
       // Assign the new parent and append the page to the children of the new parent
-      page.parent = newParent
       if (page.parent) {
         page.parent.children = page.parent.children.filter((childPage) => {
           return childPage !== page
         })
       }
+      page.parent = newParent
       newParent.children.push(page)
     })
 
@@ -705,6 +705,7 @@ export class Module {
     let frontMatter = matter.data
     let pageName = (frontMatter['name'] as string) || Path.basename(filePath)
     let order = frontMatter['order'] as number
+    let slug = frontMatter['slug'] as string
     let printMultiColumn = (frontMatter['pdf-page-style'] as string) !== 'single-column'
     let pagebreaks = forPrint ? (frontMatter['pdf-pagebreaks'] as string) : (frontMatter['module-pagebreaks'] as string)
     let parentPage = frontMatter['parent-page'] as string
@@ -850,7 +851,7 @@ export class Module {
     // pagebreak parsing logic, use full HTML
     // to create page
     if (!pagebreakContentFound) {
-      let page = new Page(pageName, this.moduleProjectInfo.id)
+      let page = new Page(pageName, this.moduleProjectInfo.id, slug)
       page.content = this.wrapPageInPrintDivs(html)
       page.includeIn = ModuleEntity.getIncludeModeFromString(includeIn)
       page.sort = order

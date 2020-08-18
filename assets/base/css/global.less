@@ -1145,4 +1145,45 @@ table.sidebar {
     -webkit-column-break-after: always;
     -moz-column-break-after: always;
   }
+
+  ul.toc {
+    padding-left: 0px;
+
+    li {
+      display: flex;
+      margin-bottom: 10px;
+      padding-left: 10px;
+
+      .toc-title {
+        order: 1;
+        margin-right: 5px;
+      }
+
+      .toc-page-number {
+        order: 3;
+        margin-left: 5px;
+      }
+
+      &::after {
+        content: "";
+        border-bottom: 1.5px dotted;
+        flex-grow: 1;
+        order: 2;
+      }
+    }
+
+    li.subcategory {
+      padding-left: 0px;
+      font-family: @heading-font-family;
+      font-weight: bold;
+      color: @accent-color;
+    }
+
+    li.category {
+      padding-left: 5px;
+      font-family: @heading-font-family;
+      font-weight: bold;
+      color: @accent-color;
+    }
+  }
 }
