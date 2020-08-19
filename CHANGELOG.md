@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.15
 
 ### Breaking Changes
 - `print-only` option on pages changed to use new `include-in` option
