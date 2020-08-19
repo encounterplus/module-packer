@@ -35,7 +35,10 @@ export class ModuleProject {
   referenceCode: string | undefined = undefined
 
   /** The module image relative path */
-  imagePath: string | undefined = undefined
+  moduleCoverPath: string | undefined = undefined
+
+  /** The cover image for print */
+  printCoverPath: string | undefined = undefined
 
   /** The module version */
   version: number | undefined = undefined
@@ -182,14 +185,26 @@ export class ModuleProject {
 
     // If cover image is specified in Module project file, use that.
     // Ensure cover image actually exists
-    let imagePath = moduleData['cover'] as string
-    if (imagePath) {
+    let moduleCoverPath = moduleData['cover'] as string
+    if (moduleCoverPath) {
       let moduleDirectory = Path.dirname(projectFilePath)
-      let fullImagePath = Path.join(moduleDirectory, imagePath)
+      let fullImagePath = Path.join(moduleDirectory, moduleCoverPath)
       if (!FileSystem.existsSync(fullImagePath)) {
         throw Error(`Module cover image path does not exist: ${fullImagePath}`)
       }
-      moduleProject.imagePath = imagePath
+      moduleProject.moduleCoverPath = moduleCoverPath
+    }
+
+    // If cover image is specified in Module project file, use that.
+    // Ensure cover image actually exists
+    let printCoverPath = moduleData['printCover'] as string
+    if (printCoverPath) {
+      let moduleDirectory = Path.dirname(projectFilePath)
+      let fullImagePath = Path.join(moduleDirectory, printCoverPath)
+      if (!FileSystem.existsSync(fullImagePath)) {
+        throw Error(`Module cover image path does not exist: ${fullImagePath}`)
+      }
+      moduleProject.printCoverPath = printCoverPath
     }
 
     return moduleProject
@@ -253,8 +268,11 @@ export class ModuleProject {
     if (this.referenceCode) {
       newModuleProject['code'] = this.referenceCode
     }
-    if (this.imagePath) {
-      newModuleProject['cover'] = this.imagePath
+    if (this.moduleCoverPath) {
+      newModuleProject['cover'] = this.moduleCoverPath
+    }
+    if (this.printCoverPath) {
+      newModuleProject['printCover'] = this.printCoverPath
     }
     newModuleProject['version'] = this.version
     newModuleProject['autoIncrementVersion'] = true

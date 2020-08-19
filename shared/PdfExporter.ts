@@ -36,8 +36,14 @@ export class PdfExporter {
     const browser = await Puppeteer.launch(options)
     const page = await browser.newPage()
 
-    html += PdfExporter.getChildPageContent(module.children)
     html += `</head><body>`
+    if (module.moduleProjectInfo.printCoverPath && module.moduleProjectInfo.moduleProjectPath) {
+      let moduleDirectory = Path.dirname(module.moduleProjectInfo.moduleProjectPath)
+      let fullImagePath = Path.join(moduleDirectory, module.moduleProjectInfo.printCoverPath)
+      let coverImageData = FileSystem.readFileSync(fullImagePath).toString('base64')
+      html += `<div class="print-cover-page" style="background-image: url(data:image;base64,${coverImageData})"></div>`
+    }
+    html += PdfExporter.getChildPageContent(module.children)
     html = PdfExporter.formatTableOfContents(html)
     FileSystem.writeFileSync(pageLocation, html)
 

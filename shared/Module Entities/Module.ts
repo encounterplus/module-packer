@@ -173,11 +173,11 @@ export class Module {
       module.moduleProjectInfo.writeModuleProjectFile(moduleProjectFilePath)
     }
 
-    // Check for cover image if not already defined. This was
+    // Legacy: Check for cover image if not already defined. This was
     // the legacy way of defining the cover image path.
     let coverPath = Path.join(projectDirectory, 'cover.jpg')
-    if (module.moduleProjectInfo.imagePath === undefined && FileSystem.existsSync(coverPath)) {
-      module.moduleProjectInfo.imagePath = 'cover.jpg'
+    if (module.moduleProjectInfo.moduleCoverPath === undefined && FileSystem.existsSync(coverPath)) {
+      module.moduleProjectInfo.moduleCoverPath = 'cover.jpg'
     }
 
     // Create a Module Build folder so the main
@@ -518,7 +518,7 @@ export class Module {
       author: this.moduleProjectInfo.author,
       code: this.moduleProjectInfo.referenceCode,
       category: this.moduleProjectInfo.category,
-      image: this.moduleProjectInfo.imagePath,
+      image: this.moduleProjectInfo.moduleCoverPath,
       group: groups,
       page: pages,
     }
@@ -698,11 +698,14 @@ export class Module {
     // from markdown. Matter data are attributes, matter content is the
     // body of the page.
     let matter = GrayMatter(data)
+    let frontMatter = matter.data
+    for (let key in frontMatter) {
+      frontMatter[key.toLowerCase()] = frontMatter[key]
+    }
 
     // If defined in the front-matter, get the name
     // for the page there. Otherwise, get it from
     // the file name
-    let frontMatter = matter.data
     let pageName = (frontMatter['name'] as string) || Path.basename(filePath)
     let order = frontMatter['order'] as number
     let slug = frontMatter['slug'] as string
@@ -841,6 +844,9 @@ export class Module {
         // Process elements for print layouts
         page.content = this.postProcessForPrint(page.content, printMultiColumn)
 
+        // Process anchors
+        page.content = this.postProcessAnchors(page.content, page.slug)
+
         // Finally, add the page to the module
         pages.push(page)
         pagebreakContentFound = true
@@ -870,10 +876,40 @@ export class Module {
       // Process elements for print layouts
       page.content = this.postProcessForPrint(page.content, printMultiColumn)
 
+      // Process anchors
+      page.content = this.postProcessAnchors(page.content, page.slug)
+
       pages.push(page)
     }
 
     return pages
+  }
+
+  private postProcessAnchors = (pageContent: string, slug: string): string => {
+    const scanOnly = this.exportMode === ModuleMode.ScanModule
+
+    if (scanOnly) {
+      return pageContent
+    }
+
+    let $ = Cheerio.load(pageContent)
+    $('h1,h2,h3,h4,h5,h6').each((i, element) => {
+      let headerText = $(element).text()
+      if (!headerText) {
+        return
+      }
+
+      let headerSlug = Slugify(headerText, {
+        lower: true,
+        remove: /[*+~.()'"!:@&’]/g,
+        strict: true,
+      })
+      let anchorID = `${slug}-${headerSlug}`
+      $(element).prepend(`<a id="${anchorID}"></a>`)
+      console.log(`Anchor created: ${anchorID}`)
+    })
+
+    return $.html()
   }
 
   /**

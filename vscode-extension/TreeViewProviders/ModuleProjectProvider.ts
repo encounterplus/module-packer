@@ -130,6 +130,10 @@ export class ModuleProjectProvider implements vscode.TreeDataProvider<vscode.Tre
       let data = FileSystem.readFileSync(itemPath, 'utf8')
       let matter = GrayMatter(data)
       let attributes = matter.data
+      for (let key in attributes) {
+        attributes[key.toLowerCase()] = attributes[key]
+      }
+
       let pageName = Path.basename(itemPath)
       if (attributes['name'] !== undefined) {
         pageName = attributes['name']

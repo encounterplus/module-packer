@@ -7,11 +7,17 @@
 
 ### Added
 - `.toc` style for unordered lists. Creates table of content entries with automatic page numbers.
-- `include-in` YAML option available for both group and page definitions to allow inclusion of groups and/or pages in specific targets. Valid values are `all` (default), `print`, and `module`.
+- `include-in` module project option available for both group and page definitions to allow inclusion of groups and/or pages in specific targets. Valid values are `all` (default), `print`, and `module`.
+- `printCover` module project option for a print cover page.
+- Even and odd pages now print the footer and page number on opposite sides as would be expected when printing.
+
+### Changed
+- Allowed front-matter keys to be case insensitive
 
 ### Fixed
 - Fixed broken drop caps lettering
-- Pages were not respecting manual slug definitions
+- Fixed pages not respecting manual slug definitions
+- Fixed sidebar table style being overly stretched on single-column print layouts
 
 ## 1.0.14
 

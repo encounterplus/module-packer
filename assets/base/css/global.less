@@ -65,6 +65,16 @@ p {
   margin-block-end: 1em;
 }
 
+div {
+  &.float-left {
+    float: left;
+  }
+
+  &.float-right {
+    float: right;
+  }
+}
+
 /******** Multi-column Div ********/
 
 div.two-column {
@@ -359,10 +369,87 @@ mark {
   background: #e4c3c3;
 }
 
-/******** List Styles ********/
+/******** Square List Style ********/
 
 ul.square {
   list-style-type: square;
+}
+
+/******** Table of Content List Style ********/
+
+ul.toc {
+  padding-left: 0;
+
+  li {
+    font-size: 13px;
+    font-weight: normal;
+    display: flex;
+    margin-bottom: 10px;
+    padding-left: 2em;
+
+    span.toc-title {
+      order: 1;
+      margin-right: 0.25em;
+    }
+
+    span.toc-page-number {
+      font-size: 13px;
+      font-weight: normal;
+      color: @foreground-color;
+      order: 3;
+      margin-left: 0.25em;
+
+      a { 
+        color: @foreground-color;
+      }
+    }
+
+    &::after {
+      content: "";
+      color: @foreground-color;
+      border-bottom: 2px dotted;
+      flex-grow: 1;
+      order: 2;
+    }
+
+    a {
+      color: @foreground-color
+    }
+  }
+
+  li.subitem {
+    padding-left: 3em;
+  }
+
+  li.part {
+    padding-left: 0;    
+    border-bottom: 1px solid @accent-color;
+    font-family: @heading-font-family;
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: bold;
+    color: @accent-color;
+
+    &::after {
+      border-bottom: none;
+    }
+
+    a {
+      color: @accent-color;
+    }
+  }
+
+  li.category {
+    padding-left: 1em;
+    font-size: 14px;
+    font-family: @heading-font-family;
+    font-weight: bold;
+    color: @accent-color;
+
+    a {
+      color: @accent-color;
+    }
+  }
 }
 
 /******** Code Blocks ********/
@@ -466,6 +553,14 @@ table {
   margin-bottom: 30px;
   page-break-inside: avoid;
   overflow-wrap: break-word;
+
+  &.float-left {
+    float: left;
+  }
+
+  &.float-right {
+    float: right;
+  }
 
   &.headerTitle {
     thead {
@@ -641,7 +736,7 @@ table.sidebar {
 
   font-family: @body-font-family;
   text-align: left;
-  margin: 10px;
+  margin: 10px 20px;
   display: inline-block;
   vertical-align: top;
   width: 300px;
@@ -651,11 +746,14 @@ table.sidebar {
 
   &.two-column {
     width: 90%;
-    display: block;
+    display: inline-block;
     max-width: 850px;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    // margin-left: auto;
+    // margin-right: auto;
+    // text-align: center;
 
     .statblock-section-left,
     .statblock-section-right {
@@ -985,6 +1083,17 @@ table.sidebar {
 /******** Print-Specific Styles ********/
 
 @media print {
+  .print-cover-page {
+    position: relative;
+    height: 11in;
+    width: 8.5in;
+    text-rendering: optimizeLegibility;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    background-size: 100%;
+  }
+
   p.size-cover,
   p.size-full,
   div.size-full {
@@ -1068,75 +1177,82 @@ table.sidebar {
     page-break-before: always;
     page-break-after: always;
     overflow: hidden;
-  }
 
-  .print-page > .page-content {
-    height: 9.9in;
-    width: 7.5in;
-    position: relative;
-    z-index: 20;
-  }
+    &:after {
+      content: '';
+      position: absolute;
+      bottom: 0.1in;
+      left: 0;
+      z-index: 100;
+      height: 0.5in;
+      width: 8.5in;
+      background-size: 8.5in 0.5in;
+    }
 
-  .print-page > .page-content-two-column {
-    height: 9.9in;
-    width: 7.5in;
-    position: relative;
-    z-index: 20;
-    column-count: 2;
-    column-gap: 0.25in;
-    column-fill: auto;
-    -webkit-column-count: 2;
-    -moz-column-count: 2;
-    -webkit-column-gap: 0.25in;
-    -moz-column-gap: 0.25in;
+    &:nth-of-type(odd) {
+      .footer-page-number {
+        right: unset;
+        left: 2px;
+      }
+
+      &:after {
+        transform: scaleX(-1);
+      }
+    }
+
+    .page-content {
+      height: 9.9in;
+      width: 7.5in;
+      position: relative;
+      z-index: 20;
+    }
+
+    .footer-content {
+      font-family: @heading-font-family;
+      position: absolute;
+      font-variant: small-caps;
+      bottom: 0.2in;
+      width: 8.5in;
+      font-size: 15px;
+      color: #aea41a;
+      right: 2px;
+      text-align: center;
+    }
+
+    .footer-page-number {
+      font-family: @heading-font-family;
+      position: absolute;
+      bottom: 0.3in;
+      width: 50px;
+      font-size: 15px;
+      color: #aea41a;
+      right: 2px;
+      text-align: center;
+
+      &:after {
+        content: counter(page-numbers);
+      }
+    }    
   }
 
   table.sidebar {
-    margin-left: 0.1in;
-    margin-right: 0.1in;
-    width: calc(100% - 0.2in);
+    float: right;
+    margin-left: 10px;
+    max-width: 400px;
+    width: 45%;
+  }
+
+  .two-column {
+    table.sidebar {
+      float: none;
+      margin-left: 0.1in;
+      margin-right: 0.1in;
+      width: calc(100% - 0.2in);
+    }
   }
 
   .statblock {
     width: 3.25in;
-  }
-
-  .print-page:after {
-    content: '';
-    position: fixed;
-    bottom: 0.1in;
-    left: 0;
-    z-index: 100;
-    height: 0.5in;
-    width: 8.5in;
-    background-size: 8.5in 0.5in;
-  }
-
-  .print-page > .footer-content {
-    font-family: @heading-font-family;
-    position: absolute;
-    font-variant: small-caps;
-    bottom: 0.2in;
-    width: 8.5in;
-    font-size: 15px;
-    color: #aea41a;
-    right: 2px;
-    text-align: center;
-  }
-
-  .print-page > .footer-page-number {
-    font-family: @heading-font-family;
-    position: absolute;
-    bottom: 0.3in;
-    width: 50px;
-    font-size: 15px;
-    color: #aea41a;
-    right: 2px;
-    text-align: center;
-  }
-
-  .print-page > .footer-page-number:after {
-    content: counter(page-numbers);
   }
 
   .print-column-break {
@@ -1144,46 +1260,5 @@ table.sidebar {
     display: flex;
     -webkit-column-break-after: always;
     -moz-column-break-after: always;
-  }
-
-  ul.toc {
-    padding-left: 0px;
-
-    li {
-      display: flex;
-      margin-bottom: 10px;
-      padding-left: 10px;
-
-      .toc-title {
-        order: 1;
-        margin-right: 5px;
-      }
-
-      .toc-page-number {
-        order: 3;
-        margin-left: 5px;
-      }
-
-      &::after {
-        content: "";
-        border-bottom: 1.5px dotted;
-        flex-grow: 1;
-        order: 2;
-      }
-    }
-
-    li.subcategory {
-      padding-left: 0px;
-      font-family: @heading-font-family;
-      font-weight: bold;
-      color: @accent-color;
-    }
-
-    li.category {
-      padding-left: 5px;
-      font-family: @heading-font-family;
-      font-weight: bold;
-      color: @accent-color;
-    }
   }
 }
