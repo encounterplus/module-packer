@@ -341,6 +341,7 @@ export class Module {
     }
 
     let html = '</div>'
+    html += '<div class="footer-background"></div>'
     html += `<div class="footer-content">${this.printFooterContent}</div>`
     html += '<div class="footer-page-number"></div>'
     html += '</div>'

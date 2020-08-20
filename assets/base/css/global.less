@@ -1083,6 +1083,11 @@ table.sidebar {
 /******** Print-Specific Styles ********/
 
 @media print {
+  @page {
+    size: auto;
+    margin: 0;
+  }
+
   .print-cover-page {
     position: relative;
     height: 11in;
@@ -1178,8 +1183,7 @@ table.sidebar {
     page-break-after: always;
     overflow: hidden;
 
-    &:after {
-      content: '';
+    .footer-background {
       position: absolute;
       bottom: 0.1in;
       left: 0;
@@ -1187,17 +1191,6 @@ table.sidebar {
       height: 0.5in;
       width: 8.5in;
       background-size: 8.5in 0.5in;
-    }
-
-    &:nth-of-type(odd) {
-      .footer-page-number {
-        right: unset;
-        left: 2px;
-      }
-
-      &:after {
-        transform: scaleX(-1);
-      }
     }
 
     .page-content {

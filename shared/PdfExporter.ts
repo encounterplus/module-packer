@@ -45,6 +45,7 @@ export class PdfExporter {
     }
     html += PdfExporter.getChildPageContent(module.children)
     html = PdfExporter.formatTableOfContents(html)
+    html = PdfExporter.alternateFooters(html)
     FileSystem.writeFileSync(pageLocation, html)
 
     if (transformPageLocation) {
@@ -106,6 +107,33 @@ export class PdfExporter {
       console.log(error.message)
       throw Error(`PDF engine installation failed: ${error.Message}`)
     }
+  }
+
+  /**
+   * Alternates the footer direction on odd vs even pages
+   * @param html The page HTML
+   */
+  private static alternateFooters(html: string): string {
+    let $ = Cheerio.load(html)
+    let isEvenPage = false
+
+    $('.print-page').each((i, element) => {
+      $(element).find('.footer-background').each((i, element) => {
+        if(isEvenPage) {
+          $(element).attr('style', 'transform: scaleX(-1);')
+        }
+      })
+      
+      $(element).find('.footer-page-number').each((i, element) => {
+        if(isEvenPage) {
+          $(element).attr('style', 'right: unset; left: 2px;')
+          console.log($(element).attr)
+        }
+      })
+
+      isEvenPage = !isEvenPage
+    })
+    return $.html()
   }
 
   /**

@@ -1,5 +1,10 @@
 # Change Log
 
+## [Unreleased]
+
+### Changed
+- Swapped page footer orientation between odd and even pages 
+
 ## 1.0.15
 
 ### Breaking Changes
