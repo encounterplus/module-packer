@@ -3,6 +3,7 @@ import * as Cheerio from 'cheerio'
 import * as FileSystem from 'fs-extra'
 import * as GrayMatter from 'gray-matter'
 import * as Path from 'path'
+import * as Logger from 'winston'
 import Slugify from 'slugify'
 import { v4 as UUIDV4, v5 as UUIDV5 } from 'uuid'
 import * as XML2JS from 'xml2js'
@@ -228,7 +229,7 @@ export class Module {
       })[0]
 
       if (!newParent) {
-        console.warn(`The specified parent, ${page.parentPageSlug}, for page ${page.slug} could not be found.`)
+        Logger.warn(`The specified parent, ${page.parentPageSlug}, for page ${page.slug} could not be found.`)
         return
       }
 
@@ -390,7 +391,7 @@ export class Module {
     archive.on('warning', function (error) {
       let errorMessage = (error as Error).message
       if (error.code === 'ENOENT') {
-        console.warn(errorMessage)
+        Logger.warn(errorMessage)
       } else {
         throw error
       }
@@ -411,7 +412,7 @@ export class Module {
    * @param outputPath The path where the XML files will be created
    */
   private exportXML = (outputPath: string) => {
-    console.log(`Exporting module to XML: ${outputPath}`)
+    Logger.info(`Exporting module to XML: ${outputPath}`)
 
     let modulePath = Path.join(outputPath, 'module.xml')
     let compendiumPath = Path.join(outputPath, 'compendium.xml')
@@ -570,7 +571,7 @@ export class Module {
    */
   private processDirectory = (directoryPath: string, moduleBuildPath: string, parentGroup: Group | undefined = undefined) => {
     const scanOnly = this.exportMode === ModuleMode.ScanModule
-    console.log(`Processing directory: ${directoryPath}`)
+    Logger.info(`Processing directory: ${directoryPath}`)
 
     let moduleProjectDirectory = this.moduleProjectInfo.moduleProjectDirectory
     if (!moduleProjectDirectory) {
@@ -676,8 +677,6 @@ export class Module {
     let markdown = markdownRenderer.getRenderer()
 
     let pages: Page[] = []
-    console.log(`Processing file: ${filePath}`)
-
     let extension = Path.extname(filePath)
 
     let monsterModulePath = Path.join(moduleBuildPath, 'monsters')
@@ -691,6 +690,8 @@ export class Module {
     if (extension != '.md') {
       return pages
     }
+
+    Logger.info(`Processing file: ${filePath}`)
 
     // Read the markdown file contents
     let data = FileSystem.readFileSync(filePath, 'utf8')
@@ -769,7 +770,7 @@ export class Module {
 
       $(pagebreaks).each((i, element) => {
         let headerText = $(element).text()
-        console.log(`Parsing page ${headerText} from header ${element.tagName}`)
+        Logger.info(`Parsing page ${headerText} from header ${element.tagName}`)
 
         // Create Page from current HTML
         let page = new Page(headerText, this.moduleProjectInfo.id)
@@ -820,7 +821,7 @@ export class Module {
             pageParent.children.push(page)
             page.sort = undefined // Clear sort from nested pages
           } else {
-            console.error(`Page for header "${parentHeader}" was not found. This is a bug in the module packer.`)
+            Logger.info(`Page for header "${parentHeader}" was not found. This is a bug in the module packer.`)
           }
         }
 
@@ -907,7 +908,7 @@ export class Module {
       })
       let anchorID = `${slug}-${headerSlug}`
       $(element).prepend(`<a id="${anchorID}"></a>`)
-      console.log(`Anchor created: ${anchorID}`)
+      Logger.info(`Anchor created: ${anchorID}`)
     })
 
     return $.html()

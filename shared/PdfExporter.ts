@@ -2,11 +2,13 @@ import * as Cheerio from 'cheerio'
 import * as FileSystem from 'fs-extra'
 import * as Path from 'path'
 import * as Puppeteer from 'puppeteer-core'
+import * as Logger from 'winston'
 import { pathToFileURL } from 'url'
 import { Module, ModuleMode } from './Module Entities/Module'
 import { ModuleEntity } from './Module Entities/ModuleEntity'
 import { Page } from './Module Entities/Page'
 import { Group } from './Module Entities/Group'
+
 
 export class PdfExporter {
   /**
@@ -91,7 +93,7 @@ export class PdfExporter {
         }
       })
       let localRevisions = await browserFetcher.localRevisions()
-      console.log('Chromium downloaded to ' + revisionInfo.folderPath)
+      Logger.info('Chromium downloaded to ' + revisionInfo.folderPath)
 
       // Remove any older versions
       const cleanupOldVersions = await localRevisions.map(async (revision) => {
@@ -104,7 +106,7 @@ export class PdfExporter {
         return Promise.all(cleanupOldVersions)
       }
     } catch (error) {
-      console.log(error.message)
+      Logger.error(error.message)
       throw Error(`PDF engine installation failed: ${error.Message}`)
     }
   }
@@ -127,7 +129,6 @@ export class PdfExporter {
       $(element).find('.footer-page-number').each((i, element) => {
         if(isEvenPage) {
           $(element).attr('style', 'right: unset; left: 2px;')
-          console.log($(element).attr)
         }
       })
 

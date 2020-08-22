@@ -1,4 +1,5 @@
 import * as vscode from 'vscode'
+import * as Logger from 'winston'
 
 export abstract class CommandBase {
   // ---------------------------------------------------------------
@@ -45,7 +46,7 @@ export abstract class CommandBase {
     // Create a status bar item message
     let statusBarMessage: vscode.Disposable | undefined = undefined
     if (this.statusMessage !== undefined) {
-      console.log(this.statusMessage)
+      Logger.info(this.statusMessage)
       statusBarMessage = vscode.window.setStatusBarMessage(this.statusMessage)
     }
 
@@ -55,7 +56,7 @@ export abstract class CommandBase {
       await this.executeCommand()
 
       if (this.successMessage !== undefined) {
-        console.log(this.successMessage)
+        Logger.info(this.successMessage)
         vscode.window.showInformationMessage(this.successMessage)
       }
 
@@ -64,7 +65,7 @@ export abstract class CommandBase {
     } catch (error) {
       let errorMessage = (error as Error).message
       vscode.window.showErrorMessage(errorMessage)
-      console.error(errorMessage)
+      Logger.error(errorMessage)
       statusBarMessage?.dispose()
       CommandBase.isRunningCommand = false
     }

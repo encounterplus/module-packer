@@ -1,5 +1,7 @@
 import { app, BrowserWindow, ipcMain } from 'electron'
 import * as Path from 'path'
+import * as Logger from 'winston'
+import * as Transport from 'winston-transport'
 import { Module, ModuleMode } from '../shared/Module Entities/Module'
 import { ModuleProject } from '../shared/ModuleProject'
 import { PdfExporter } from '../shared/PdfExporter'
@@ -9,6 +11,9 @@ import { PdfExporter } from '../shared/PdfExporter'
 let mainWindow: BrowserWindow
 
 function createWindow() {
+  const modulePackerLogger = new ModulePackerLogger()
+  Logger.add(modulePackerLogger)
+
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 400,
@@ -23,11 +28,7 @@ function createWindow() {
 
   // If running in a development environment, customize the window size
   let dev = false
-  if (
-    process.defaultApp ||
-    /[\\/]electron-prebuilt[\\/]/.test(process.execPath) ||
-    /[\\/]electron[\\/]/.test(process.execPath)
-  ) {
+  if (process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) || /[\\/]electron[\\/]/.test(process.execPath)) {
     dev = true
   }
 
@@ -79,7 +80,7 @@ ipcMain.on('exportToPdf', async (event, path, name) => {
       let outputPath = await PdfExporter.exportToPdf(moduleFolderPath)
       mainWindow.webContents.send('successPdf', outputPath)
     } else {
-      mainWindow.webContents.send('error', 'There are multiple modules in the specified path.')  
+      mainWindow.webContents.send('error', 'There are multiple modules in the specified path.')
     }
   } catch (error) {
     mainWindow.webContents.send('error', error.message)
@@ -101,7 +102,7 @@ ipcMain.on('createModule', async (event, path, name) => {
       let module = await Module.createModuleFromPath(modulePath, name, ModuleMode.ModuleExport)
       mainWindow.webContents.send('successModule', module.moduleProjectInfo.name, module.moduleArchivePath)
     } else {
-      mainWindow.webContents.send('error', 'There are multiple modules in the specified path.')  
+      mainWindow.webContents.send('error', 'There are multiple modules in the specified path.')
     }
   } catch (error) {
     mainWindow.webContents.send('error', error.message)
@@ -109,6 +110,39 @@ ipcMain.on('createModule', async (event, path, name) => {
 })
 
 process.on('uncaughtException', function (error) {
-  console.log(error.message)
+  console.error(error.message)
   mainWindow.webContents.send('error', error.message)
 })
+
+/**
+ * A simple logger transport for directing
+ * Winston logs to Module Packer console output.
+ */
+export class ModulePackerLogger extends Transport {
+  /**
+   * Processes a log message
+   * @param info The log info
+   * @param callback The log callback
+   */
+  log(info: any, callback: any) {
+    setImmediate(() => {
+      setImmediate(() => this.emit('logged', info))
+    })
+
+    switch (info['level']) {
+      case 'warn':
+        console.warn(info['message'])
+        break
+      case 'error':
+        console.error(info['message'])
+        break
+      default:
+        console.log(info['message'])
+        break
+    }
+
+    if (callback) {
+      callback()
+    }
+  }
+}
