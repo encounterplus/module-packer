@@ -506,10 +506,12 @@ a[href*='/spell/'] {
 figure {
   margin: 0;
   padding: 0;
+  page-break-inside: avoid;
 }
 
 figcaption {
   text-align: center;
+  font-size: 9px;
 }
 
 img {
@@ -562,7 +564,7 @@ table {
     float: right;
   }
 
-  &.headerTitle {
+  &.header-title {
     thead {
       font-weight: bold;
       font-family: @heading-font-family;
@@ -1141,6 +1143,11 @@ table.sidebar {
     color: @foreground-color;
   }
 
+  blockquote {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
   /* Enable this if you want to print with
      drop shadows on elements - this will
      cause text to be non-selectable in block quotes */
@@ -1253,5 +1260,13 @@ table.sidebar {
     display: flex;
     -webkit-column-break-after: always;
     -moz-column-break-after: always;
+  }
+
+  .print-float-left {
+    float: left;
+  }
+
+  .print-float-right {
+    float: right;
   }
 }

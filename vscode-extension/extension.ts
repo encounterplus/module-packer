@@ -18,7 +18,6 @@ const exportToPdfCommand = new ExportToPdfCommand()
 export function activate(context: vscode.ExtensionContext) {
   const vsCodeLogger = new VSCodeLogger()
   Logger.add(vsCodeLogger)
-  Logger.info('EncounterPlus Markdown Extension loaded.')
 
   if (vscode.workspace.rootPath === undefined) {
     return
@@ -128,8 +127,12 @@ export class VSCodeLogger extends Transport {
     })
 
     this.modulePackerOuput.show()
-    this.modulePackerOuput.appendLine(`${info['level']}: ${info['message']}`)
-
+    if (info['level'] !== 'info') {
+      this.modulePackerOuput.appendLine(`${info['level']}: ${info['message']}`)
+    } else {
+      this.modulePackerOuput.appendLine(`${info['message']}`)
+    }
+    
     if (callback) {
       callback()
     }

@@ -2,8 +2,16 @@
 
 ## [Unreleased]
 
+### Breaking Changes
+- Changed `.headerTitle` to `.header-title` to be consistent with others
+
+### Added
+- Console log messages when building with the VS Code extension
+- `.print-float-right` and `.print-float-left` attributes to float only in print layouts
+
 ### Changed
 - Swapped page footer orientation between odd and even pages 
+- Decreased font size of figure captions
 
 ## 1.0.15
 
