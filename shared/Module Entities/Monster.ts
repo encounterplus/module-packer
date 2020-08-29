@@ -371,7 +371,7 @@ export class Monster extends ModuleEntity {
       return abilityMod >= 0 ? `+${abilityMod}` : `${abilityMod}`
     }
 
-    function italicsActionDescription(description: string): string {
+    function formatDescription(description: string): string {
       let newDescription = description
       newDescription = newDescription.replace(/Melee or Ranged Weapon Attack: /i, '<i>Melee or Ranged Weapon Attack:</i> ')
       newDescription = newDescription.replace(/Melee Weapon Attack: /i, '<i>Melee Weapon Attack:</i> ')
@@ -380,6 +380,7 @@ export class Monster extends ModuleEntity {
       newDescription = newDescription.replace(/Melee Spell Attack: /i, '<i>Melee Spell Attack:</i> ')
       newDescription = newDescription.replace(/Ranged Spell Attack: /i, '<i>Ranged Spell Attack:</i> ')
       newDescription = newDescription.replace(/Hit: /i, '<i>Hit:</i> ')
+      newDescription = newDescription.replace(/[\r\n]/g, '<br />')
       return newDescription
     }
 
@@ -537,7 +538,7 @@ export class Monster extends ModuleEntity {
       if (trait.name) {
         monsterHTML += `<p class="statblock-trait-name">${trait.name}.</p> `
       }
-      monsterHTML += `<p class="statblock-trait-description">${trait.description}</p>`
+      monsterHTML += `<p class="statblock-trait-description">${formatDescription(trait.description)}</p>`
       monsterHTML += '</div>' // statblock-property-block
     })
     monsterHTML += '</div>' // statblock-section-left
@@ -550,7 +551,7 @@ export class Monster extends ModuleEntity {
         if (action.name) {
           monsterHTML += `<p class="statblock-action-name">${action.name}.</p> `
         }
-        monsterHTML += `<p class="statblock-action-description">${italicsActionDescription(action.description)}</p>`
+        monsterHTML += `<p class="statblock-action-description">${formatDescription(action.description)}</p>`
         monsterHTML += '</div>' // statblock-property-block
       })
       monsterHTML += '</div>' // statblock-actions
@@ -563,7 +564,7 @@ export class Monster extends ModuleEntity {
         if (reaction.name) {
           monsterHTML += `<p class="statblock-action-name">${reaction.name}.</p> `
         }
-        monsterHTML += `<p class="statblock-action-description">${italicsActionDescription(reaction.description)}</p>`
+        monsterHTML += `<p class="statblock-action-description">${formatDescription(reaction.description)}</p>`
         monsterHTML += '</div>' // statblock-property-block
       })
       monsterHTML += '</div>' // statblock-reactions
@@ -576,7 +577,7 @@ export class Monster extends ModuleEntity {
         if (legendaryAction.name) {
           monsterHTML += `<p class="statblock-action-name">${legendaryAction.name}.</p> `
         }
-        monsterHTML += `<p class="statblock-action-description">${italicsActionDescription(legendaryAction.description)}</p>`
+        monsterHTML += `<p class="statblock-action-description">${formatDescription(legendaryAction.description)}</p>`
         monsterHTML += '</div>' // statblock-property-block
       })
       monsterHTML += '</div>' // statblock-legendaryActions

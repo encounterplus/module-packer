@@ -246,21 +246,30 @@ export class Module {
     // Prunes an entity and children from the tree
     function removeEntityAndChildren(entity: ModuleEntity) {
       // Recursively remove children of children
-      entity.children.forEach((child) => {        
+      entity.children.forEach((child) => {
         removeEntityAndChildren(child)
       })
-      
-      module.pages = module.pages.filter((page) => { return page !== entity })
-      module.groups = module.groups.filter((group) => { return group !== entity })
-      module.monsters = module.monsters.filter((monster) => { return monster !== entity })
+
+      module.pages = module.pages.filter((page) => {
+        return page !== entity
+      })
+      module.groups = module.groups.filter((group) => {
+        return group !== entity
+      })
+      module.monsters = module.monsters.filter((monster) => {
+        return monster !== entity
+      })
       entity.children = []
 
       if (entity.parent) {
-        entity.parent.children = entity.parent.children.filter((child) => { return child !== entity })
+        entity.parent.children = entity.parent.children.filter((child) => {
+          return child !== entity
+        })
       } else {
-        module.children = module.children.filter((child) => { return child !== entity })
+        module.children = module.children.filter((child) => {
+          return child !== entity
+        })
       }
-      
     }
 
     function getEntitiesToRemove(entities: ModuleEntity[]): ModuleEntity[] {
@@ -571,7 +580,10 @@ export class Module {
    */
   private processDirectory = (directoryPath: string, moduleBuildPath: string, parentGroup: Group | undefined = undefined) => {
     const scanOnly = this.exportMode === ModuleMode.ScanModule
-    Logger.info(`Processing directory: ${directoryPath}`)
+
+    if (!scanOnly) {
+      Logger.info(`Processing directory: ${directoryPath}`)
+    }
 
     let moduleProjectDirectory = this.moduleProjectInfo.moduleProjectDirectory
     if (!moduleProjectDirectory) {
@@ -671,6 +683,7 @@ export class Module {
    * @param parentGroup The parent group (optional)
    */
   public processFile = (filePath: string, moduleBuildPath: string, parentGroup: Group | undefined = undefined): Page[] => {
+    const scanOnly = this.exportMode === ModuleMode.ScanModule
     const forPrint = this.exportMode === ModuleMode.PrintToPDF
     const forModuleExport = this.exportMode === ModuleMode.ModuleExport
     let markdownRenderer = new MarkdownRenderer(forPrint, this)
@@ -691,8 +704,10 @@ export class Module {
       return pages
     }
 
-    Logger.info(`Processing file: ${filePath}`)
-
+    if (!scanOnly) {
+      Logger.info(`Processing file: ${filePath}`)
+    }
+    
     // Read the markdown file contents
     let data = FileSystem.readFileSync(filePath, 'utf8')
 
@@ -770,10 +785,13 @@ export class Module {
 
       $(pagebreaks).each((i, element) => {
         let headerText = $(element).text()
-        Logger.info(`Parsing page ${headerText} from header ${element.tagName}`)
+
+        if (!scanOnly) {
+          Logger.info(`Parsing page ${headerText} from header ${element.tagName}`)
+        }
 
         // Create Page from current HTML
-        let page = new Page(headerText, this.moduleProjectInfo.id)
+        let page = new Page(headerText, this.moduleProjectInfo.id, filePath)
         page.includeIn = ModuleEntity.getIncludeModeFromString(includeIn)
         page.content += $.html(element)
         page.sort = order
@@ -859,7 +877,7 @@ export class Module {
     // pagebreak parsing logic, use full HTML
     // to create page
     if (!pagebreakContentFound) {
-      let page = new Page(pageName, this.moduleProjectInfo.id, slug)
+      let page = new Page(pageName, this.moduleProjectInfo.id, filePath, slug)
       page.content = this.wrapPageInPrintDivs(html)
       page.includeIn = ModuleEntity.getIncludeModeFromString(includeIn)
       page.sort = order

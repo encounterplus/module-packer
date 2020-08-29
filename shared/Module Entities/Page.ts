@@ -11,10 +11,12 @@ export class Page extends ModuleEntity {
    * Initializes an instance of `Page`
    * @param name The name of the page
    * @param moduleUUID The UUID of the module
+   * @param pagePath The path of the page file
    * @param slug A manually specified slug (optional - will be auto-generated if undefined)
    */
-  constructor(name: string, moduleUUID: string, slug: string | undefined = undefined) {
+  constructor(name: string, moduleUUID: string, pagePath: string, slug: string | undefined = undefined) {
     super(name, moduleUUID, slug)
+    this.pagePath = pagePath
   }
 
   // ---------------------------------------------------------------
@@ -26,4 +28,7 @@ export class Page extends ModuleEntity {
 
   /** The slug of a parent page (within the given group) */
   parentPageSlug: string = ''
+
+  /** The path of the page file */
+  pagePath: string = ''
 }

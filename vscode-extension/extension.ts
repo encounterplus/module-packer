@@ -3,6 +3,7 @@ import * as glob from 'glob'
 import * as Markdown from 'markdown-it'
 import * as FileSystem from 'fs-extra'
 import * as Logger from 'winston'
+import * as Path from 'path'
 import * as Transport from 'winston-transport'
 import { BuildModuleCommand } from './Commands/BuildModuleCommand'
 import { CreateModuleProjectFileCommand } from './Commands/CreateModuleProjectFileCommand'
@@ -78,7 +79,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('encounterPlusMarkdown.buildModule', (moduleTreeItem) => {
-      buildModuleCommand.startModuleBuild(moduleTreeItem.moduleProject)
+      buildModuleCommand.startModuleBuild(moduleTreeItem.module.moduleProjectInfo)
     })
   )
 
@@ -90,9 +91,28 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('encounterPlusMarkdown.exportModuleToPDF', (moduleTreeItem) => {
-      exportToPdfCommand.startModuleExport(moduleTreeItem.moduleProject)
+      exportToPdfCommand.startModuleExport(moduleTreeItem.module.moduleProjectInfo)
     })
   )
+
+  vscode.workspace.onDidCreateFiles((event: vscode.FileCreateEvent) => {
+    moduleProjectProvider.refresh()
+  })
+
+  vscode.workspace.onDidDeleteFiles((event: vscode.FileDeleteEvent) => {
+    moduleProjectProvider.refresh()
+  })
+
+  vscode.workspace.onDidRenameFiles((event: vscode.FileRenameEvent) => {
+    moduleProjectProvider.refresh()
+  })
+
+  vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => {
+    let extension = Path.extname(document.fileName)
+    if (extension === '.md' || extension === '.yaml') {
+      moduleProjectProvider.refresh()
+    }
+  })
 
   return {
     extendMarkdownIt(md: Markdown) {

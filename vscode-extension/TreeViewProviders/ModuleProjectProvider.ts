@@ -1,10 +1,10 @@
 import * as vscode from 'vscode'
 import * as Path from 'path'
-import * as FileSystem from 'fs-extra'
-import * as GrayMatter from 'gray-matter'
 import { ModuleProject } from '../../shared/ModuleProject'
-import { Module } from '../../shared/Module Entities/Module'
+import { Module, ModuleMode } from '../../shared/Module Entities/Module'
+import { Page } from '../../shared/Module Entities/Page'
 import { Group } from '../../shared/Module Entities/Group'
+import { ModuleEntity } from '../../shared/Module Entities/ModuleEntity'
 
 /** A TreeView proivider for module projects and their pages/groups */
 export class ModuleProjectProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
@@ -60,24 +60,26 @@ export class ModuleProjectProvider implements vscode.TreeDataProvider<vscode.Tre
     }
 
     if (!element) {
-      let moduleTreeItems: ModuleTreeItem[] = []
+      let moduleTreeItemReturns: Promise<ModuleTreeItem>[] = []
       let moduleProjects = ModuleProject.findModuleProjects(this.workspaceRoot)
       moduleProjects.forEach((moduleProject) => {
-        let moduleTreeItem = new ModuleTreeItem(moduleProject)
-        moduleTreeItems.push(moduleTreeItem)
+        if (!moduleProject.moduleProjectDirectory) {
+          return
+        }
+
+        let moduleTreeReturn = Module.createModuleFromPath(moduleProject.moduleProjectDirectory, moduleProject.name, ModuleMode.ScanModule).then((module) => {
+          return new ModuleTreeItem(module)
+        })        
+
+        moduleTreeItemReturns.push(moduleTreeReturn)        
       })
-      return Promise.resolve(moduleTreeItems)
+      return Promise.all(moduleTreeItemReturns)
     } else if (element instanceof ModuleTreeItem) {
-      let projectPath = element.moduleProject.moduleProjectPath
-      if (projectPath === undefined) {
-        return Promise.resolve([])
-      }
-      let projectDirectory = Path.dirname(projectPath)
-      let treeItems = this.getTreeItemsForDirectory(projectDirectory)
-      return Promise.resolve(treeItems)
+      return Promise.resolve(ModuleProjectProvider.getTreeItemsForChildren(element.module.children))
     } else if (element instanceof GroupTreeItem) {
-      let treeItems = this.getTreeItemsForDirectory(element.groupPath)
-      return Promise.resolve(treeItems)
+      return Promise.resolve(ModuleProjectProvider.getTreeItemsForChildren(element.group.children))
+    } else if (element instanceof PageTreeItem) {
+      return Promise.resolve(ModuleProjectProvider.getTreeItemsForChildren(element.page.children))
     } else {
       return Promise.resolve([])
     }
@@ -91,57 +93,15 @@ export class ModuleProjectProvider implements vscode.TreeDataProvider<vscode.Tre
    * Gets all tree items for a given directory
    * @param directoryPath The path to the directory to get tree items for
    */
-  private getTreeItemsForDirectory(directoryPath: string): vscode.TreeItem[] {
+  private static getTreeItemsForChildren(moduleEntities: ModuleEntity[]): vscode.TreeItem[] {
     let treeItems: vscode.TreeItem[] = []
-
-    // Get all subdirectories
-    let subdirectoryNames: string[] = FileSystem.readdirSync(directoryPath).filter(function (file) {
-      let childPath = Path.join(directoryPath, file)
-      return FileSystem.statSync(childPath).isDirectory()
+    moduleEntities.forEach((entity) => {
+      if (entity instanceof Group) {
+        treeItems.push(new GroupTreeItem(entity))
+      } else if (entity instanceof Page) {
+        treeItems.push(new PageTreeItem(entity))
+      }
     })
-
-    // List each directory in the folders as a Group node
-    // (unless .ignoreGroup is present)
-    subdirectoryNames.forEach((subdirectoryName) => {
-      if (subdirectoryName === Module.buildFolderName) {
-        return
-      }
-
-      let subdirectoryPath = Path.join(directoryPath, subdirectoryName)
-      let ignoreFilePath = Path.join(subdirectoryPath, '.ignoreGroup')
-      let moduleProjectFilePath = Path.join(subdirectoryPath, Module.moduleProjectFileName)
-      if (FileSystem.existsSync(ignoreFilePath) || FileSystem.existsSync(moduleProjectFilePath)) {
-        return
-      }
-      treeItems.push(new GroupTreeItem(subdirectoryName, subdirectoryPath))
-    })
-
-    let directoryFiles = FileSystem.readdirSync(directoryPath)
-    directoryFiles.forEach((itemName) => {
-      let itemPath = Path.join(directoryPath, itemName)
-      let extension = Path.extname(itemPath)
-
-      // All code below is for parsing markdown files,
-      // so ignore any non-markdown files
-      if (extension !== '.md') {
-        return
-      }
-
-      let data = FileSystem.readFileSync(itemPath, 'utf8')
-      let matter = GrayMatter(data)
-      let attributes = matter.data
-      for (let key in attributes) {
-        attributes[key.toLowerCase()] = attributes[key]
-      }
-
-      let pageName = Path.basename(itemPath)
-      if (attributes['name'] !== undefined) {
-        pageName = attributes['name']
-      }
-
-      treeItems.push(new PageTreeItem(pageName, itemPath))
-    })
-
     return treeItems
   }
 }
@@ -151,12 +111,12 @@ class GroupTreeItem extends vscode.TreeItem {
   
   /**
    * Initializes an instance of a `GroupTreeItem`
-   * @param groupName The group name
+   * @param group The group
    * @param groupPath The group directory path
    */
-  constructor(public readonly groupName: string, public readonly groupPath: string) {
-    super(groupName, vscode.TreeItemCollapsibleState.Collapsed)
-    const groupFilePath = Path.join(groupPath, Group.groupSettingsFileName)
+  constructor(public readonly group: Group) {
+    super(group.name, vscode.TreeItemCollapsibleState.Collapsed)
+    const groupFilePath = Path.join(group.groupPath, Group.groupSettingsFileName)
     this.command = {
       command: 'encounterPlusMarkdown.openGroupFile',
       title: 'Open Group',
@@ -167,7 +127,7 @@ class GroupTreeItem extends vscode.TreeItem {
 
   /** The tooltip for the `GroupTreeItem` */
   get tooltip(): string {
-    return this.groupPath
+    return this.group.groupPath
   }
 
   /** The tooltip for the `GroupTreeItem` */
@@ -181,22 +141,21 @@ class PageTreeItem extends vscode.TreeItem {
 
   /**
    * Initializes an instance of a `PageTreeItem`
-   * @param pageName The page name
-   * @param pagePath The page file path
+   * @param page The page name
    */
-  constructor(public readonly pageName: string, public readonly pagePath: string) {
-    super(pageName, vscode.TreeItemCollapsibleState.None)
+  constructor(public readonly page: Page) {
+    super(page.name, page.children.length > 0 ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None)
     this.command = {
       command: 'encounterPlusMarkdown.openPage',
       title: 'Open Page',
-      arguments: [pagePath],
+      arguments: [page.pagePath],
     }
     this.contextValue = 'modulePage'
   }
 
   /** The tooltip for the `PageTreeItem` */
   get tooltip(): string {
-    return this.pagePath
+    return this.page.pagePath
   }
 
   /** The description for the `PageTreeItem` */
@@ -211,19 +170,19 @@ class ModuleTreeItem extends vscode.TreeItem {
    * Initializes an instance of a `ModuleTreeItem`
    * @param moduleProject The module project
    */
-  constructor(public readonly moduleProject: ModuleProject) {
-    super(moduleProject.name, vscode.TreeItemCollapsibleState.Collapsed)
+  constructor(public readonly module: Module) {
+    super(module.moduleProjectInfo.name, vscode.TreeItemCollapsibleState.Collapsed)
     this.command = {
       command: 'encounterPlusMarkdown.openModuleProjectFile',
       title: 'Open Module',
-      arguments: [moduleProject.moduleProjectPath],
+      arguments: [module.moduleProjectInfo.moduleProjectPath],
     }    
     this.contextValue = 'moduleProject'
   }
 
   /** The tooltip for the `ModuleTreeItem` */
   get tooltip(): string {
-    return this.moduleProject.description ?? ''
+    return this.module.moduleProjectInfo.description ?? ''
   }
 
   /** The description for the `ModuleTreeItem` */
