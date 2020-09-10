@@ -1,13 +1,13 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.16
 
 ### Breaking Changes
 - Changed `.headerTitle` to `.header-title` to be consistent with others
 
 ### Added
 - Console log messages when building with the VS Code extension
-- `.print-float-right` and `.print-float-left` attributes to float only in print layouts
+- `.print-float-right`, `.print-float-left`, and `.print-two-column` attributes to float only in print layouts
 - VS Code E+ View now accurately shows order of pages and groups
 
 ### Changed
@@ -16,6 +16,7 @@
 
 ### Fixed
 - Newline handling in Trait/Action descriptions for monsters
+- Z-index on print-bottom-left and bottom-right now allow content to overlap
 
 ## 1.0.15
 

@@ -1089,6 +1089,20 @@ table.sidebar {
     margin: 0;
   }
 
+  div.print-two-column {
+    &:not(.statblock) {
+      width: 7.5in;
+      position: relative;
+      column-count: 2;
+      column-gap: 0.25in;
+      column-fill: auto;
+      -webkit-column-count: 2;
+      -moz-column-count: 2;
+      -webkit-column-gap: 0.25in;
+      -moz-column-gap: 0.25in;
+    }
+  }
+
   .print-cover-page {
     position: relative;
     height: 11in;
@@ -1121,12 +1135,14 @@ table.sidebar {
     position: absolute;
     bottom: 1px;
     right: 1px;
+    z-index: -1;
   }
 
   .print-bottom-left {
     position: absolute;
     bottom: 1px;
     left: 1px;
+    z-index: -1;
   }
 
   .screen-only {
