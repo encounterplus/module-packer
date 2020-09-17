@@ -25,6 +25,7 @@ export class PdfExporter {
     let pageLocation = Path.join(moduleOutputPath, 'printPage.html')
     let saveLocation = Path.join(projectDirectory, `${module.moduleProjectInfo.slug}.pdf`)
 
+    Logger.info(`Creating HTML for PDF output at ${pageLocation}...`)
     let html = `<!DOCTYPE html><html lang="en"><head>`
     html += `<link rel="stylesheet" href="${globalStyleLocation}">`
     html += `<link rel="stylesheet" href="${printImageStyleLocation}">`
@@ -60,10 +61,13 @@ export class PdfExporter {
       waitUntil: 'networkidle0',
     })
 
+    Logger.info(`Creating PDF file.`)
     const pdf = await page.pdf({
       format: 'Letter',
       printBackground: true,
     })
+
+    Logger.info(`Saving PDF file at ${saveLocation}...`)
     FileSystem.writeFileSync(saveLocation, pdf)
     await browser.close()
     return saveLocation
@@ -79,6 +83,7 @@ export class PdfExporter {
         return
       }
 
+      Logger.info("Downloading & installing Chromium PDF rendering engine...")
       if (downloadProgressChanged) {
         downloadProgressChanged(0)
       }
@@ -175,6 +180,7 @@ export class PdfExporter {
           let pageNumber = anchorPageDictionary[linkHref]
           let linkContent = linkElement.children[0]?.data
           if(!pageNumber || !linkContent) {
+            Logger.warn(`Could not find the link content or page number for "${linkHref}" when generating a table of contents.`)
             return
           }
           

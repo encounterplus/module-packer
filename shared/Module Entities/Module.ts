@@ -587,7 +587,7 @@ export class Module {
 
     let moduleProjectDirectory = this.moduleProjectInfo.moduleProjectDirectory
     if (!moduleProjectDirectory) {
-      throw Error('Could not resolve module project directory')
+      throw Error('The module project directory was empty. Was the module project file deleted?')
     }
 
     let relativeDirectoryPath = Path.relative(moduleProjectDirectory, directoryPath)
@@ -613,13 +613,13 @@ export class Module {
         return
       }
 
-      if (!moduleProjectDirectory) {
-        throw Error('Could not resolve module project directory')
-      }
-
       // Copy images to their clone path in the module build folder
       const imageExtensions = ['.gif', '.jpeg', '.jpg', '.png']
       let extension = Path.extname(fullPath)
+
+      if (!moduleProjectDirectory) {
+        throw Error('The module project directory was empty. Was the module project file deleted?')
+      }
       let imageRelativePath = Path.relative(moduleProjectDirectory, fullPath)
       let imageClonePath = Path.join(moduleBuildPath, imageRelativePath)
       if (!scanOnly && imageExtensions.includes(extension)) {
@@ -707,7 +707,7 @@ export class Module {
     if (!scanOnly) {
       Logger.info(`Processing file: ${filePath}`)
     }
-    
+
     // Read the markdown file contents
     let data = FileSystem.readFileSync(filePath, 'utf8')
 
@@ -948,7 +948,7 @@ export class Module {
 
     let moduleProjectDirectory = this.moduleProjectInfo.moduleProjectDirectory
     if (!moduleProjectDirectory) {
-      throw Error('Could not process image link, invalid module project directory')
+      throw Error('The module project directory was empty. Was the module project file deleted?')
     }
 
     let fileFolder = Path.dirname(markdownFilePath)

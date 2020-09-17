@@ -1,6 +1,7 @@
 import * as FileSystem from 'fs-extra'
 import * as Path from 'path'
 import { v4 as UUIDV4 } from 'uuid'
+import * as Logger from 'winston'
 import * as YAML from 'yaml'
 import { Module } from './Module Entities/Module'
 
@@ -104,6 +105,8 @@ export class ModuleProject {
       return undefined
     }
 
+    Logger.info(`Attempting to parse module project file at "${projectFilePath}`)
+
     let moduleProject = new ModuleProject()
     let moduleDataBuffer = FileSystem.readFileSync(projectFilePath)
     let moduleData: any = undefined
@@ -114,7 +117,14 @@ export class ModuleProject {
     }
     
     moduleProject.moduleProjectPath = projectFilePath
+    if(!FileSystem.existsSync(moduleProject.moduleProjectPath)) {
+      throw Error(`Error, the project path "${moduleProject.moduleProjectPath}" could not be found.`)
+    }
+
     moduleProject.moduleProjectDirectory = Path.dirname(projectFilePath)
+    if(!FileSystem.existsSync(moduleProject.moduleProjectPath)) {
+      throw Error(`Error, the directory "${moduleProject.moduleProjectDirectory}" could not be found.`)
+    }
 
     // If ID is specified in Module project file, ensure it is a UUID and use that
     let id = moduleData['id'] as string
@@ -127,7 +137,7 @@ export class ModuleProject {
       if (matches && matches.length > 0) {
         moduleProject.id = id
       } else {
-        throw Error(`Invalid UUID specified in ${projectFilePath}`)
+        throw Error(`Invalid UUID specified in Module Project File at ${projectFilePath}`)
       }
     }
 
@@ -216,7 +226,7 @@ export class ModuleProject {
    */
   static createModuleProjectFile(projectFilePath: string) {
     if (FileSystem.existsSync(projectFilePath)) {
-      throw Error('Module.yaml already exists.')
+      throw Error(`Could not create file "${projectFilePath}". It already exists.`)
     }
 
     let folderName = Path.basename(Path.dirname(projectFilePath))

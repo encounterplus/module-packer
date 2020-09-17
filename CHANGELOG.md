@@ -1,5 +1,14 @@
 # Change Log
 
+## [Unreleased]
+
+### Added
+- Generic `.center` attribute
+- Added additional logging messages
+
+### Changed
+- Made `.float-left` and `.float-right` apply to more elements
+
 ## 1.0.16
 
 ### Breaking Changes

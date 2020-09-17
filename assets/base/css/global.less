@@ -51,8 +51,36 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Zatanna Misdirection';
+  src: url('../font/Zatanna-Misdirection.otf') format('opentype');
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Zatanna Misdirection';
+  src: url('../font/Zatanna-Misdirection-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Zatanna Misdirection';
+  src: url('../font/Zatanna-Misdirection-Italic.otf') format('opentype');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Zatanna Misdirection';
+  src: url('../font/Zatanna-Misdirection-Bold-Italic.otf') format('opentype');
+  font-weight: bold;
+  font-style: italic;
+}
+
 @body-font-family: '-apple-system', sans-serif;
 @heading-font-family: 'Andada SC', '-apple-system', sans-serif;
+@flavor-font-family: 'Zatanna Misdirection', '-apple-system', sans-serif;
 
 /******** Body / HTML ********/
 
@@ -65,14 +93,20 @@ p {
   margin-block-end: 1em;
 }
 
-div {
-  &.float-left {
-    float: left;
-  }
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
 
-  &.float-right {
-    float: right;
-  }
+.float-left {
+  float: left;
+  margin-right: 10px;
+}
+
+.float-right {
+  float: right;
+  margin-left: 10px;
 }
 
 /******** Multi-column Div ********/
@@ -264,6 +298,7 @@ blockquote.read {
 }
 
 blockquote.paper {
+  font-family: @flavor-font-family !important;
   border-left: 1px solid #d7d2d0;
   border-right: 1px solid #d7d2d0;
   border-top: 0;
@@ -344,6 +379,7 @@ blockquote.flowchart-with-link {
 }
 
 blockquote.flavortext {
+  font-family: @flavor-font-family !important;
   border-left: 0;
   border-right: 0;
   border-top: 0;
@@ -525,18 +561,6 @@ img.size-full {
   height: auto;
 }
 
-figure.float-left,
-img.float-left {
-  float: left;
-  margin-right: 10px;
-}
-
-figure.float-right,
-img.float-right {
-  float: right;
-  margin-left: 10px;
-}
-
 /******** Tables ********/
 
 .table-responsive,
@@ -549,19 +573,18 @@ img.float-right {
 }
 
 table {
-  width: 100%;
   font-family: @body-font-family;
   border-collapse: collapse;
   margin-bottom: 30px;
   page-break-inside: avoid;
   overflow-wrap: break-word;
 
-  &.float-left {
-    float: left;
+  &.center {
+    display: table;
   }
 
-  &.float-right {
-    float: right;
+  &:not(.center):not(.float-left):not(.float-right) {
+    width: 100%;
   }
 
   &.header-title {
@@ -772,14 +795,6 @@ table.sidebar {
     .statblock-section-right {
       margin-left: 1.5%;
     }
-  }
-
-  &.float-left {
-    float: left;
-  }
-
-  &.float-right {
-    float: right;
   }
 
   .statblock-title {
