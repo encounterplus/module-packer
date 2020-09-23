@@ -56,6 +56,9 @@ export class ModuleProject {
   /** Whether the module project auto-increments its version */
   autoIncrementVersion: boolean | undefined = undefined
 
+  /** Whether the module will automatically compress images when building */
+  compressImages: boolean | undefined = undefined
+
   // ---------------------------------------------------------------
   // Public Methods
   // ---------------------------------------------------------------
@@ -193,6 +196,12 @@ export class ModuleProject {
       moduleProject.autoIncrementVersion = autoIncrementVersion
     }
 
+    // If compressImages is specified in Module project file, use that
+    let compressImages = moduleData['compressImages'] as boolean
+    if (compressImages) {
+      moduleProject.compressImages = compressImages
+    }
+
     // If cover image is specified in Module project file, use that.
     // Ensure cover image actually exists
     let moduleCoverPath = moduleData['cover'] as string
@@ -284,7 +293,10 @@ export class ModuleProject {
     if (this.printCoverPath) {
       newModuleProject['printCover'] = this.printCoverPath
     }
-    newModuleProject['version'] = this.version
+    if (this.compressImages !== undefined) {
+      newModuleProject['compressImages'] = this.compressImages
+    }
+    newModuleProject['version'] = this.version    
     newModuleProject['autoIncrementVersion'] = true
 
     let outputYAML = YAML.stringify(newModuleProject)

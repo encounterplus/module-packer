@@ -2,6 +2,9 @@ import * as Archiver from 'archiver'
 import * as Cheerio from 'cheerio'
 import * as FileSystem from 'fs-extra'
 import * as GrayMatter from 'gray-matter'
+import * as ImageMin from 'imagemin'
+import * as ImageMinPngQuant from 'imagemin-pngquant'
+import * as ImageMinMozJpeg from 'imagemin-mozjpeg'
 import * as Path from 'path'
 import * as Logger from 'winston'
 import Slugify from 'slugify'
@@ -317,6 +320,10 @@ export class Module {
     // Sort module children
     module.children = module.sortChildren(module.children)
 
+    if (!scanOnly && module.moduleProjectInfo.compressImages) {
+      await module.compressImages(moduleBuildPath)
+    }
+
     // Export module.xml file
     if (mode == ModuleMode.ModuleExport) {
       module.exportXML(moduleBuildPath)
@@ -382,6 +389,44 @@ export class Module {
 
       return aVal < bVal ? -1 : 1
     })
+  }
+
+  /**
+   * Compresses the images for the module
+   * @param moduleBuildPath The module build directory
+   */
+  private async compressImages(moduleBuildPath: string) {
+    let allImages = this.getAllDirectoryImages(moduleBuildPath)
+    let compressPromises: Promise<void>[] = []
+    let startSizeDictionary: { [filePath: string]: number } = {}
+
+    allImages.forEach(async (filePath) => {
+      let folder = Path.dirname(filePath)
+      startSizeDictionary[filePath] = FileSystem.statSync(filePath).size
+
+      let compressPromise = ImageMin([filePath], {
+        destination: folder,
+        glob: false,
+        plugins: [ImageMinMozJpeg({ quality: 70.0 }), ImageMinPngQuant.default({ quality: [0.6, 0.8] })],
+      }).then((compressResults) => {
+        compressResults.forEach(compressResult => {
+          let startSize = startSizeDictionary[compressResult.destinationPath]
+          if (!startSize) {
+            return
+          }
+          let finalSize = FileSystem.statSync(compressResult.destinationPath).size
+          if (!finalSize) {
+            return
+          }
+  
+          let fileName = Path.basename(compressResult.destinationPath)
+          Logger.info(`Compressed Image "${fileName}". Uncompressed size: ${startSize}. Compressed size: ${finalSize}.`)
+        })
+      })
+      compressPromises.push(compressPromise)
+    })   
+
+    await Promise.all(compressPromises)
   }
 
   /**
@@ -1011,6 +1056,34 @@ export class Module {
     })
 
     return $.html()
+  }
+
+  /**
+   * Gets all files and folders in a directory, recursively going through subdirectory
+   * @param directoryPath The directory path
+   */
+  private getAllDirectoryImages = (directoryPath: string): string[] => {
+    const imageExtensions = ['.jpeg', '.jpg', '.png']
+
+    let items: string[] = FileSystem.readdirSync(directoryPath)
+    let images: string[] = []
+
+    items.forEach((item) => {
+      let fullPath = Path.join(directoryPath, item)
+      if (FileSystem.statSync(fullPath).isDirectory()) {
+        let subDirImages = this.getAllDirectoryImages(fullPath)
+        subDirImages.forEach((image) => {
+          images.push(image)
+        })
+      } else {
+        let extension = Path.extname(fullPath)
+        if (imageExtensions.includes(extension)) {
+          images.push(fullPath)
+        }
+      }
+    })
+
+    return images
   }
 
   /**
