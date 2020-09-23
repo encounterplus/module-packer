@@ -1,9 +1,10 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.17
 
 ### Added
 - Generic `.center` attribute
+- Added `compressImages` option to Module project to compress images upon output.
 - Added additional logging messages
 
 ### Changed
