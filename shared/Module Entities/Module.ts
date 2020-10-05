@@ -241,7 +241,12 @@ export class Module {
         page.parent.children = page.parent.children.filter((childPage) => {
           return childPage !== page
         })
+      } else {
+        module.children = module.children.filter((childPage) => {
+          return childPage !== page
+        })
       }
+
       page.parent = newParent
       newParent.children.push(page)
     })
