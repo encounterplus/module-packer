@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Fixed
+- Fixed page contents being inappropriately wrapped in HTML/Body tags when exporting to module
 - Fixed nested pages generated from pagebreaks not maintaining sort order
 - Fixed pages duplicating on PDF output when placed at root level
 

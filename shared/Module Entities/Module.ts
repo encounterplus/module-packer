@@ -981,7 +981,7 @@ export class Module {
       Logger.info(`Anchor created: ${anchorID}`)
     })
 
-    return $.html()
+    return $('body').html() ?? pageContent
   }
 
   /**
@@ -1020,7 +1020,7 @@ export class Module {
       }
     })
 
-    return $.html()
+    return $('body').html() ?? pageContent
   }
 
   /**
@@ -1062,7 +1062,7 @@ export class Module {
       }
     })
 
-    return $.html()
+    return $('body').html() ?? pageContent
   }
 
   /**
