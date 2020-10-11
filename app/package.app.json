@@ -67,11 +67,10 @@
   },
   "dependencies": {
     "@types/archiver": "^3.1.0",
-    "@types/cheerio": "^0.22.18",
+    "@types/cheerio": "^0.22.22",
     "@types/fs-extra": "^9.0.1",
     "@types/imagemin": "^7.0.0",
     "@types/imagemin-mozjpeg": "^8.0.0",
-    "@types/imagemin-pngquant": "^8.0.0",
     "@types/markdown-it": "^10.0.1",
     "@types/puppeteer-core": "^2.0.0",
     "@types/uuid": "^8.0.0",

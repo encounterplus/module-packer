@@ -821,7 +821,7 @@ export class Module {
       pagebreaks = pagebreaks.replace(/\s/g, '')
 
       let $ = Cheerio.load(html)
-      let cover: CheerioElement | undefined = undefined
+      let cover: cheerio.Element | undefined = undefined
       let pagesByHeader: { [slug: string]: ModuleEntity } = {}
 
       let firstPageBreak = $('*').find(pagebreaks).first()
@@ -873,7 +873,7 @@ export class Module {
         let parentPagebreaks = Module.trim(pagebreaks.split(element.tagName)[0], ',')
 
         // Traverse backwards until we find the parent page break
-        let parentElement: Cheerio | undefined = undefined
+        let parentElement: cheerio.Cheerio | undefined = undefined
 
         // Parent page breaks will be "" if none exist
         if (parentPagebreaks) {
