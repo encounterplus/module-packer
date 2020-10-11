@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.18
 
 ### Fixed
 - Fixed sidebar tables not having proper width by default
