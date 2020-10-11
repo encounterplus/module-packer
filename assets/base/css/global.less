@@ -583,7 +583,7 @@ table {
     display: table;
   }
 
-  &:not(.center):not(.float-left):not(.float-right) {
+  &:not(.center):not(.float-left):not(.float-right):not(.sidebar) {
     width: 100%;
   }
 
@@ -710,6 +710,10 @@ table.sidebar {
   background: @neutral-background-primary;
   font-size: 11px;
   page-break-inside: avoid;
+  float: right;
+  margin-left: 10px;
+  max-width: 400px;
+  width: 45%;
 
   tbody {
     tr {
@@ -1084,13 +1088,6 @@ table.sidebar {
     overflow: hidden;
   }
 
-  table.sidebar {
-    float: right;
-    margin-left: 10px;
-    max-width: 400px;
-    width: 45%;
-  }
-
   blockquote {
     box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.3);
   }
@@ -1263,13 +1260,6 @@ table.sidebar {
         content: counter(page-numbers);
       }
     }    
-  }
-
-  table.sidebar {
-    float: right;
-    margin-left: 10px;
-    max-width: 400px;
-    width: 45%;
   }
 
   .two-column {

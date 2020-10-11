@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Fixed
+- Fixed sidebar tables not having proper width by default
 - Fixed page contents being inappropriately wrapped in HTML/Body tags when exporting to module
 - Fixed nested pages generated from pagebreaks not maintaining sort order
 - Fixed pages duplicating on PDF output when placed at root level
