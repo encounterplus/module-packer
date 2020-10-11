@@ -833,6 +833,7 @@ export class Module {
           }
         })
 
+      let nestedSortOrder = 0
       $(pagebreaks).each((i, element) => {
         let headerText = $(element).text()
 
@@ -887,7 +888,8 @@ export class Module {
           if (pageParent) {
             page.parent = pageParent
             pageParent.children.push(page)
-            page.sort = undefined // Clear sort from nested pages
+            page.sort = nestedSortOrder
+            nestedSortOrder += 1
           } else {
             Logger.info(`Page for header "${parentHeader}" was not found. This is a bug in the module packer.`)
           }

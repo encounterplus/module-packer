@@ -1,5 +1,11 @@
 # Change Log
 
+## [Unreleased]
+
+### Fixed
+- Fixed nested pages generated from pagebreaks not maintaining sort order
+- Fixed pages duplicating on PDF output when placed at root level
+
 ## 1.0.17
 
 ### Added
