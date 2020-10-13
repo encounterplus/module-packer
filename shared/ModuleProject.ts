@@ -1,7 +1,6 @@
 import * as FileSystem from 'fs-extra'
 import * as Path from 'path'
 import { v4 as UUIDV4 } from 'uuid'
-import * as Logger from 'winston'
 import * as YAML from 'yaml'
 import { Module } from './Module Entities/Module'
 
@@ -107,8 +106,6 @@ export class ModuleProject {
     if (!FileSystem.existsSync(projectFilePath)) {
       return undefined
     }
-
-    Logger.info(`Attempting to parse module project file at "${projectFilePath}`)
 
     let moduleProject = new ModuleProject()
     let moduleDataBuffer = FileSystem.readFileSync(projectFilePath)

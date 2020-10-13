@@ -1,5 +1,8 @@
 # Change Log
 
+## [Unreleased]
+- Added ability to export compendium items (monsters) with module
+
 ## 1.0.18
 
 ### Fixed

@@ -462,7 +462,7 @@ export class Module {
     })
 
     archive.pipe(archiveStream)
-    archive.glob('./**/!(compendium.xml)', { cwd: moduleBuildPath }) // Ignore compendium.xml for now
+    archive.glob('./**/*', { cwd: moduleBuildPath }) // Ignore compendium.xml for now
     await archive.finalize()
   }
 
@@ -505,7 +505,7 @@ export class Module {
     let monsters = this.monsters.map((monster) => {
       let monsterImageFolder = Path.join(outputPath, 'monsters')
       if (!FileSystem.existsSync(monsterImageFolder)) {
-        FileSystem.mkdir(monsterImageFolder)
+        FileSystem.mkdirSync(monsterImageFolder)
       }
 
       let monsterAttributes = {
@@ -843,6 +843,10 @@ export class Module {
 
         // Create Page from current HTML
         let page = new Page(headerText, this.moduleProjectInfo.id, filePath)
+        if (!scanOnly) {
+          Logger.info(`Slug for page ${page.name}: ${page.slug}`)
+        }
+
         page.includeIn = ModuleEntity.getIncludeModeFromString(includeIn)
         page.content += $.html(element)
         page.sort = order
@@ -930,6 +934,10 @@ export class Module {
     // to create page
     if (!pagebreakContentFound) {
       let page = new Page(pageName, this.moduleProjectInfo.id, filePath, slug)
+      if (!scanOnly) {
+        Logger.info(`Slug for page ${page.name}: ${page.slug}`)
+      }
+
       page.content = this.wrapPageInPrintDivs(html)
       page.includeIn = ModuleEntity.getIncludeModeFromString(includeIn)
       page.sort = order
