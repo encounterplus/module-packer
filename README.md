@@ -50,11 +50,14 @@ The content of the [examples.zip](examples.zip) file can be used to see examples
 
 ## Module Folder Structure
 
-Below is an example of how you might srtucture your Module content.
+Below is an example of how you might structure your Module content.
 
 ```
 .
 └── Assets               # Optional - allows override of the default style
+└── Encounters           # The folder for maps
+    ├── .ignoregroup     # An empty file that instructs the Module Packer not to turn this into a Group
+    └── Encounter.zip    # The encounter zip file exported from EncounterPlus
 └── Group A              # A group for the module.
     ├── Page A.md        # A page in Group A of the module.
     ├── Page A Cover.jpg # An image used in Page A.
@@ -67,6 +70,9 @@ Below is an example of how you might srtucture your Module content.
     ├── .ignoregroup     # An empty file that instructs the Module Packer not to turn this into a Group
     ├── Image1.png       # An image used in multiple pages.
     └── Image2.jpg       # An image used in multiple pages.
+└── Maps                 # The folder for maps
+    ├── .ignoregroup     # An empty file that instructs the Module Packer not to turn this into a Group
+    └── Map1.zip         # The map zip file exported from EncounterPlus
 ├── Module.yaml          # Optional - can define attributes of the module (e.g., Title, Author, Slug, etc.)
 └── My Module.md         # A page at the root level of the module.
 ```
@@ -86,6 +92,17 @@ code: ABC-123
 cover: cover.jpg
 version: 4
 autoIncrementVersion: true
+compressImages: false
+maps:
+  - path: Maps/my-first-map.zip
+    order: 2
+    parent: my-adventure-part-1
+    slug: my-first-map
+encounters:
+  - path: Encounters/my-first-encounter.zip
+    order: 1
+    parent: my-first-map
+    slug: my-first-encounter
 ```
 
 **Values:**
@@ -99,7 +116,10 @@ All `Module.yaml` values are optional - and default values will be used for anyt
 - `code`: A reference code for the module.
 - `cover`: The file name of the cover image for the module (placed in the same directory).
 - `version`: The version of the module. Must be an integer.
+- `compressImages`: If true, the images will be automatically compressed to make the module smaller in file size.
 - `autoIncrementVersion`: May be `true` or `false`. If `true`, it will cause the version number to automatically increment each time the module is packed. This is useful for keeping track 
+- `maps`: The maps to include with the module. See more in the [Including Maps & Encounters Tutorial](MapsAndEncounters.md).
+- `encounters`: The encounters to include with the module. See more in the [Including Maps & Encounters Tutorial](MapsAndEncounters.md).
 
 ## Groups and Folders
 
@@ -413,7 +433,7 @@ A shop table style also exists with special header values for showing categories
 
 ## Monsters
 
-Monster stat blocks can be created within a Markdown file. The Monster stat blocks are specified using standard [YAML](https://en.wikipedia.org/wiki/YAML) just like the Front-Matter on each page.
+Monster stat blocks can be created within a Markdown file. When exported as a module, these monsters will be added to EncounterPlus's compendium. The Monster stat blocks are specified using standard [YAML](https://en.wikipedia.org/wiki/YAML) just like the Front-Matter on each page.
 
 ~~~Markdown
 ```Monster {.two-column}

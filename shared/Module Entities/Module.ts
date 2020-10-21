@@ -17,6 +17,8 @@ import { Group } from './Group'
 import { ModuleEntity, IncludeMode } from './ModuleEntity'
 import { Monster } from './Monster'
 import { Page } from './Page'
+import { Map } from './Map'
+import { Encounter } from './Encounter'
 
 /**
  * Represents an EncounterPlus module. Contains
@@ -66,10 +68,10 @@ export class Module {
   pages: Page[] = []
 
   /** The maps of the module */
-  maps: ModuleEntity[] = []
+  maps: Map[] = []
 
   /** The encounters of the module */
-  encounters: ModuleEntity[] = []
+  encounters: Encounter[] = []
 
   /** The monster associated with the module */
   monsters: Monster[] = []
@@ -251,6 +253,52 @@ export class Module {
       newParent.children.push(page)
     })
 
+    // Add Maps
+    let mapPromises: Promise<void>[] = []
+    if (!scanOnly) {
+      module.moduleProjectInfo.mapFiles.forEach(async (map) => {
+        let parseMapPromise = map.extractMapObject(moduleBuildPath, projectDirectory, module.moduleProjectInfo.id).then((mapObject) => {
+          module.maps.push(mapObject)
+        })
+        mapPromises.push(parseMapPromise)
+      })
+
+      await Promise.all(mapPromises)
+    }
+
+    // Resolve the parents of maps
+    let allEntities = module.getAllEntities()
+    module.maps.forEach((map) => {
+      let parentSlug = map.fileReference.parentSlug
+      if(parentSlug !== undefined) {
+        map.parent = allEntities.filter((entity) => { return entity.slug === parentSlug})[0]
+        map.parent?.children.push(map)
+      }
+    })
+
+    // Add Encounters
+    let encounterPromises: Promise<void>[] = []
+    if (!scanOnly) {
+      module.moduleProjectInfo.encounterFiles.forEach(async (encounter) => {
+        let parseEncounterPromise = encounter.extractEncounterObject(moduleBuildPath, projectDirectory, module.moduleProjectInfo.id).then((encounterObject) => {
+          module.encounters.push(encounterObject)
+        })
+        encounterPromises.push(parseEncounterPromise)
+      })
+
+      await Promise.all(encounterPromises)
+    }
+
+    // Resolve the parents of encounters
+    allEntities = module.getAllEntities()
+    module.encounters.forEach((encounter) => {
+      let parentSlug = encounter.fileReference.parentSlug
+      if(parentSlug !== undefined) {
+        encounter.parent = allEntities.filter((entity) => { return entity.slug === parentSlug})[0]
+        encounter.parent?.children.push(encounter)
+      }
+    })
+
     // Prunes an entity and children from the tree
     function removeEntityAndChildren(entity: ModuleEntity) {
       // Recursively remove children of children
@@ -295,27 +343,25 @@ export class Module {
     // Filter entities based on whether they are marked for inclusion
     // in the particular build target
     let entitiesToRemove: ModuleEntity[] = []
-    entitiesToRemove.push(...getEntitiesToRemove(module.pages))
-    entitiesToRemove.push(...getEntitiesToRemove(module.groups))
-    entitiesToRemove.push(...getEntitiesToRemove(module.monsters))
+    entitiesToRemove.push(...getEntitiesToRemove(allEntities))
     entitiesToRemove.forEach((entity) => {
       removeEntityAndChildren(entity)
     })
 
     // Check for cyclic dependencies
-    module.pages.forEach((page) => {
+    allEntities.forEach((entity) => {
       const maxCycles = 50
-      let currentParent: ModuleEntity | undefined = page.parent
+      let currentParent: ModuleEntity | undefined = entity.parent
 
       let cycleCount = 0
       while (currentParent !== undefined) {
-        if (currentParent === page) {
-          throw Error(`The parent of the page "${[page.slug]}" is cyclic. Check the page-parent properties.`)
+        if (currentParent === entity) {
+          throw Error(`The entity "${[entity.slug]}" is cyclic. Check the parent properties of your items.`)
         }
         if (cycleCount > maxCycles) {
           // Shouldn't hit this unless someone nested crazy-deep, but it's a safety so the cyclic check doesn't spin forever.
           throw Error(
-            `The nested count of the page "${[page.slug]}" is exceeded ${maxCycles}. Page may be cyclic. Reduce or remove nesting.`
+            `The nested count of the entity "${[entity.slug]}" is exceeded ${maxCycles}. Entity may be cyclic. Reduce or remove nesting.`
           )
         }
         currentParent = currentParent.parent
@@ -327,8 +373,8 @@ export class Module {
 
     if (!scanOnly && module.moduleProjectInfo.compressImages) {
       await module.compressImages(moduleBuildPath)
-    }
-
+    } 
+    
     // Export module.xml file
     if (mode == ModuleMode.ModuleExport) {
       module.exportXML(moduleBuildPath)
@@ -373,6 +419,18 @@ export class Module {
   // ---------------------------------------------------------------
   // Private Methods
   // ---------------------------------------------------------------
+
+  /**
+   * Gets all entities combined into a single list
+   */
+  private getAllEntities = (): ModuleEntity[] => {
+    let allEntities: ModuleEntity[] = []
+    this.pages.forEach((page) => { allEntities.push(page) })
+    this.groups.forEach((group) => { allEntities.push(group) })
+    this.maps.forEach((map) => { allEntities.push(map) })
+    this.encounters.forEach((encounter) => { allEntities.push(encounter) })
+    return allEntities  
+  }
 
   /**
    * Sorts an array of module entity by the "order" (or "sort") value.
@@ -501,6 +559,34 @@ export class Module {
       return { $: groupAttributes, name: group.name, slug: group.slug }
     })
 
+    // Map map data
+    let maps = this.maps.map((mapObject) => {
+      let mapAttributes = {
+        id: mapObject.id,
+        sort: mapObject.sort,
+        parent: mapObject.parent?.id,
+      }
+      let mapData: any = mapObject.mapData
+      mapData['$'] = mapAttributes
+      mapData['name'] = mapObject.name
+      mapData['slug'] = mapObject.slug
+      return mapData
+    })
+
+    // Map encounter data
+    let encounters = this.encounters.map((encounterObject) => {
+      let encounterAttributes = {
+        id: encounterObject.id,
+        sort: encounterObject.sort,
+        parent: encounterObject.parent?.id,
+      }
+      let encounterData: any = encounterObject.encounterData
+      encounterData['$'] = encounterAttributes
+      encounterData['name'] = encounterObject.name
+      encounterData['slug'] = encounterObject.slug
+      return encounterData
+    })
+
     // Map monster data
     let monsters = this.monsters.map((monster) => {
       let monsterImageFolder = Path.join(outputPath, 'monsters')
@@ -582,6 +668,8 @@ export class Module {
       image: this.moduleProjectInfo.moduleCoverPath,
       group: groups,
       page: pages,
+      map: maps,
+      encounter: encounters
     }
 
     let compendiumData = {
@@ -778,7 +866,7 @@ export class Module {
     let slug = frontMatter['slug'] as string
     let printMultiColumn = (frontMatter['pdf-page-style'] as string) !== 'single-column'
     let pagebreaks = forPrint ? (frontMatter['pdf-pagebreaks'] as string) : (frontMatter['module-pagebreaks'] as string)
-    let parentPage = frontMatter['parent-page'] as string
+    let parentPageSlug = frontMatter['parent-page'] as string
     let pagebreakContentFound = false
 
     let includeIn = frontMatter['include-in']
@@ -816,7 +904,7 @@ export class Module {
 
     // If we have pagebreaks defined, we'll attempt to split
     // up, group, and subgroup content by header values
-    if (pagebreaks !== undefined && parentPage === undefined) {
+    if (pagebreaks !== undefined) {
       // Remove spaces from pagebreaks list
       pagebreaks = pagebreaks.replace(/\s/g, '')
 
@@ -828,7 +916,7 @@ export class Module {
       $(firstPageBreak)
         .prevAll()
         .each((i, element) => {
-          if ($(element).find('.size-cover').length > 0) {
+          if ($(element).find('.size-cover,.size-full').length > 0) {
             cover = element
           }
         })
@@ -838,13 +926,13 @@ export class Module {
         let headerText = $(element).text()
 
         if (!scanOnly) {
-          Logger.info(`Parsing page ${headerText} from header ${element.tagName}`)
+          Logger.info(`Parsing page "${headerText}" from header "${element.tagName}"`)
         }
 
         // Create Page from current HTML
         let page = new Page(headerText, this.moduleProjectInfo.id, filePath)
         if (!scanOnly) {
-          Logger.info(`Slug for page ${page.name}: ${page.slug}`)
+          Logger.info(`Slug for page "${page.name}": ${page.slug}`)
         }
 
         page.includeIn = ModuleEntity.getIncludeModeFromString(includeIn)
@@ -863,7 +951,7 @@ export class Module {
           .each((i, element) => {
             // Special case cover images - they will be moved
             // to the beginning of the page later
-            if ($(element).find('.size-cover').length > 0) {
+            if ($(element).find('.size-cover,.size-full').length > 0) {
               cover = element
             } else {
               page.content += $.html(element)
@@ -900,10 +988,12 @@ export class Module {
         }
 
         // If the page has no parent and there is a group,
-        // make page belong to that group
+        // make page belong to that group. If a parent page
+        // is defined (for nested pages), use that.
         if ((parentElement === undefined || parentElement.length === 0) && parentGroup !== undefined) {
           page.parent = parentGroup
           parentGroup.children.push(page)
+          page.parentPageSlug = parentPageSlug
         }
 
         // Wrap page content in a page DIV when printing
@@ -935,13 +1025,13 @@ export class Module {
     if (!pagebreakContentFound) {
       let page = new Page(pageName, this.moduleProjectInfo.id, filePath, slug)
       if (!scanOnly) {
-        Logger.info(`Slug for page ${page.name}: ${page.slug}`)
+        Logger.info(`Slug for page "${page.name}": ${page.slug}`)
       }
 
       page.content = this.wrapPageInPrintDivs(html)
       page.includeIn = ModuleEntity.getIncludeModeFromString(includeIn)
       page.sort = order
-      page.parentPageSlug = parentPage
+      page.parentPageSlug = parentPageSlug
 
       if (parentGroup) {
         page.parent = parentGroup
@@ -1051,11 +1141,11 @@ export class Module {
     }
 
     $('img.size-cover').each((i, element) => {
-      $(element.parent).attr('class', 'size-cover')
+      $(element).parents('p').attr('class', 'size-cover')
     })
 
     $('img.size-full').each((i, element) => {
-      $(element.parent).attr('class', 'size-full')
+      $(element).parents('p').attr('class', 'size-full')
     })
 
     $('div.statblock.two-column').each((i, element) => {

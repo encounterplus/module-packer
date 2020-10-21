@@ -3,6 +3,8 @@ import * as Path from 'path'
 import { v4 as UUIDV4 } from 'uuid'
 import * as YAML from 'yaml'
 import { Module } from './Module Entities/Module'
+import { MapFileReference } from './MapFileReference'
+import { EncounterFileReference } from './EncounterFileReference'
 
 /** 
  * Defines project-level information about a project
@@ -57,6 +59,12 @@ export class ModuleProject {
 
   /** Whether the module will automatically compress images when building */
   compressImages: boolean | undefined = undefined
+
+  /** The module map references for the project */
+  mapFiles: MapFileReference[] = []
+
+  /** The module encounter references for the project */
+  encounterFiles: EncounterFileReference[] = []
 
   // ---------------------------------------------------------------
   // Public Methods
@@ -223,6 +231,54 @@ export class ModuleProject {
       moduleProject.printCoverPath = printCoverPath
     }
 
+    // If map references exist, add them to project
+    let maps = moduleData['maps'] as []
+    moduleProject.mapFiles = []
+    if (maps) {
+      maps.forEach(map => {
+        let mapPath = map['path'] as string
+        if (mapPath === undefined) {
+          throw new Error('A map reference must have a path defined')
+        }
+
+        let moduleDirectory = Path.dirname(projectFilePath)
+        let fullMapPath = Path.join(moduleDirectory, mapPath)
+        if (!FileSystem.existsSync(fullMapPath)) {
+          throw new Error(`Unable to locate a map file at "${mapPath}"`)
+        }
+
+        let mapSort = map['order'] as number
+        let mapParent = map['parent'] as string
+        let mapSlug = map['slug'] as string
+        let mapFile = new MapFileReference(mapPath, mapSort, mapSlug, mapParent)
+        moduleProject.mapFiles.push(mapFile)
+      });
+    }
+
+    // If encounter references exist, add them to project
+    let encounters = moduleData['encounters'] as []
+    moduleProject.encounterFiles = []
+    if (encounters) {
+      encounters.forEach(encounter => {
+        let encounterPath = encounter['path'] as string
+        if (encounterPath === undefined) {
+          throw new Error('An encounter reference must have a path defined')
+        }
+
+        let moduleDirectory = Path.dirname(projectFilePath)
+        let fullEncounterPath = Path.join(moduleDirectory, encounterPath)
+        if (!FileSystem.existsSync(fullEncounterPath)) {
+          throw new Error(`Unable to locate an encounter file at "${encounterPath}"`)
+        }
+
+        let encounterSort = encounter['order'] as number
+        let encounterParent = encounter['parent'] as string
+        let encounterSlug = encounter['slug'] as string
+        let encounterFile = new EncounterFileReference(encounterPath, encounterSort, encounterSlug, encounterParent)
+        moduleProject.encounterFiles.push(encounterFile)
+      });
+    }
+
     return moduleProject
   }
 
@@ -295,6 +351,46 @@ export class ModuleProject {
     }
     newModuleProject['version'] = this.version    
     newModuleProject['autoIncrementVersion'] = true
+    
+    if (this.mapFiles.length > 0)
+    {
+      let mapObjects: any[] = []
+      this.mapFiles.forEach((map) => {        
+        let mapObject: any = { }
+        mapObject['path'] = map.path     
+        if (map.sort !== undefined) {
+          mapObject['order'] = map.sort
+        }
+        if (map.parentSlug !== undefined) {
+          mapObject['parent'] = map.parentSlug
+        }           
+        if (map.slug !== undefined) {
+          mapObject['slug'] = map.slug
+        }
+        mapObjects.push(mapObject)
+      })
+      newModuleProject['maps'] = mapObjects
+    }
+
+    if (this.encounterFiles.length > 0)
+    {
+      let encounterObjects: any[] = []
+      this.encounterFiles.forEach((encounter) => {        
+        let encounterObject: any = { }
+        encounterObject['path'] = encounter.path     
+        if (encounter.sort !== undefined) {
+          encounterObject['order'] = encounter.sort
+        }
+        if (encounter.parentSlug !== undefined) {
+          encounterObject['parent'] = encounter.parentSlug
+        }           
+        if (encounter.slug !== undefined) {
+          encounterObject['slug'] = encounter.slug
+        }
+        encounterObjects.push(encounterObject)
+      })
+      newModuleProject['encounters'] = encounterObjects
+    }
 
     let outputYAML = YAML.stringify(newModuleProject)
     FileSystem.writeFileSync(projectFilePath, outputYAML)

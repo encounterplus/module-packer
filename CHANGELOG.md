@@ -1,7 +1,15 @@
 # Change Log
 
 ## [Unreleased]
+
+### Added
 - Added ability to export compendium items (monsters) with module
+- Added the ability to include maps
+- Added the ability to include encounters
+- Added the ability to have nested pages under other nested pages
+
+### Changed
+- `.size-full` attribute now groups ahead of module pagebreaks like `.size-full` does
 
 ## 1.0.18
 

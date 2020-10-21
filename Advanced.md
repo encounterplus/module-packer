@@ -1,4 +1,6 @@
-## IDs
+This document is a placeholder for advanced topics. The following topics are intended to be covered.
+
+## Controlling IDs
 
 ## Attribute Targeting
 
@@ -6,5 +8,12 @@
 
 ## Linking Pages
 
-## Print Layouts
+## Advanced Layouts
 
+### Float Left/Right
+
+### Wrap Text Around Images
+
+### Multi-Column Content in Single-Column Pages
+
+## Compressing Images
