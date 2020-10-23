@@ -672,18 +672,21 @@ export class Module {
       encounter: encounters
     }
 
+    let moduleBuilder = new XML2JS.Builder({ rootName: 'module' })
+    let moduleXML = moduleBuilder.buildObject(moduleData)
+
+    FileSystem.writeFileSync(modulePath, moduleXML)
+    
+    let hasCompendiumData = monsters.length > 0
     let compendiumData = {
       monster: monsters,
     }
 
-    let moduleBuilder = new XML2JS.Builder({ rootName: 'module' })
-    let moduleXML = moduleBuilder.buildObject(moduleData)
-
-    let compendiumBuilder = new XML2JS.Builder({ rootName: 'compendium' })
-    let compendiumXML = compendiumBuilder.buildObject(compendiumData)
-
-    FileSystem.writeFileSync(modulePath, moduleXML)
-    FileSystem.writeFileSync(compendiumPath, compendiumXML)
+    if (hasCompendiumData) {
+      let compendiumBuilder = new XML2JS.Builder({ rootName: 'compendium' })
+      let compendiumXML = compendiumBuilder.buildObject(compendiumData)
+      FileSystem.writeFileSync(compendiumPath, compendiumXML)
+    }
   }
 
   /**
