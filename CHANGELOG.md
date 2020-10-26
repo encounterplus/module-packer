@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.20
 
 ### Fixed
 - Fixed module packer creating a compendium.xml when there was no compendium data
