@@ -452,7 +452,6 @@ con: 12
 int: 10
 wis: 6
 cha: 8
-role: enemy
 saves: Str + 2
 skills: Stealth +6
 vulnerabilities: radiant

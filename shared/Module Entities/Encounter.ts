@@ -20,6 +20,7 @@ export class Encounter extends ModuleEntity {
   constructor(name: string, moduleUUID: string, fileReference: EncounterFileReference, slug: string | undefined = undefined) {
     super(name, moduleUUID, slug)
     this.fileReference = fileReference
+    this.parentSlug = fileReference.parentSlug
   }
 
   // ---------------------------------------------------------------

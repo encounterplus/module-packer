@@ -220,39 +220,6 @@ export class Module {
     // are explicitly ignored).
     module.processDirectory(projectDirectory, moduleBuildPath)
 
-    // Reassign page parents when they are manually specified.
-    module.pages.forEach((page) => {
-      // If a new parent was not manually assigned, ignore
-      if (!page.parentPageSlug) {
-        return
-      }
-
-      // Find the requested new parent. If it doesn't exist
-      // ignore the parent assignment.
-      let newParent = module.pages.filter((parentPage) => {
-        return parentPage.slug == page.parentPageSlug
-      })[0]
-
-      if (!newParent) {
-        Logger.warn(`The specified parent, ${page.parentPageSlug}, for page ${page.slug} could not be found.`)
-        return
-      }
-
-      // Assign the new parent and append the page to the children of the new parent
-      if (page.parent) {
-        page.parent.children = page.parent.children.filter((childPage) => {
-          return childPage !== page
-        })
-      } else {
-        module.children = module.children.filter((childPage) => {
-          return childPage !== page
-        })
-      }
-
-      page.parent = newParent
-      newParent.children.push(page)
-    })
-
     // Add Maps
     let mapPromises: Promise<void>[] = []
     if (!scanOnly) {
@@ -265,16 +232,6 @@ export class Module {
 
       await Promise.all(mapPromises)
     }
-
-    // Resolve the parents of maps
-    let allEntities = module.getAllEntities()
-    module.maps.forEach((map) => {
-      let parentSlug = map.fileReference.parentSlug
-      if(parentSlug !== undefined) {
-        map.parent = allEntities.filter((entity) => { return entity.slug === parentSlug})[0]
-        map.parent?.children.push(map)
-      }
-    })
 
     // Add Encounters
     let encounterPromises: Promise<void>[] = []
@@ -289,13 +246,13 @@ export class Module {
       await Promise.all(encounterPromises)
     }
 
-    // Resolve the parents of encounters
-    allEntities = module.getAllEntities()
-    module.encounters.forEach((encounter) => {
-      let parentSlug = encounter.fileReference.parentSlug
+    // Resolve forced parent reassignments
+    let allEntities = module.getAllEntities()
+    allEntities.forEach((entity) => {
+      let parentSlug = entity.parentSlug
       if(parentSlug !== undefined) {
-        encounter.parent = allEntities.filter((entity) => { return entity.slug === parentSlug})[0]
-        encounter.parent?.children.push(encounter)
+        entity.parent = allEntities.filter((entity) => { return entity.slug === parentSlug})[0]
+        entity.parent?.children.push(entity)
       }
     })
 
@@ -627,7 +584,6 @@ export class Module {
         int: monster.int,
         wis: monster.wis,
         cha: monster.cha,
-        role: monster.role,
         save: monster.saves,
         skill: monster.skills,
         vulnerable: monster.vulnerabilities,
@@ -869,7 +825,13 @@ export class Module {
     let slug = frontMatter['slug'] as string
     let printMultiColumn = (frontMatter['pdf-page-style'] as string) !== 'single-column'
     let pagebreaks = forPrint ? (frontMatter['pdf-pagebreaks'] as string) : (frontMatter['module-pagebreaks'] as string)
-    let parentPageSlug = frontMatter['parent-page'] as string
+    
+    // "parent-page" is the legacy way of defining the parent for a page
+    let parentSlug = frontMatter['parent-page'] as string
+    if (frontMatter['parent']) {
+      parentSlug = frontMatter['parent']
+    }    
+
     let pagebreakContentFound = false
 
     let includeIn = frontMatter['include-in']
@@ -996,7 +958,7 @@ export class Module {
         if ((parentElement === undefined || parentElement.length === 0) && parentGroup !== undefined) {
           page.parent = parentGroup
           parentGroup.children.push(page)
-          page.parentPageSlug = parentPageSlug
+          page.parentSlug = parentSlug
         }
 
         // Wrap page content in a page DIV when printing
@@ -1034,7 +996,7 @@ export class Module {
       page.content = this.wrapPageInPrintDivs(html)
       page.includeIn = ModuleEntity.getIncludeModeFromString(includeIn)
       page.sort = order
-      page.parentPageSlug = parentPageSlug
+      page.parentSlug = parentSlug
 
       if (parentGroup) {
         page.parent = parentGroup

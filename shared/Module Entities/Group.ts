@@ -21,6 +21,7 @@ export class Group extends ModuleEntity {
     let effectiveName = name    
     let slug: string | undefined = undefined
     let order: number | undefined = undefined
+    let parentSlug: string | undefined = undefined
 
     let includeIn = 'all'
     let groupSettingsPath = Path.join(groupPath, Group.groupSettingsFileName)
@@ -37,6 +38,11 @@ export class Group extends ModuleEntity {
       let groupName = groupData['name'] as string
       if (groupName) {
         effectiveName = groupName
+      }
+
+      let parentSlugFromSettings = groupData['parent']
+      if (parentSlugFromSettings) {
+        parentSlug = parentSlugFromSettings
       }
       
       let slugFromSettings = groupData['slug']
@@ -58,6 +64,7 @@ export class Group extends ModuleEntity {
     super(effectiveName, moduleUUID, slug)
     this.groupPath = groupPath
     this.includeIn = ModuleEntity.getIncludeModeFromString(includeIn) 
+    this.parentSlug = parentSlug
 
     if(order) {
       this.sort = order

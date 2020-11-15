@@ -47,6 +47,9 @@ export abstract class ModuleEntity {
   /** The parent entity */
   parent: ModuleEntity | undefined = undefined
 
+  /** The parent slug for the entity - to be resolved to a parent object later */
+  parentSlug: string | undefined = undefined
+
   /** The slug for the entity */
   slug: string
 

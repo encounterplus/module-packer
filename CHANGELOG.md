@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.21
+
+### Changed
+- `parent` value now supported generically on pages and groups
+- Removed deprecated `role` field from Monsters
+
 ## 1.0.20
 
 ### Fixed

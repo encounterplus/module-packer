@@ -20,6 +20,7 @@ export class Map extends ModuleEntity {
   constructor(name: string, moduleUUID: string, fileReference: MapFileReference, slug: string | undefined = undefined) {
     super(name, moduleUUID, slug)
     this.fileReference = fileReference
+    this.parentSlug = fileReference.parentSlug
   }
 
   // ---------------------------------------------------------------

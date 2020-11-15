@@ -61,9 +61,6 @@ export class Monster extends ModuleEntity {
   /** The monster's Charisma */
   cha: number = 8
 
-  /** The monster's Role. Valid values are 'enemy', 'ally', 'companion', and 'familiar'  */
-  role: string = 'enemy'
-
   /** The monster's skills */
   skills: string | undefined = undefined
 
@@ -233,12 +230,6 @@ export class Monster extends ModuleEntity {
     const cha = monsterData['cha'] as number
     if (cha) {
       monster.cha = cha
-    }
-
-    // Get monster's role
-    const role = monsterData['role'] as string
-    if (role) {
-      monster.role = role
     }
 
     // Get monster's skills

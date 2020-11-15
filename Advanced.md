@@ -16,4 +16,8 @@ This document is a placeholder for advanced topics. The following topics are int
 
 ### Multi-Column Content in Single-Column Pages
 
+### Print-Only
+
+### Hiding Footer Text
+
 ## Compressing Images
