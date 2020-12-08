@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.0.22
+
+### Fixed
+- Ignore unix-style hidden folders (e.g., ".folder") to ignore version controlled system hidden files.
+
 ## 1.0.21
 
 ### Changed
