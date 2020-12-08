@@ -697,7 +697,8 @@ export class Module {
     // through these, creating Groups.
     let subdirectoryNames: string[] = FileSystem.readdirSync(directoryPath).filter(function (file) {
       let childPath = Path.join(directoryPath, file)
-      return FileSystem.statSync(childPath).isDirectory()
+      // skip hidden directories
+      return FileSystem.statSync(childPath).isDirectory() && !(/(^|\/)\.[^\/\.]/g).test(file)
     })
 
     // Ensure there are files in the modules directory
