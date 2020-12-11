@@ -46,7 +46,7 @@
   },  
   "scripts": {
     "lint": "eslint . --ext .ts,.tsx",
-    "compile-css": "lessc -clean-css ./assets/base/css/global.less ./assets/base/css/global.css",
+    "compile-css": "lessc ./assets/base/css/global.less ./assets/base/css/global.css",
 		"compile-app": "tsc -p tsconfig.app.json && cp -R ./app/resources ./app-out/resources && cp -R ./assets ./app-out",
     "watch-app": "tsc -watch -p tsconfig.app.json",
     "start": "npm run compile-app && electron ./app-out/app/main.js",
@@ -58,7 +58,6 @@
     "@types/node": "^12.12.58",
     "@typescript-eslint/eslint-plugin": "^3.8.0",
     "@typescript-eslint/parser": "^3.8.0",
-    "@wikimedia/less-plugin-clean-css": "^1.5.2",
     "electron": "^9.0.5",
     "electron-builder": "^22.7.0",
     "eslint": "^7.6.0",
