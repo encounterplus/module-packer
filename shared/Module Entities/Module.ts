@@ -892,7 +892,7 @@ export class Module {
         let headerText = $(element).text()
 
         if (!scanOnly) {
-          Logger.info(`Parsing page "${headerText}" from header "${element.tagName}"`)
+          Logger.info(`Parsing page "${headerText}" from header "${element}"`)
         }
 
         // Create Page from current HTML

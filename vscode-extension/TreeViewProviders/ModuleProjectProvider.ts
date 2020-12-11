@@ -123,16 +123,8 @@ class GroupTreeItem extends vscode.TreeItem {
       arguments: [groupFilePath],
     }   
     this.contextValue = 'moduleGroup'
-  }
-
-  /** The tooltip for the `GroupTreeItem` */
-  get tooltip(): string {
-    return this.group.groupPath
-  }
-
-  /** The tooltip for the `GroupTreeItem` */
-  get description(): string {
-    return ''
+    this.tooltip = this.group.groupPath
+    this.description = ''
   }
 }
 
@@ -151,16 +143,8 @@ class PageTreeItem extends vscode.TreeItem {
       arguments: [page.pagePath],
     }
     this.contextValue = 'modulePage'
-  }
-
-  /** The tooltip for the `PageTreeItem` */
-  get tooltip(): string {
-    return this.page.pagePath
-  }
-
-  /** The description for the `PageTreeItem` */
-  get description(): string {
-    return ''
+    this.tooltip = this.page.pagePath
+    this.description = ''
   }
 }
 
@@ -178,15 +162,7 @@ class ModuleTreeItem extends vscode.TreeItem {
       arguments: [module.moduleProjectInfo.moduleProjectPath],
     }    
     this.contextValue = 'moduleProject'
-  }
-
-  /** The tooltip for the `ModuleTreeItem` */
-  get tooltip(): string {
-    return this.module.moduleProjectInfo.description ?? ''
-  }
-
-  /** The description for the `ModuleTreeItem` */
-  get description(): string {
-    return ''
+    this.tooltip = this.module.moduleProjectInfo.description ?? ''
+    this.description = ''
   }
 }

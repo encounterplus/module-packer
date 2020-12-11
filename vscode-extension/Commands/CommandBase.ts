@@ -74,5 +74,5 @@ export abstract class CommandBase {
   /**
    * Contains execution code for the command
    */
-  protected abstract async executeCommand(): Promise<void>
+  protected abstract executeCommand(): Promise<void>
 }
