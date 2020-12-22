@@ -350,6 +350,30 @@ export class Monster extends ModuleEntity {
   }
 
   /**
+   * Converts a monster's size description to a compendium-compatible entry
+   * @param monster The monster
+   */
+  static getCompendiumSize(monster: Monster): string {
+    switch (monster.size.toLowerCase()) {
+      case 'tiny':
+        return 'T'
+      case 'small':
+        return 'S'
+      case 'medium':
+        return 'M'
+      case 'large':
+        return 'L'
+      case 'huge':
+        return 'H'
+      case 'gargantuan':
+        return 'G'
+      case 'colossal':
+        return 'C'
+    }
+    return 'M'
+  }
+
+  /**
    * Gets the HTML representation of the monster
    */
   getHTML = (classes: string[] = []): string => {

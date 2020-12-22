@@ -1,7 +1,8 @@
 import * as MarkdownIt from 'markdown-it'
 import * as Renderer from 'markdown-it/lib/renderer'
 import * as Token from 'markdown-it/lib/token'
-import { Module } from './Module Entities/Module'
+import { Item } from './Module Entities/Item'
+import { Module, ModuleMode } from './Module Entities/Module'
 import { Monster } from './Module Entities/Monster'
 
 export class MarkdownRenderer {
@@ -35,6 +36,9 @@ export class MarkdownRenderer {
 
   /** Monsters parsed when parsing the markdown file */
   monsters: Monster[] = []
+
+  /** Items parsed when parsing the markdown file */
+  items: Item[] = []
 
   // ---------------------------------------------------------------
   // Public Methods
@@ -207,28 +211,47 @@ export class MarkdownRenderer {
 
     let defaultFenceHTML = MarkdownRenderer.defaultFence(tokens, idx, options, env, self) || ''
 
-    if (!token.info.toLowerCase().includes('monster')) {
-      return defaultFenceHTML
-    }
+    if (token.info.toLowerCase().includes('monster')) {
+      let monster: Monster | undefined = undefined
+      let monsterHTML = ''
 
-    let monster: Monster | undefined = undefined
-    let monsterHTML = ''
+      try {
+        monster = Monster.fromYAMLContent(token.content, this.module)
+        this.monsters.push(monster)
+        monsterHTML = monster.getHTML(MarkdownRenderer.getTokenClasses(token))
+      } catch (error) {
+        if (this.module !== undefined && this.module.exportMode === ModuleMode.ModuleExport) {
+          throw Error(`Error parsing monster: ${error.message}`)
+        }
+        monsterHTML = '<div class="statblock">'
+        monsterHTML += '<hr class="statblock-border" />'
+        monsterHTML += `<h1>Error</h1>`
+        monsterHTML += `Error in Monster Stats: ${error}`
+        monsterHTML += '<hr class="statblock-border bottom" />'
+        monsterHTML += '</div>' // statblock
+        return monsterHTML
+      }
 
-    try {
-      monster = Monster.fromYAMLContent(token.content)
-      this.monsters.push(monster)
-      monsterHTML = monster.getHTML(MarkdownRenderer.getTokenClasses(token))
-    } catch (error) {
-      monsterHTML = '<div class="statblock">'
-      monsterHTML += '<hr class="statblock-border" />'
-      monsterHTML += `<h1>Error</h1>`
-      monsterHTML += `Error in Monster Stats: ${error}`
-      monsterHTML += '<hr class="statblock-border bottom" />'
-      monsterHTML += '</div>' // statblock
       return monsterHTML
-    }
+    } else if (token.info.toLowerCase().includes('item')) {
+      let item: Item | undefined = undefined
+      let itemHTML = ''
 
-    return monsterHTML
+      try {
+        item = Item.fromYAMLContent(token.content, this.module)
+        this.items.push(item)
+        itemHTML = item.getHTML(MarkdownRenderer.getTokenClasses(token))
+      } catch (error) {
+        if (this.module !== undefined && this.module.exportMode === ModuleMode.ModuleExport) {
+          throw Error(`Error parsing item: ${error.message}`)
+        }
+        return itemHTML
+      }
+
+      return itemHTML
+    }
+    
+    return defaultFenceHTML
   }
 
   /**

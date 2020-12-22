@@ -14,6 +14,7 @@ import * as YAML from 'yaml'
 import { MarkdownRenderer } from '../MarkdownRenderer'
 import { ModuleProject } from '../ModuleProject'
 import { Group } from './Group'
+import { Item } from './Item'
 import { ModuleEntity, IncludeMode } from './ModuleEntity'
 import { Monster } from './Monster'
 import { Page } from './Page'
@@ -75,6 +76,9 @@ export class Module {
 
   /** The monster associated with the module */
   monsters: Monster[] = []
+
+  /** The monster associated with the module */
+  items: Item[] = []
 
   /** The path for the module archive (after it is created) */
   moduleArchivePath: string | undefined = undefined
@@ -271,6 +275,9 @@ export class Module {
       })
       module.monsters = module.monsters.filter((monster) => {
         return monster !== entity
+      })
+      module.items = module.items.filter((item) => {
+        return item !== entity
       })
       entity.children = []
 
@@ -572,7 +579,7 @@ export class Module {
         $: monsterAttributes,
         name: monster.name,
         slug: monster.slug,
-        size: Module.getCompendiumSize(monster),
+        size: Monster.getCompendiumSize(monster),
         type: monster.type,
         alignment: monster.alignment,
         ac: monster.ac,
@@ -612,6 +619,47 @@ export class Module {
       return monsterObj
     })
 
+    // Map item data
+    let items = this.items.map((item) => {
+      let itemImageFolder = Path.join(outputPath, 'items')
+      if (!FileSystem.existsSync(itemImageFolder)) {
+        FileSystem.mkdirSync(itemImageFolder)
+      }
+
+      let itemAttributes = {
+        id: item.id,
+      }
+
+      let itemObj: any = {
+        $: itemAttributes,
+        name: item.name,
+        slug: item.slug,
+        type: Item.getCompendiumType(item),
+        property: Item.getCompendiumProperty(item),
+        dmgType: Item.getCompendiumDmgType(item),
+        weight: item.weight,
+        heading: item.heading,
+        attunement: item.attunement,
+        rarity: item.rarity,
+        value: item.value,
+        dmg1: item.primaryDamage,
+        dmg2: item.secondaryDamage,
+        range: item.range,
+        ac: item.ac,
+        source: item.source,
+        image: item.image,
+        text: item.text,
+      }
+
+      // Delete undefined fields
+      Object.keys(itemObj).forEach((key) => {
+        if (itemObj[key] === undefined) {
+          delete itemObj[key]
+        }
+      })
+      return itemObj
+    })
+
     // Layout root module data structure
     let moduleData = {
       $: { id: this.moduleProjectInfo.id },
@@ -633,9 +681,10 @@ export class Module {
 
     FileSystem.writeFileSync(modulePath, moduleXML)
     
-    let hasCompendiumData = monsters.length > 0
+    let hasCompendiumData = monsters.length > 0 || items.length > 0
     let compendiumData = {
       monster: monsters,
+      item: items
     }
 
     if (hasCompendiumData) {
@@ -643,30 +692,6 @@ export class Module {
       let compendiumXML = compendiumBuilder.buildObject(compendiumData)
       FileSystem.writeFileSync(compendiumPath, compendiumXML)
     }
-  }
-
-  /**
-   * Converts a monster's size description to a compendium-compatible entry
-   * @param monster The monster
-   */
-  private static getCompendiumSize(monster: Monster): string {
-    switch (monster.size.toLowerCase()) {
-      case 'tiny':
-        return 'T'
-      case 'small':
-        return 'S'
-      case 'medium':
-        return 'M'
-      case 'large':
-        return 'L'
-      case 'huge':
-        return 'H'
-      case 'gargantuan':
-        return 'G'
-      case 'colossal':
-        return 'C'
-    }
-    return 'M'
   }
 
   /**
@@ -689,7 +714,7 @@ export class Module {
 
     let relativeDirectoryPath = Path.relative(moduleProjectDirectory, directoryPath)
     let moduleBuildClonePath = Path.join(moduleBuildPath, relativeDirectoryPath)
-    if (!FileSystem.existsSync(moduleBuildClonePath)) {
+    if (!scanOnly && !FileSystem.existsSync(moduleBuildClonePath)) {
       FileSystem.mkdirSync(moduleBuildClonePath)
     }
 
@@ -749,7 +774,7 @@ export class Module {
       // their content to the module output (as they may be an
       // image or resource folder) if they're in the root level.
       let ignoreFilePath = Path.join(subdirectoryPath, '.ignoreGroup')
-      if (FileSystem.existsSync(ignoreFilePath)) {
+      if (!scanOnly && FileSystem.existsSync(ignoreFilePath)) {
         let copyPath = Path.join(moduleBuildClonePath, subdirectoryName)
         FileSystem.copySync(subdirectoryPath, copyPath)
         return
@@ -866,6 +891,17 @@ export class Module {
       }
 
       this.monsters.push(monster)
+    })
+
+    // Add items parsed from the markdown page into
+    // the module's item list.
+    markdownRenderer.items.forEach((item) => {
+      if (forModuleExport && item.image) {
+        let imageAbsolutePath = Path.join(fileFolderPath, item.image)
+        let imageDestinationPath = Path.join(monsterModulePath, item.image)
+        FileSystem.copyFileSync(imageAbsolutePath, imageDestinationPath)
+      }
+      this.items.push(item)
     })
 
     // If we have pagebreaks defined, we'll attempt to split
