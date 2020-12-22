@@ -1,5 +1,4 @@
 import * as vscode from 'vscode'
-import * as glob from 'glob'
 import * as Markdown from 'markdown-it'
 import * as FileSystem from 'fs-extra'
 import * as Logger from 'winston'
@@ -19,18 +18,13 @@ const exportToPdfCommand = new ExportToPdfCommand()
 export function activate(context: vscode.ExtensionContext) {
   const vsCodeLogger = new VSCodeLogger()
   Logger.add(vsCodeLogger)
-
-  if (vscode.workspace.rootPath === undefined) {
+  
+  let workspacePath = VSCodeUtilities.getPrimaryWorkspaceFolderPath()
+  if (workspacePath === undefined) {
     return
   }
 
-  glob(vscode.workspace.rootPath + '/**/*.md', {}, (error, matches) => {
-    if (matches && matches.length > 0) {
-      vscode.commands.executeCommand('setContext', 'projectHasMarkdown', true)
-    }
-  })
-
-  let moduleProjectProvider = new ModuleProjectProvider(vscode.workspace.rootPath)
+  let moduleProjectProvider = new ModuleProjectProvider(workspacePath)
   vscode.window.registerTreeDataProvider('encounter-plus-modules', moduleProjectProvider)
   context.subscriptions.push(
     vscode.commands.registerCommand('encounterPlusMarkdown.refreshModules', () => moduleProjectProvider.refresh())
@@ -124,6 +118,17 @@ export function activate(context: vscode.ExtensionContext) {
         throw error
       }
     },
+  }
+}
+
+export class VSCodeUtilities {
+
+  /** Gets the first workspace folder path */
+  static getPrimaryWorkspaceFolderPath(): string | undefined {
+    if (vscode.workspace.workspaceFolders === undefined) {
+      return undefined
+    }
+    return vscode.workspace.workspaceFolders[0].uri.path
   }
 }
 

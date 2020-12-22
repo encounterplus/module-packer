@@ -3,6 +3,7 @@ import * as Path from 'path'
 import { v4 as UUIDV4 } from 'uuid'
 import * as vscode from 'vscode'
 import * as YAML from 'yaml'
+import { VSCodeUtilities } from '../extension'
 import { Module } from '../../shared/Module Entities/Module'
 import { CommandBase } from './CommandBase'
 
@@ -23,35 +24,25 @@ export class CreateModuleProjectFileCommand extends CommandBase {
   /**
    * Contains execution code for the command
    */
-  protected async executeCommand() {
-    let projectPath = vscode.workspace.rootPath
+  protected async executeCommand() {    
+    let projectPath = VSCodeUtilities.getPrimaryWorkspaceFolderPath()
     if (projectPath === undefined) {
       throw Error('Could not locate folder for Module.yaml.')
     }
 
-        // See if a Module.yaml file already exists
+    // See if a Module.yaml file already exists
     let moduleProjectFilePath = Path.join(projectPath, Module.moduleProjectFileName)
     if (FileSystem.existsSync(moduleProjectFilePath)) {
       throw Error('Module.yaml already exists.')
     }
 
-    // Show an input box to get the module name from the user
-    let inputBoxOptions = {
-      prompt: 'Module Name',
-      placeholder: 'My Module',
-    }
-
-    let moduleName = await vscode.window.showInputBox(inputBoxOptions)   
-    
     // Check module path again in case it was deleted
     // while we were waiting for user input
     if (FileSystem.existsSync(moduleProjectFilePath)) {
       throw Error('Module.yaml already exists.')
     }
 
-    if (moduleName === undefined) {
-      throw Error('Invalid Module.yaml name.')
-    }
+    let moduleName = Path.basename(projectPath)
 
     // Format Module.yaml data
     let moduleFileContent = {
