@@ -506,6 +506,10 @@ Monster stat blocks can be rendered in a variety of colors with the `.blue`, `.g
 
 ## Items
 
+<p align="left">
+  <img src="./documentation/Item.jpg" alt="Item" width="500">
+</p>
+
 Items can created within a Markdown file. When exported as a module, these items will be added to EncounterPlus's compendium. The Item stat blocks are specified using standard [YAML](https://en.wikipedia.org/wiki/YAML) just like the Front-Matter on each page.
 
 ~~~Markdown
@@ -542,6 +546,10 @@ Available item values are:
 `description`: The item's description
 
 ## Spells
+
+<p align="left">
+  <img src="./documentation/Spell.jpg" alt="Spell" width="500">
+</p>
 
 Spells can created within a Markdown file. When exported as a module, these spells will be added to EncounterPlus's compendium. The Spell stat blocks are specified using standard [YAML](https://en.wikipedia.org/wiki/YAML) just like the Front-Matter on each page.
 

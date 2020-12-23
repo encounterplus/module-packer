@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.23
 
 ### Added
 - Added Items and Spells YAML compendium entry support
