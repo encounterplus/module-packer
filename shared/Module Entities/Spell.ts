@@ -190,6 +190,82 @@ export class Spell extends ModuleEntity {
    */
   getHTML = (classes: string[] = []): string => {
     let spellHTML: string = ''
+
+    let levelText = 'Unknown'
+    switch(this.level) {
+      case 0:
+        levelText = 'Cantrip'
+        break
+      case 1:
+        levelText = 'First'
+        break
+      case 2:
+        levelText = 'Second'
+        break
+      case 3:
+        levelText = 'Third'
+        break
+      case 4:
+        levelText = 'Fourth'
+        break
+      case 5:
+        levelText = 'Fifth'
+        break
+      case 6:
+        levelText = 'Sixth'
+        break
+      case 7:
+        levelText = 'Seventh'
+        break
+      case 8:
+        levelText = 'Eighth'
+        break
+      case 9:
+        levelText = 'Ninth'
+        break
+      case 10:
+        levelText = 'Tenth'
+        break
+      default:
+        levelText = `${this.level}`
+        break
+    }
+
+    spellHTML += `<div class="spell-block">`
+    spellHTML += `<p class="spell-block-title">${this.name}</p>`
+    spellHTML += `<div class="spell-block-top-border"></div>`
+    spellHTML += `<div class="spell-block-body">`
+    spellHTML += `<p class="spell-block-description">${this.description}</p>`
+    spellHTML += `<div class="spell-block-heading-border"></div>`
+    spellHTML += '<p>'
+    if (this.level) {
+      spellHTML += `<strong>Level: </strong>${levelText}<br />`
+    }
+    if (this.school) {
+      spellHTML += `<strong>School: </strong>${this.school}<br />`
+    }    
+    if (this.time) {
+      spellHTML += `<strong>Casting Time: </strong>${this.time}<br />`
+    }
+    if (this.range) {
+      spellHTML += `<strong>Range/Area: </strong>${this.range}<br />`
+    } 
+    if (this.components) {
+      spellHTML += `<strong>Components: </strong>${this.components}<br />`
+    }
+    if (this.duration) {
+      spellHTML += `<strong>Duration: </strong>${this.duration}<br />`
+    }  
+    if (this.classes) {
+      spellHTML += `<strong>Classes: </strong>${this.classes}<br />`
+    }  
+    spellHTML += `<strong>Ritual: </strong>${this.ritual ? 'Yes' : 'No'}<br />`    
+    spellHTML += '</p>'
+    spellHTML += `<div class="spell-block-bottom-border"></div>`
+    spellHTML += `</div>` // spell-block-body
+    spellHTML += `</div>` // spell-block
     return spellHTML
   }
+
+  
 }

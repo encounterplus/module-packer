@@ -34,6 +34,9 @@ export class Module {
   /** The content to print in the footer */
   private printFooterContent: string = ''
 
+  /** A flag indicating whether to hide the footer background from display */
+  private hideFooter: boolean = false
+
   // ---------------------------------------------------------------
   // Initialization & Cleanup
   // ---------------------------------------------------------------
@@ -380,9 +383,16 @@ export class Module {
     }
 
     let html = '</div>'
-    html += '<div class="footer-background"></div>'
-    html += `<div class="footer-content">${this.printFooterContent}</div>`
-    html += '<div class="footer-page-number"></div>'
+    if (this.hideFooter) {
+      html += '<div class="footer-background hidden"></div>'
+      html += `<div class="footer-content hidden"></div>`
+      html += '<div class="footer-page-number hidden"></div>'      
+    } else {
+      html += '<div class="footer-background"></div>'
+      html += `<div class="footer-content">${this.printFooterContent}</div>`
+      html += '<div class="footer-page-number"></div>'
+    }    
+
     html += '</div>'
     return html
   }
@@ -929,6 +939,12 @@ export class Module {
       this.printFooterContent = ''
     }
 
+    if ((frontMatter['hide-footer'] as boolean) === true) {
+      this.hideFooter = true
+    } else {
+      this.hideFooter = false
+    }
+
     // Convert markdown to HTML
     let html = markdown.render(matter.content)
 
@@ -970,6 +986,13 @@ export class Module {
       }
       this.spells.push(spell)
     })
+
+    let coverImagePath: string | undefined = undefined
+    let moduleProjectPath = this.moduleProjectInfo.moduleProjectPath
+    if(frontMatter['cover'] && moduleProjectPath !== undefined) {      
+      let moduleDirectory = Path.dirname(moduleProjectPath)
+      coverImagePath = Path.join(moduleDirectory, frontMatter['cover'])
+    }
 
     // If we have pagebreaks defined, we'll attempt to split
     // up, group, and subgroup content by header values
@@ -1065,22 +1088,12 @@ export class Module {
           page.parentSlug = parentSlug
         }
 
-        // Wrap page content in a page DIV when printing
-        page.content = this.wrapPageInPrintDivs(page.content)
-
         // Assign page as child of root module if no parent assigned
         if (!page.parent) {
           this.children.push(page)
         }
 
-        // Process image links to handle relative paths
-        page.content = this.postProcessImageLinks(page.content, filePath)
-
-        // Process elements for print layouts
-        page.content = this.postProcessForPrint(page.content, printMultiColumn)
-
-        // Process anchors
-        page.content = this.postProcessAnchors(page.content, page.slug)
+        this.postProcessPage(page, filePath, printMultiColumn, coverImagePath)
 
         // Finally, add the page to the module
         pages.push(page)
@@ -1097,7 +1110,7 @@ export class Module {
         Logger.info(`Slug for page "${page.name}": ${page.slug}`)
       }
 
-      page.content = this.wrapPageInPrintDivs(html)
+      
       page.includeIn = ModuleEntity.getIncludeModeFromString(includeIn)
       page.sort = order
       page.parentSlug = parentSlug
@@ -1109,19 +1122,48 @@ export class Module {
         this.children.push(page)
       }
 
-      // Process image links to handle relative paths
-      page.content = this.postProcessImageLinks(page.content, filePath)
-
-      // Process elements for print layouts
-      page.content = this.postProcessForPrint(page.content, printMultiColumn)
-
-      // Process anchors
-      page.content = this.postProcessAnchors(page.content, page.slug)
+      page.content = html
+      this.postProcessPage(page, filePath, printMultiColumn, coverImagePath)
 
       pages.push(page)
     }
 
     return pages
+  }
+
+  /**
+   * Applies post-processing to the page
+   * @param page The page to post-process
+   * @param filePath The file path of of the page
+   * @param printMultiColumn Whether the page is multi-column
+   * @param coverImagePath The page's cover image path (or undefined if it does not have one)
+   */
+  private postProcessPage = (page: Page, filePath: string, printMultiColumn: boolean, coverImagePath: string | undefined) => {
+    const printToPDF = this.exportMode === ModuleMode.PrintToPDF
+
+    // Wrap page content in a page DIV when printing
+    page.content = this.wrapPageInPrintDivs(page.content)
+
+    // Process image links to handle relative paths
+    page.content = this.postProcessImageLinks(page.content, filePath)
+
+    // Process elements for print layouts
+    page.content = this.postProcessForPrint(page.content, printMultiColumn)
+
+    // Process anchors
+    page.content = this.postProcessAnchors(page.content, page.slug)
+    
+    // Prepend a cover page if this section has one      
+    if (coverImagePath && printToPDF) {
+      let coverImageData = FileSystem.readFileSync(coverImagePath).toString('base64')
+      let prependContent = `<div class="print-section-cover-page" style="background-image: url(data:image;base64,${coverImageData})">`
+      prependContent += `<div class="print-page hidden">`
+      prependContent += `<div class="footer-page-number hidden">`
+      prependContent += `</div>` // footer-page-number
+      prependContent += `</div>` // print-page
+      prependContent += `</div>` // print-section-cover-page
+      page.content = prependContent + page.content
+    }
   }
 
   private postProcessAnchors = (pageContent: string, slug: string): string => {

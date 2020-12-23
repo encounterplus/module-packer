@@ -4,6 +4,7 @@
 
 ### Added
 - Added Items and Spells YAML compendium entry support
+- Added CLI interface for app. Arguments are "<path> <mode>", where <path> is the path of the module, and <mode> is optional and can be `pdf` (to create a PDF) or `module` (to create a module file). The `module` mode is default.
 
 ### Changed
 - Updated VS Code Engine to 1.51

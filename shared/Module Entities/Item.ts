@@ -23,17 +23,17 @@ export class Item extends ModuleEntity {
   // Public Properties
   // ---------------------------------------------------------------
 
-  /** The item type. Supported values are 
+  /** The item type. Supported values are
    * Wealth, Ammunition, Armor, Adventuring gear,
    * Heavy armor, Light armor, Melee weapon, Medium armor,
    * Potion, Ranged weapon, Rod, Ring, Shield, Scroll,
    * Staff, Wondrous item, Wand, and Weapon
-  */
+   */
   type: string | undefined = undefined
 
   /** The rarity of the item. Supported values are
    * Common, Uncommon, Rare, Very Rare, and Legendary
-  */
+   */
   rarity: string | undefined = undefined
 
   /** The item's value */
@@ -41,7 +41,7 @@ export class Item extends ModuleEntity {
 
   /** The item's weight */
   weight: string | undefined = undefined
-  
+
   /** The item's heading */
   heading: string | undefined = undefined
 
@@ -50,7 +50,7 @@ export class Item extends ModuleEntity {
 
   /** The property of the item. Supported values are
    * Ammunition, Finesse, Heavy, Light, Loading, Range, Reach,
-   * Special, Thrown, Two-handed, and Versatile */ 
+   * Special, Thrown, Two-handed, and Versatile */
   property: string | undefined = undefined
 
   /** The item's primary damage value (e.g., 1H if versatile) */
@@ -119,7 +119,9 @@ export class Item extends ModuleEntity {
     if (type) {
       item.type = type
     } else {
-      throw Error('Item must have a type. Type may be: Wealth, Ammunition, Armor, Adventuring gear, Heavy armor, Light armor, Melee weapon, Medium armor, Potion, Ranged weapon, Rod, Ring, Shield, Scroll, Staff, Wondrous item, Wand, or Weapon')
+      throw Error(
+        'Item must have a type. Type may be: Wealth, Ammunition, Armor, Adventuring gear, Heavy armor, Light armor, Melee weapon, Medium armor, Potion, Ranged weapon, Rod, Ring, Shield, Scroll, Staff, Wondrous item, Wand, or Weapon'
+      )
     }
 
     const rarity = itemData['rarity'] as string
@@ -146,7 +148,7 @@ export class Item extends ModuleEntity {
     if (attunement) {
       item.attunement = attunement
     }
-    
+
     const property = itemData['property'] as string
     if (property) {
       item.property = property
@@ -161,7 +163,7 @@ export class Item extends ModuleEntity {
     if (secondaryDamage) {
       item.secondaryDamage = secondaryDamage
     }
-    
+
     const damageType = itemData['damageType'] as string
     if (damageType) {
       item.damageType = damageType
@@ -242,7 +244,9 @@ export class Item extends ModuleEntity {
       case 'wealth':
         return '$'
       default:
-        throw Error(`Invalid item type "${item.type}". Supported values are: Wealth, Ammunition, Armor, Adventuring gear, Heavy armor, Light armor, Melee weapon, Medium armor, Potion, Ranged weapon, Rod, Ring, Shield, Scroll, Staff, Wondrous item, Wand, and Weapon`)
+        throw Error(
+          `Invalid item type "${item.type}". Supported values are: Wealth, Ammunition, Armor, Adventuring gear, Heavy armor, Light armor, Melee weapon, Medium armor, Potion, Ranged weapon, Rod, Ring, Shield, Scroll, Staff, Wondrous item, Wand, and Weapon`
+        )
     }
   }
 
@@ -279,7 +283,9 @@ export class Item extends ModuleEntity {
       case 'versatile':
         return 'V'
       default:
-        throw Error(`Invalid item property "${item.property}". Supported values are: Ammunition, Finesse, Heavy, Light, Loading, Range, Reach, Special, Thrown, Two-handed, and Versatile`)
+        throw Error(
+          `Invalid item property "${item.property}". Supported values are: Ammunition, Finesse, Heavy, Light, Loading, Range, Reach, Special, Thrown, Two-handed, and Versatile`
+        )
     }
   }
 
@@ -309,6 +315,45 @@ export class Item extends ModuleEntity {
    */
   getHTML = (classes: string[] = []): string => {
     let itemHTML: string = ''
+
+    let attributeDescriptions: string[] = []
+    if (this.type) {
+      attributeDescriptions.push(this.type)
+    }
+    if (this.rarity) {
+      attributeDescriptions.push(this.rarity)
+    }
+    if (this.property) {
+      attributeDescriptions.push(this.property)
+    }
+
+    let headingText = attributeDescriptions.join(', ')
+    if (this.attunement) {
+      headingText += ` (${this.attunement})`
+    }
+
+    itemHTML += `<div class="item-block">`
+    itemHTML += `<p class="item-block-title">${this.name}</p>`
+    itemHTML += `<div class="item-block-top-border"></div>`
+    itemHTML += `<div class="item-block-body">`
+    itemHTML += `<p class="item-block-heading">${headingText}</p>`
+    itemHTML += `<div class="item-block-heading-border"></div>`
+    itemHTML += `<p class="item-block-description">${this.description}</p>`
+    itemHTML += '<p>'
+    if (this.primaryDamage) {
+      itemHTML += `<strong>Damage: </strong>${this.primaryDamage}`
+      if (this.secondaryDamage) {
+        itemHTML += ` (${this.secondaryDamage} 2H)`
+      }
+      itemHTML += `<br />`
+    }
+    if (this.value) {
+      itemHTML += `<strong>Value: </strong>${this.value}<br />`
+    }
+    itemHTML += '</p>'
+    itemHTML += `<div class="item-block-bottom-border"></div>`
+    itemHTML += `</div>` // item-block-body
+    itemHTML += `</div>` // item-block
     return itemHTML
   }
 }

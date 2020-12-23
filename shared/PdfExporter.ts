@@ -161,8 +161,11 @@ export class PdfExporter {
         anchorPageDictionary['#' + anchorID] = currentPage
       }
 
-      let isPageNumber = $(element).hasClass('footer-page-number')
-      if (isPageNumber) {
+      let shouldIncrementPage = $(element).hasClass('footer-page-number')
+      if (shouldIncrementPage) {
+        let footerPageElement = $(element)[0]
+        let footerPageText = `${currentPage}`
+        $(footerPageElement).text(footerPageText)
         currentPage += 1
       }
     })

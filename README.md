@@ -163,7 +163,8 @@ All front-matter values are optional - and default values will be used for anyth
 - `module-pagebreak`: Element tags that, when specified, will automatically result in the markdown being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to an EncounterPlus module.
 - `pdf-pagebreak`: Element tags that, when specified, will automatically result in the markdown output being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to a PDF.
 - `footer`: If specified, allows custom footer text to be entered. Otherwise the footer text follows the format of `Page Name | Parent Name`.
-- `hide-footer-text`: If true, will hide footer text entirely.
+- `hide-footer`: If true, will hide the footer entirely.
+- `hide-footer-text`: If true, will hide the footer text, but keep the footer background image. This is superseded by `hide-footer` if it is true.
 
 # Markdown Guide
 
