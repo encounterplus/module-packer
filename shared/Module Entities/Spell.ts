@@ -44,7 +44,7 @@ export class Spell extends ModuleEntity {
   /** The spell's duration */
   duration: string | undefined = undefined
 
-  /** The spell's level */
+  /** The spell's classes */
   classes: string | undefined = undefined
 
   /** The spell's source */

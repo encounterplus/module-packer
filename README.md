@@ -19,6 +19,8 @@
   - [Links](#links)
   - [Tables](#tables)
   - [Monsters](#monsters)
+  - [Items](#items)
+  - [Spells](#spells)
   - [Page Breaks for Print](#page-breaks-for-print)
 - [Visual Studio Code Extension](#visual-studio-code-extension)
 - [Other Editors](#other-editors)
@@ -151,7 +153,7 @@ order: 3
 module-pagebreaks: h1, h2, h3
 pdf-pagebreaks: h1
 footer: My Custom Footer Text
-hide-footer-text: false
+hide-footer: false
 ---
 ```
 
@@ -163,6 +165,7 @@ All front-matter values are optional - and default values will be used for anyth
 - `module-pagebreak`: Element tags that, when specified, will automatically result in the markdown being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to an EncounterPlus module.
 - `pdf-pagebreak`: Element tags that, when specified, will automatically result in the markdown output being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to a PDF.
 - `footer`: If specified, allows custom footer text to be entered. Otherwise the footer text follows the format of `Page Name | Parent Name`.
+- `cover`: The name of a cover image for this page/section when printing.. This cover image will appear on the page before and take up the entire page document.
 - `hide-footer`: If true, will hide the footer entirely.
 - `hide-footer-text`: If true, will hide the footer text, but keep the footer background image. This is superseded by `hide-footer` if it is true.
 
@@ -500,6 +503,78 @@ Monster stat blocks can be rendered in a variety of colors with the `.blue`, `.g
 <p align="left">
   <img src="./documentation/StatblockColors.jpg" alt="Monster Stat Block Colors" width="500">
 </p>
+
+## Items
+
+Items can created within a Markdown file. When exported as a module, these items will be added to EncounterPlus's compendium. The Item stat blocks are specified using standard [YAML](https://en.wikipedia.org/wiki/YAML) just like the Front-Matter on each page.
+
+~~~Markdown
+```Item
+name: Quarterstaff of Thwacking
+slug: quarterstaff-of-thwacking
+type: Weapon
+attunement: Requires attunement by a monk
+primaryDamage: 1d6
+secondaryDamage: 1d8
+property: Versatile
+damageType: Bludgeoning
+description: This legendary quarterstaff has thwacked many a foe.
+value: 1 gp
+source: Example Module
+```
+~~~
+
+Available item values are:
+`type`: The item type. Supported values are Wealth, Ammunition, Armor, Adventuring gear, Heavy armor, Light armor, Melee weapon, Medium armor, Potion, Ranged weapon, Rod, Ring, Shield, Scroll, Staff, Wondrous item, Wand, and Weapon
+`rarity`: The rarity of the item
+`value`: The item's value
+`weight`: The item's weight
+`heading`: A custom heading for the item (this will replace the auto-generated heading)
+`attunement`: An attunement description for the item 
+`property`: The property of the item. Supported values are Ammunition, Finesse, Heavy, Light, Loading, Range, Reach, Special, Thrown, Two-handed, and Versatile
+`primaryDamage`: The item's primary damage value (e.g., 1H if versatile)
+`secondaryDamage`: The item's secondary damage value (e.g., 2H if versatile)
+`damageType`: The damage type. Supported values are Bludgeoning, Piercing, and Slashing
+`range`: The item's range
+`ac`: The item's AC
+`source`: The item's source (e.g., the name/page of a publication)
+`image`: The filename of an image of the item
+`description`: The item's description
+
+## Spells
+
+Spells can created within a Markdown file. When exported as a module, these spells will be added to EncounterPlus's compendium. The Spell stat blocks are specified using standard [YAML](https://en.wikipedia.org/wiki/YAML) just like the Front-Matter on each page.
+
+~~~Markdown
+```Spell
+name: Dumpster Fire
+slug: dumpster-fire
+level: 0
+school: Evocation
+ritual: false
+time: 1 action
+range: Self (30-foot radius)
+components: V
+duration: Concentration, up to 1 minute
+description: Ignites all nearby dumpsters.
+classes: Sorcerer, Warlock, Wizard
+image: DumpsterFire.jpg
+source: Example Module
+```
+~~~
+
+Available spell values are:
+`level`: A number value of the level, a level of zero is a cantrip
+`school`: The spell's school. Allowed values are Abjuration, Conjuration, Divination, Enchantment, Evocation, Illusion, Necromancy, and Transmutation
+`ritual`: `true` if the spell is a ritual, otherwise `false`
+`time`: The spell's time to cast
+`range`: The spell's range or area
+`components`: The spell's components
+`duration`: The spell's duration
+`classes`: The spell's classes
+`source`: The spell's source 
+`image`: The filename of an image of the spell
+`description`: The spell's description
 
 ## Special Tags for Print/PDF
 
