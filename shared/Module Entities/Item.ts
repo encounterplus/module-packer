@@ -76,7 +76,7 @@ export class Item extends ModuleEntity {
   image: string | undefined = undefined
 
   /** The item's description */
-  text: string | undefined = undefined
+  description: string | undefined = undefined
 
   // ---------------------------------------------------------------
   // Public Methods
@@ -85,10 +85,10 @@ export class Item extends ModuleEntity {
   /**
    * Gets a Item object instance from a YAML representation
    * @param itemYamlContent The YAML content that represents the item
-   * @param module The module to which the monster belongs
+   * @param module The module to which the item belongs
    */
   static fromYAMLContent(itemYamlContent: string, module: Module | undefined = undefined) {
-    // Parse Monster from YAML
+    // Parse item from YAML
     let itemData: any = undefined
     try {
       itemData = YAML.parse(itemYamlContent)
@@ -110,7 +110,7 @@ export class Item extends ModuleEntity {
     }
 
     // If the module project ID isn't defined, generate a random one. This
-    // will happen when the Monster is being generated as part of a preview
+    // will happen when the item is being generated as part of a preview
     // for the VS Code extension
     let item = new Item(name, module?.moduleProjectInfo.id ?? UUIDV4(), slug)
 
@@ -182,15 +182,11 @@ export class Item extends ModuleEntity {
       item.source = source
     }
 
-    const text = itemData['text'] as string
-    if (text) {
-      item.text = text
+    const description = itemData['description'] as string
+    if (description) {
+      item.description = description
     }
 
-    // Get monster image - copy image file to root
-    // if we're parsing this as an individual monster YAML file.
-    // If parsing in the context of markdown, this will already
-    // be taken care of for us.
     const image = itemData['image'] as string
     if (image) {
       item.image = image
@@ -309,7 +305,7 @@ export class Item extends ModuleEntity {
   }
 
   /**
-   * Gets the HTML representation of the monster
+   * Gets the HTML representation of the item
    */
   getHTML = (classes: string[] = []): string => {
     let itemHTML: string = ''

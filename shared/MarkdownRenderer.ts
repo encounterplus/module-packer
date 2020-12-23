@@ -4,6 +4,7 @@ import * as Token from 'markdown-it/lib/token'
 import { Item } from './Module Entities/Item'
 import { Module, ModuleMode } from './Module Entities/Module'
 import { Monster } from './Module Entities/Monster'
+import { Spell } from './Module Entities/Spell'
 
 export class MarkdownRenderer {
   // ---------------------------------------------------------------
@@ -39,6 +40,9 @@ export class MarkdownRenderer {
 
   /** Items parsed when parsing the markdown file */
   items: Item[] = []
+
+  /** Spells parsed when parsing the markdown file */
+  spells: Spell[] = []
 
   // ---------------------------------------------------------------
   // Public Methods
@@ -241,6 +245,22 @@ export class MarkdownRenderer {
         item = Item.fromYAMLContent(token.content, this.module)
         this.items.push(item)
         itemHTML = item.getHTML(MarkdownRenderer.getTokenClasses(token))
+      } catch (error) {
+        if (this.module !== undefined && this.module.exportMode === ModuleMode.ModuleExport) {
+          throw Error(`Error parsing item: ${error.message}`)
+        }
+        return itemHTML
+      }
+
+      return itemHTML
+    } else if (token.info.toLowerCase().includes('spell')) {
+      let spell: Spell | undefined = undefined
+      let itemHTML = ''
+
+      try {
+        spell = Spell.fromYAMLContent(token.content, this.module)
+        this.spells.push(spell)
+        itemHTML = spell.getHTML(MarkdownRenderer.getTokenClasses(token))
       } catch (error) {
         if (this.module !== undefined && this.module.exportMode === ModuleMode.ModuleExport) {
           throw Error(`Error parsing item: ${error.message}`)

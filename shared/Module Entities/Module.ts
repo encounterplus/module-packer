@@ -20,6 +20,7 @@ import { Monster } from './Monster'
 import { Page } from './Page'
 import { Map } from './Map'
 import { Encounter } from './Encounter'
+import { Spell } from './Spell'
 
 /**
  * Represents an EncounterPlus module. Contains
@@ -77,8 +78,11 @@ export class Module {
   /** The monster associated with the module */
   monsters: Monster[] = []
 
-  /** The monster associated with the module */
+  /** The items associated with the module */
   items: Item[] = []
+
+   /** The spells associated with the module */
+   spells: Spell[] = []
 
   /** The path for the module archive (after it is created) */
   moduleArchivePath: string | undefined = undefined
@@ -278,6 +282,9 @@ export class Module {
       })
       module.items = module.items.filter((item) => {
         return item !== entity
+      })
+      module.spells = module.spells.filter((spell) => {
+        return spell !== entity
       })
       entity.children = []
 
@@ -648,7 +655,7 @@ export class Module {
         ac: item.ac,
         source: item.source,
         image: item.image,
-        text: item.text,
+        text: item.description,
       }
 
       // Delete undefined fields
@@ -658,6 +665,43 @@ export class Module {
         }
       })
       return itemObj
+    })
+
+    // Map spell data
+    let spells = this.spells.map((spell) => {
+      let spellImageFolder = Path.join(outputPath, 'spells')
+      if (!FileSystem.existsSync(spellImageFolder)) {
+        FileSystem.mkdirSync(spellImageFolder)
+      }
+
+      let spellAttributes = {
+        id: spell.id,
+      }
+
+      let spellObj: any = {
+        $: spellAttributes,
+        name: spell.name,
+        slug: spell.slug,
+        level: spell.level,
+        school: Spell.getCompendiumSchool(spell),
+        ritual: spell.ritual ? 'YES' : 'NO',
+        time: spell.time,
+        range: spell.range,
+        components: spell.components,
+        duration: spell.duration,
+        classes: spell.classes,
+        source: spell.source,
+        image: spell.image,        
+        text: spell.description
+      }
+
+      // Delete undefined fields
+      Object.keys(spellObj).forEach((key) => {
+        if (spellObj[key] === undefined) {
+          delete spellObj[key]
+        }
+      })
+      return spellObj
     })
 
     // Layout root module data structure
@@ -681,10 +725,11 @@ export class Module {
 
     FileSystem.writeFileSync(modulePath, moduleXML)
     
-    let hasCompendiumData = monsters.length > 0 || items.length > 0
+    let hasCompendiumData = monsters.length > 0 || items.length > 0 || spells.length > 0
     let compendiumData = {
       monster: monsters,
-      item: items
+      item: items,
+      spell: spells
     }
 
     if (hasCompendiumData) {
@@ -819,6 +864,17 @@ export class Module {
     if (forModuleExport && !FileSystem.existsSync(monsterModulePath)) {
       FileSystem.mkdirSync(monsterModulePath)
     }
+
+    let itemModulePath = Path.join(moduleBuildPath, 'items')
+    if (forModuleExport && !FileSystem.existsSync(itemModulePath)) {
+      FileSystem.mkdirSync(itemModulePath)
+    }
+
+    let spellModulePath = Path.join(moduleBuildPath, 'spells')
+    if (forModuleExport && !FileSystem.existsSync(spellModulePath)) {
+      FileSystem.mkdirSync(spellModulePath)
+    }
+
     let fileFolderPath = Path.dirname(filePath)
 
     // All code below is for parsing markdown files,
@@ -898,10 +954,21 @@ export class Module {
     markdownRenderer.items.forEach((item) => {
       if (forModuleExport && item.image) {
         let imageAbsolutePath = Path.join(fileFolderPath, item.image)
-        let imageDestinationPath = Path.join(monsterModulePath, item.image)
+        let imageDestinationPath = Path.join(itemModulePath, item.image)
         FileSystem.copyFileSync(imageAbsolutePath, imageDestinationPath)
       }
       this.items.push(item)
+    })
+
+    // Add spells parsed from the markdown page into
+    // the module's spells list.
+    markdownRenderer.spells.forEach((spell) => {
+      if (forModuleExport && spell.image) {
+        let imageAbsolutePath = Path.join(fileFolderPath, spell.image)
+        let imageDestinationPath = Path.join(spellModulePath, spell.image)
+        FileSystem.copyFileSync(imageAbsolutePath, imageDestinationPath)
+      }
+      this.spells.push(spell)
     })
 
     // If we have pagebreaks defined, we'll attempt to split

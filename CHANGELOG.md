@@ -1,5 +1,17 @@
 # Change Log
 
+## [Unreleased]
+
+### Added
+- Added Items and Spells YAML compendium entry support
+
+### Changed
+- Updated VS Code Engine to 1.51
+
+### Fixed
+- Fixed Create Module.yaml button not working
+- Fixed manually-chosen slugs on monsters not being respected
+
 ## 1.0.22
 
 ### Fixed

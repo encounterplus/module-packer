@@ -241,6 +241,26 @@
         "embeddedLanguages": {
           "meta.embedded.block.monster": "yaml"
         }
+      },
+      {
+        "scopeName": "markdown.item.codeblock",
+        "path": "vscode-extension/resources/item-codeblock.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.item": "yaml"
+        }
+      },
+      {
+        "scopeName": "markdown.spell.codeblock",
+        "path": "vscode-extension/resources/spell-codeblock.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.item": "yaml"
+        }
       }
     ]
   },
