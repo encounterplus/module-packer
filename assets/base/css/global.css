@@ -932,6 +932,35 @@ table.sidebar td:first-child {
 .statblock.neutral .statblock-border {
   background: #bda099;
 }
+.statblock.purple {
+  background: #ede5f4;
+}
+.statblock.purple .statblock-title,
+.statblock.purple .statblock-tapered-rule,
+.statblock.purple .statblock-topstat-value,
+.statblock.purple .statblock-abilities,
+.statblock.purple .statblock-ability-abbrev,
+.statblock.purple .statblock-section-title {
+  color: #551092;
+}
+.statblock.purple .statblock-tapered-rule {
+  fill: #551092;
+  stroke: #551092;
+}
+.statblock.purple .statblock-section-title {
+  border-bottom-color: #551092;
+}
+.statblock.purple .statblock-subtitle,
+.statblock.purple .statblock-topstat-name,
+.statblock.purple .statblock-property-name,
+.statblock.purple .statblock-property-name,
+.statblock.purple .statblock-section-title,
+.statblock.purple .statblock-property-value {
+  color: #470d7a;
+}
+.statblock.purple .statblock-border {
+  background: #9b7cba;
+}
 /******** Item Style ********/
 .item-block {
   font-family: '-apple-system', sans-serif;
@@ -982,6 +1011,54 @@ table.sidebar td:first-child {
   font-style: italic;
   margin: 0px;
 }
+.item-block.blue .item-block-top-border {
+  background: #105a92;
+}
+.item-block.blue .item-block-heading-border {
+  background: #105a92;
+}
+.item-block.green .item-block-top-border {
+  background: #099d43;
+}
+.item-block.green .item-block-heading-border {
+  background: #099d43;
+}
+.item-block.red .item-block-top-border {
+  background: #9d0e09;
+}
+.item-block.red .item-block-heading-border {
+  background: #9d0e09;
+}
+.item-block.yellow .item-block-top-border {
+  background: #d7c220;
+}
+.item-block.yellow .item-block-heading-border {
+  background: #d7c220;
+}
+.item-block.orange .item-block-top-border {
+  background: #dd712f;
+}
+.item-block.orange .item-block-heading-border {
+  background: #dd712f;
+}
+.item-block.gray .item-block-top-border {
+  background: #535353;
+}
+.item-block.gray .item-block-heading-border {
+  background: #535353;
+}
+.item-block.neutral .item-block-top-border {
+  background: #631d07;
+}
+.item-block.neutral .item-block-heading-border {
+  background: #631d07;
+}
+.item-block.purple .item-block-top-border {
+  background: #6431ab;
+}
+.item-block.purple .item-block-heading-border {
+  background: #6431ab;
+}
 /******** Spell Style ********/
 .spell-block {
   font-family: '-apple-system', sans-serif;
@@ -1030,6 +1107,54 @@ table.sidebar td:first-child {
   font-size: 13px;
   font-style: italic;
   margin: 0px;
+}
+.spell-block.blue .spell-block-top-border {
+  background: #105a92;
+}
+.spell-block.blue .spell-block-heading-border {
+  background: #105a92;
+}
+.spell-block.green .spell-block-top-border {
+  background: #099d43;
+}
+.spell-block.green .spell-block-heading-border {
+  background: #099d43;
+}
+.spell-block.red .spell-block-top-border {
+  background: #9d0e09;
+}
+.spell-block.red .spell-block-heading-border {
+  background: #9d0e09;
+}
+.spell-block.yellow .spell-block-top-border {
+  background: #d7c220;
+}
+.spell-block.yellow .spell-block-heading-border {
+  background: #d7c220;
+}
+.spell-block.orange .spell-block-top-border {
+  background: #dd712f;
+}
+.spell-block.orange .spell-block-heading-border {
+  background: #dd712f;
+}
+.spell-block.gray .spell-block-top-border {
+  background: #535353;
+}
+.spell-block.gray .spell-block-heading-border {
+  background: #535353;
+}
+.spell-block.neutral .spell-block-top-border {
+  background: #631d07;
+}
+.spell-block.neutral .spell-block-heading-border {
+  background: #631d07;
+}
+.spell-block.purple .spell-block-top-border {
+  background: #6431ab;
+}
+.spell-block.purple .spell-block-heading-border {
+  background: #6431ab;
 }
 /******** Screen-Specific Styles ********/
 @media screen and (max-width: 400px) {

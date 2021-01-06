@@ -330,8 +330,6 @@ export class Item extends ModuleEntity {
    * Gets the HTML representation of the item
    */
   getHTML = (classes: string[] = []): string => {
-    let itemHTML: string = ''
-
     let attributeDescriptions: string[] = []
     if (this.type) {
       attributeDescriptions.push(this.type)
@@ -354,7 +352,10 @@ export class Item extends ModuleEntity {
       return newDescription
     }
 
-    itemHTML += `<div class="item-block">`
+    let allClasses = Array.from(classes)
+    allClasses.splice(0, 0, 'item-block')
+    let classesString = allClasses.join(' ')
+    let itemHTML = `<div class="${classesString}">`
     itemHTML += `<p class="item-block-title">${this.name}</p>`
     itemHTML += `<div class="item-block-top-border"></div>`
     itemHTML += `<div class="item-block-body">`

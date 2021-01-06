@@ -189,8 +189,6 @@ export class Spell extends ModuleEntity {
    * Gets the HTML representation of the spell
    */
   getHTML = (classes: string[] = []): string => {
-    let spellHTML: string = ''
-
     let levelText = 'Unknown'
     switch(this.level) {
       case 0:
@@ -237,7 +235,10 @@ export class Spell extends ModuleEntity {
       return newDescription
     }
 
-    spellHTML += `<div class="spell-block">`
+    let allClasses = Array.from(classes)
+    allClasses.splice(0, 0, 'spell-block')
+    let classesString = allClasses.join(' ')
+    let spellHTML = `<div class="${classesString}">`
     spellHTML += `<p class="spell-block-title">${this.name}</p>`
     spellHTML += `<div class="spell-block-top-border"></div>`
     spellHTML += `<div class="spell-block-body">`

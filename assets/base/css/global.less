@@ -1003,6 +1003,11 @@ table.sidebar {
   @statblock-subtitle-color-neutral: #75240b;
   @statblock-border-top-bottom-neutral: #bda099;
 
+  @statblock-background-purple: #ede5f4;
+  @statblock-title-color-purple: #551092;
+  @statblock-subtitle-color-purple: #470d7a;
+  @statblock-border-top-bottom-purple: #9b7cba;
+
   .statblock.@{color} {
     background: ~"@{statblock-background-@{color}}";
 
@@ -1045,6 +1050,7 @@ table.sidebar {
 .statblockColor(~"yellow");
 .statblockColor(~"gray");
 .statblockColor(~"neutral");
+.statblockColor(~"purple");
 
 /******** Item Style ********/
 
@@ -1109,6 +1115,36 @@ table.sidebar {
   }
 }
 
+.itemBlockColor(@color) {
+  @item-block-accent-color-blue: #105a92;
+  @item-block-accent-color-green: #099d43;
+  @item-block-accent-color-red: #9d0e09;
+  @item-block-accent-color-yellow: #d7c220;
+  @item-block-accent-color-orange: #dd712f;
+  @item-block-accent-color-gray: #535353;
+  @item-block-accent-color-neutral: #631d07;
+  @item-block-accent-color-purple: #6431ab;
+
+  .item-block.@{color} {
+    .item-block-top-border {
+      background: ~"@{item-block-accent-color-@{color}}";
+    }
+
+    .item-block-heading-border {
+      background: ~"@{item-block-accent-color-@{color}}";
+    }
+  }
+}
+
+.itemBlockColor(~"blue");
+.itemBlockColor(~"green");
+.itemBlockColor(~"red");
+.itemBlockColor(~"yellow");
+.itemBlockColor(~"orange");
+.itemBlockColor(~"gray");
+.itemBlockColor(~"neutral");
+.itemBlockColor(~"purple");
+
 /******** Spell Style ********/
 
 .spell-block {
@@ -1170,6 +1206,36 @@ table.sidebar {
     margin: 0px;
   }
 }
+
+.spellBlockColor(@color) {
+  @spell-block-accent-color-blue: #105a92;
+  @spell-block-accent-color-green: #099d43;
+  @spell-block-accent-color-red: #9d0e09;
+  @spell-block-accent-color-yellow: #d7c220;
+  @spell-block-accent-color-orange: #dd712f;
+  @spell-block-accent-color-gray: #535353;
+  @spell-block-accent-color-neutral: #631d07;
+  @spell-block-accent-color-purple: #6431ab;
+
+  .spell-block.@{color} {
+    .spell-block-top-border {
+      background: ~"@{spell-block-accent-color-@{color}}";
+    }
+
+    .spell-block-heading-border {
+      background: ~"@{spell-block-accent-color-@{color}}";
+    }
+  }
+}
+
+.spellBlockColor(~"blue");
+.spellBlockColor(~"green");
+.spellBlockColor(~"red");
+.spellBlockColor(~"yellow");
+.spellBlockColor(~"orange");
+.spellBlockColor(~"gray");
+.spellBlockColor(~"neutral");
+.spellBlockColor(~"purple");
 
 /******** Screen-Specific Styles ********/
 

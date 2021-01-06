@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+- Added support for custom colors and classes on items and spells. Colors supported are green, blue, red, yellow, orange, gray, neutral, and purple
+- Added purple color to monster stat blocks
+
 ### Breaking Changes
 - Changed `property` to `properties` on item descriptions. It is now an array.
 
