@@ -1099,6 +1099,7 @@ table.sidebar {
 
   .item-block-description {
     font-size: 13px;
+    display: inline;
   }
 
   .item-block-heading {
@@ -1171,6 +1172,16 @@ table.sidebar {
 }
 
 /******** Screen-Specific Styles ********/
+
+@media screen and (max-width: 400px) {
+  /* Make the sidebar not float when the screen width is too small */
+  table.sidebar {
+    float: none;
+    margin-left: 0.1in;
+    margin-right: 0.1in;
+    width: calc(100% - 0.2in);
+  }
+}
 
 @media screen {
   .print-only {
@@ -1382,7 +1393,7 @@ table.sidebar {
       color: #aea41a;
       right: 2px;
       text-align: center;
-    }    
+    }
   }
 
   .two-column {
@@ -1391,6 +1402,10 @@ table.sidebar {
       margin-left: 0.1in;
       margin-right: 0.1in;
       width: calc(100% - 0.2in);
+    }
+
+    div.statblock.two-column {
+      display: block;
     }
   }
 

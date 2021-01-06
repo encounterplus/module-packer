@@ -975,6 +975,7 @@ table.sidebar td:first-child {
 }
 .item-block .item-block-description {
   font-size: 13px;
+  display: inline;
 }
 .item-block .item-block-heading {
   font-size: 13px;
@@ -1031,6 +1032,15 @@ table.sidebar td:first-child {
   margin: 0px;
 }
 /******** Screen-Specific Styles ********/
+@media screen and (max-width: 400px) {
+  /* Make the sidebar not float when the screen width is too small */
+  table.sidebar {
+    float: none;
+    margin-left: 0.1in;
+    margin-right: 0.1in;
+    width: calc(100% - 0.2in);
+  }
+}
 @media screen {
   .print-only {
     display: none;
@@ -1222,6 +1232,9 @@ table.sidebar td:first-child {
     margin-left: 0.1in;
     margin-right: 0.1in;
     width: calc(100% - 0.2in);
+  }
+  .two-column div.statblock.two-column {
+    display: block;
   }
   .statblock {
     width: 3.25in;

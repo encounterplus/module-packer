@@ -1,5 +1,13 @@
 # Change Log
 
+## [Unreleased]
+
+### Changed
+- Changed Sidebar tables to avoid floating if there isn't sufficient width (i.e., less than 400 px)
+
+### Fixed
+- Fixed two-column monster statblocks as not spanning across columns when exporting to PDF
+
 ## 1.0.23
 
 ### Added
