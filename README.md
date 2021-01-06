@@ -498,7 +498,7 @@ There are two styles of stat blocks available: a standard single-column stat blo
 
 Like images, monster stat blocks may be used with the standard `.float-left` and `.float-right` style attributes.
 
-Monster stat blocks can be rendered in a variety of colors with the `.blue`, `.green`, `.red`, `.yellow`, `.gray`, and `.neutral` tags.
+Monster stat blocks can be rendered in a variety of colors with the `.blue`, `.green`, `.red`, `.yellow`, `.purple`, `.gray`, and `.neutral` tags.
 
 <p align="left">
   <img src="./documentation/StatblockColors.jpg" alt="Monster Stat Block Colors" width="500">
@@ -522,6 +522,7 @@ primaryDamage: 1d6
 secondaryDamage: 1d8
 properties:
   - Versatile
+  - Finesse
 damageType: Bludgeoning
 description: This legendary quarterstaff has thwacked many a foe.
 value: 1 gp
@@ -530,21 +531,23 @@ source: Example Module
 ~~~
 
 Available item values are:
-`type`: The item type. Supported values are Wealth, Ammunition, Armor, Adventuring gear, Heavy armor, Light armor, Melee weapon, Medium armor, Potion, Ranged weapon, Rod, Ring, Shield, Scroll, Staff, Wondrous item, Wand, and Weapon
-`rarity`: The rarity of the item
-`value`: The item's value
-`weight`: The item's weight
-`heading`: A custom heading for the item (this will replace the auto-generated heading)
-`attunement`: An attunement description for the item 
-`property`: The property of the item. Supported values are Ammunition, Finesse, Heavy, Light, Loading, Range, Reach, Special, Thrown, Two-handed, and Versatile
-`primaryDamage`: The item's primary damage value (e.g., 1H if versatile)
-`secondaryDamage`: The item's secondary damage value (e.g., 2H if versatile)
-`damageType`: The damage type. Supported values are Bludgeoning, Piercing, and Slashing
-`range`: The item's range
-`ac`: The item's AC
-`source`: The item's source (e.g., the name/page of a publication)
-`image`: The filename of an image of the item
-`description`: The item's description
+- `type`: The item type. Supported values are Wealth, Ammunition, Armor, Adventuring gear, Heavy armor, Light armor, Melee weapon, Medium armor, Potion, Ranged weapon, Rod, Ring, Shield, Scroll, Staff, Wondrous item, Wand, and Weapon
+- `rarity`: The rarity of the item
+- `value`: The item's value
+- `weight`: The item's weight
+- `heading`: A custom heading for the item (this will replace the auto-generated heading)
+- `attunement`: An attunement description for the item 
+- `properties`: The properties of the item. Supported values are Ammunition, Finesse, Heavy, Light, Loading, Range, Reach, Special, Thrown, Two-handed, and Versatile
+- `primaryDamage`: The item's primary damage value (e.g., 1H if versatile)
+- `secondaryDamage`: The item's secondary damage value (e.g., 2H if versatile)
+- `damageType`: The damage type. Supported values are Bludgeoning, Piercing, and Slashing
+- `range`: The item's range
+- `ac`: The item's AC
+- `source`: The item's source (e.g., the name/page of a publication)
+- `image`: The filename of an image of the item
+- `description`: The item's description
+
+Item blocks can be rendered in a variety of colors with the `.blue`, `.green`, `.red`, `.yellow`, `.orange`, `.purple`, `.gray`, and `.neutral` tags.
 
 ## Spells
 
@@ -573,17 +576,19 @@ source: Example Module
 ~~~
 
 Available spell values are:
-`level`: A number value of the level, a level of zero is a cantrip
-`school`: The spell's school. Allowed values are Abjuration, Conjuration, Divination, Enchantment, Evocation, Illusion, Necromancy, and Transmutation
-`ritual`: `true` if the spell is a ritual, otherwise `false`
-`time`: The spell's time to cast
-`range`: The spell's range or area
-`components`: The spell's components
-`duration`: The spell's duration
-`classes`: The spell's classes
-`source`: The spell's source 
-`image`: The filename of an image of the spell
-`description`: The spell's description
+- `level`: A number value of the level, a level of zero is a cantrip
+- `school`: The spell's school. Allowed values are Abjuration, Conjuration, Divination, Enchantment, Evocation, Illusion, Necromancy, and Transmutation
+- `ritual`: `true` if the spell is a ritual, otherwise `false`
+- `time`: The spell's time to cast
+- `range`: The spell's range or area
+- `components`: The spell's components
+- `duration`: The spell's duration
+- `classes`: The spell's classes
+- `source`: The spell's source 
+- `image`: The filename of an image of the spell
+- `description`: The spell's description
+
+Spell blocks can be rendered in a variety of colors with the `.blue`, `.green`, `.red`, `.yellow`, `.orange`, `.purple`, `.gray`, and `.neutral` tags.
 
 ## Special Tags for Print/PDF
 
