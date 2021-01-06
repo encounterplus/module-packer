@@ -520,7 +520,8 @@ type: Weapon
 attunement: Requires attunement by a monk
 primaryDamage: 1d6
 secondaryDamage: 1d8
-property: Versatile
+properties:
+  - Versatile
 damageType: Bludgeoning
 description: This legendary quarterstaff has thwacked many a foe.
 value: 1 gp

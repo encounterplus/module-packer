@@ -231,11 +231,19 @@ export class Spell extends ModuleEntity {
         break
     }
 
+    function formatDescription(description: string): string {
+      let newDescription = description
+      newDescription = newDescription.replace(/[\r\n]/g, '<br />')
+      return newDescription
+    }
+
     spellHTML += `<div class="spell-block">`
     spellHTML += `<p class="spell-block-title">${this.name}</p>`
     spellHTML += `<div class="spell-block-top-border"></div>`
     spellHTML += `<div class="spell-block-body">`
-    spellHTML += `<p class="spell-block-description">${this.description}</p>`
+    if(this.description !== undefined) {
+      spellHTML += `<p class="spell-block-description">${formatDescription(this.description)}</p>`
+    }    
     spellHTML += `<div class="spell-block-heading-border"></div>`
     spellHTML += '<p>'
     if (this.level) {

@@ -2,11 +2,16 @@
 
 ## [Unreleased]
 
+### Breaking Changes
+- Changed `property` to `properties` on item descriptions. It is now an array.
+
 ### Changed
 - Changed Sidebar tables to avoid floating if there isn't sufficient width (i.e., less than 400 px)
 
 ### Fixed
 - Fixed two-column monster statblocks as not spanning across columns when exporting to PDF
+- Fixed items not supporting multiple properties
+- Fixed spells and items not supporting line breaks in their descriptions.
 
 ## 1.0.23
 

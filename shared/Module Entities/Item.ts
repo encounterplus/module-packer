@@ -48,10 +48,10 @@ export class Item extends ModuleEntity {
   /** The item's attunement */
   attunement: string | undefined = undefined
 
-  /** The property of the item. Supported values are
+  /** The properties of the item. Supported values are
    * Ammunition, Finesse, Heavy, Light, Loading, Range, Reach,
    * Special, Thrown, Two-handed, and Versatile */
-  property: string | undefined = undefined
+  properties: string[] | undefined = undefined
 
   /** The item's primary damage value (e.g., 1H if versatile) */
   primaryDamage: string | undefined = undefined
@@ -149,9 +149,9 @@ export class Item extends ModuleEntity {
       item.attunement = attunement
     }
 
-    const property = itemData['property'] as string
-    if (property) {
-      item.property = property
+    const properties = itemData['properties'] as string[]
+    if (properties) {
+      item.properties = properties
     }
 
     const primaryDamage = itemData['primaryDamage'] as string
@@ -255,38 +255,54 @@ export class Item extends ModuleEntity {
    * @param item The item
    */
   static getCompendiumProperty(item: Item): string | undefined {
-    if (item.property === undefined) {
+    if (item.properties === undefined) {
       return undefined
     }
 
-    switch (item.property.toLowerCase()) {
-      case 'ammunition':
-        return 'A'
-      case 'finesse':
-        return 'F'
-      case 'heavy':
-        return 'H'
-      case 'light':
-        return 'L'
-      case 'loading':
-        return 'LD'
-      case 'range':
-        return 'RN'
-      case 'reach':
-        return 'R'
-      case 'special':
-        return 'S'
-      case 'thrown':
-        return 'T'
-      case 'two-handed':
-        return '2H'
-      case 'versatile':
-        return 'V'
-      default:
-        throw Error(
-          `Invalid item property "${item.property}". Supported values are: Ammunition, Finesse, Heavy, Light, Loading, Range, Reach, Special, Thrown, Two-handed, and Versatile`
-        )
-    }
+    let propertyValues: string[] = []
+    item.properties.forEach((property) => {
+      switch (property.toLowerCase()) {
+        case 'ammunition':
+          propertyValues.push('A')
+          break
+        case 'finesse':
+          propertyValues.push('F')
+          break
+        case 'heavy':
+          propertyValues.push('H')
+          break
+        case 'light':
+          propertyValues.push('L')
+          break
+        case 'loading':
+          propertyValues.push('LD')
+          break
+        case 'range':
+          propertyValues.push('RN')
+          break
+        case 'reach':
+          propertyValues.push('R')
+          break
+        case 'special':
+          propertyValues.push('S')
+          break
+        case 'thrown':
+          propertyValues.push('T')
+          break
+        case 'two-handed':
+          propertyValues.push('2H')
+          break
+        case 'versatile':
+          propertyValues.push('V')
+          break
+        default:
+          throw Error(
+            `Invalid item property "${property}". Supported values are: Ammunition, Finesse, Heavy, Light, Loading, Range, Reach, Special, Thrown, Two-handed, and Versatile`
+          )
+      }
+    })
+
+    return propertyValues.join(',')
   }
 
   /**
@@ -323,13 +339,19 @@ export class Item extends ModuleEntity {
     if (this.rarity) {
       attributeDescriptions.push(this.rarity)
     }
-    if (this.property) {
-      attributeDescriptions.push(this.property)
+    if (this.properties) {
+      attributeDescriptions.push(this.properties.join(', '))
     }
 
     let headingText = attributeDescriptions.join(', ')
     if (this.attunement) {
       headingText += ` (${this.attunement})`
+    }
+
+    function formatDescription(description: string): string {
+      let newDescription = description
+      newDescription = newDescription.replace(/[\r\n]/g, '<br />')
+      return newDescription
     }
 
     itemHTML += `<div class="item-block">`
@@ -338,7 +360,9 @@ export class Item extends ModuleEntity {
     itemHTML += `<div class="item-block-body">`
     itemHTML += `<p class="item-block-heading">${headingText}</p>`
     itemHTML += `<div class="item-block-heading-border"></div>`
-    itemHTML += `<p class="item-block-description">${this.description}</p>`
+    if(this.description !== undefined) {
+      itemHTML += `<p class="item-block-description">${formatDescription(this.description)}</p>`
+    }    
     itemHTML += '<p>'
     if (this.primaryDamage) {
       itemHTML += `<strong>Damage: </strong>${this.primaryDamage}`
