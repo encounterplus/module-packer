@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Added
+- Added Large Quote blockquote style.
+
 ### Changed
 - Made YAML parse errors more descriptive to help identify location of issues
 

@@ -222,6 +222,29 @@ blockquote.read:before {
 blockquote.read:after {
   right: -3px;
 }
+/******** Large Quote Block Quote ********/
+blockquote.large-quote {
+  font-size: 20px;
+  font-style: italic;
+  text-align: center;
+  margin: 10px 40px;
+  padding: 20px 0px;
+  line-height: 1.45;
+  position: relative;
+  color: #58180d;
+  border-top: none;
+  border-bottom: none;
+  background-color: transparent;
+  box-shadow: none;
+  border-top: 2px solid #58180d;
+  border-bottom: 2px solid #58180d;
+}
+blockquote.large-quote:before {
+  background-image: none;
+}
+blockquote.large-quote:after {
+  background-image: none;
+}
 /******** Paper Block Quote ********/
 .blockquote-paper-wrap {
   padding-top: 15px;
