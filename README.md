@@ -379,7 +379,7 @@ The Module Packer and Visual Studio Code extension support the standard Markdown
 | 00       | Driftglobe                |
 ```
 
-In addition, table colors can be customized with by adding the `{.green}`, `{.red}`, `{.blue}`, `{.yellow}`, `{.gray}`, and `{.neutral}`. Additionally, the `{.headerTitle}` style can be added to change the header text appearance.
+In addition, table colors can be customized with by adding the `{.green}`, `{.red}`, `{.blue}`, `{.yellow}`, `{.purple}`, `{.gray}`, and `{.neutral}`. Additionally, the `{.headerTitle}` style can be added to change the header text appearance.
 
 ```Markdown
 |   d100   | Magic Item                |

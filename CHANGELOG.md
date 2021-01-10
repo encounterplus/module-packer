@@ -1,10 +1,11 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.25
 
 ### Added
 - Added Large Quote blockquote style.
 - Added `print-cover-only` option to pages to make pages only contain cover contents.
+- Added `.purple` table style
 
 ### Changed
 - Made YAML parse errors more descriptive to help identify location of issues

@@ -519,6 +519,9 @@ table.yellow tbody tr:nth-child(odd) {
 table.gray tbody tr:nth-child(odd) {
   background: #d4d4d4;
 }
+table.purple tbody tr:nth-child(odd) {
+  background: #cec3e4;
+}
 table.neutral {
   background: #edebe8;
 }

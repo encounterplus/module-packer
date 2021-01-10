@@ -11,6 +11,7 @@
 @foreground-color: #000000;
 @green-background-secondary: #e0e4c3;
 @blue-background-secondary: #c3d3e4;
+@purple-background-secondary: #cec3e4;
 @red-background-secondary: #e4c3c3;
 @yellow-background-secondary: #e4e1c3;
 @gray-background-secondary: #d4d4d4;
@@ -666,6 +667,14 @@ table {
     tbody {
       tr:nth-child(odd) {
         background: @gray-background-secondary;
+      }
+    }
+  }
+
+  &.purple {
+    tbody {
+      tr:nth-child(odd) {
+        background: @purple-background-secondary;
       }
     }
   }
