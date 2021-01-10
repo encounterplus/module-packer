@@ -1,12 +1,24 @@
 import argparse
+import contextlib
 import os
+import shutil
 import sys
 
 def run(command):
     exitCode = os.system(command)
     if(exitCode != 0):
         exit(exitCode)
-    
+
+def removeIfExists(path):
+    if os.path.exists(path):
+        os.remove(path)
+
+def removeDirIfExists(path):
+    if os.path.exists(path):
+        shutil.rmtree(path)
+
+def copy(source, destination):
+    shutil.copy(source, destination)
 
 # Parse the arguments
 parser = argparse.ArgumentParser()
@@ -15,63 +27,63 @@ args = parser.parse_args()
 target = args.target
 
 if target == 'build-extension':
-    run('rm -f ./package.json')
-    run('rm -f ./package-lock.json')
-    run('rm -rf ./extension-out')
-    run('cp ./vscode-extension/package.extension.json ./package.json')
+    removeIfExists('./package.json')
+    removeIfExists('./package-lock.json')
+    removeDirIfExists('./extension-out')
+    copy('./vscode-extension/package.extension.json', './package.json')
     run('npm install')
     run('npm run compile-css')
     run('npm run compile-extension')
 elif target == 'package-extension':
-    run('rm -f ./package.json')
-    run('rm -f ./package-lock.json')
-    run('rm -rf ./node_modules')
-    run('rm -rf ./dist')
-    run('rm -rf ./app-out')
-    run('rm -rf ./extension-out')
-    run('cp ./vscode-extension/package.extension.json ./package.json')
+    removeIfExists('./package.json')
+    removeIfExists('./package-lock.json')
+    removeDirIfExists('./node_modules')
+    removeDirIfExists('./dist')
+    removeDirIfExists('./app-out')
+    removeDirIfExists('./extension-out')
+    copy('./vscode-extension/package.extension.json', './package.json')
     run('npm install')
     run('npm audit fix')
     run('npm run compile-css')
     run('npm run compile-extension')
     run('vsce package')
 elif target == 'build-app':
-    run('rm -f ./package.json')
-    run('rm -f ./package-lock.json')
-    run('rm -rf ./app-out')
-    run('cp ./app/package.app.json ./package.json')
+    removeIfExists('./package.json')
+    removeIfExists('./package-lock.json')
+    removeDirIfExists('./app-out')
+    copy('./app/package.app.json', './package.json')
     run('npm install')
     run('npm run compile-css')
     run('npm run compile-app')
 elif target == 'start-app':
-    run('rm -f ./package.json')
-    run('rm -f ./package-lock.json')
-    run('cp ./app/package.app.json ./package.json')
+    removeIfExists('./package.json')
+    removeIfExists('./package-lock.json')
+    copy('./app/package.app.json', './package.json')
     run('npm install')
     run('npm run compile-css')
     run('npm run compile-app')
     run('npm run start')
 elif target == 'package-app':
-    run('rm -f ./package.json')
-    run('rm -f ./package-lock.json')
-    run('rm -rf ./node_modules')
-    run('rm -rf ./dist')
-    run('rm -rf ./app-out')
-    run('rm -rf ./extension-out')
-    run('cp ./app/package.app.json ./package.json')
+    removeIfExists('./package.json')
+    removeIfExists('./package-lock.json')
+    removeDirIfExists('./node_modules')
+    removeDirIfExists('./dist')
+    removeDirIfExists('./app-out')
+    removeDirIfExists('./extension-out')
+    copy('./app/package.app.json', './package.json')
     run('npm install')
     run('npm audit fix')
     run('npm run compile-css')
     run('npm run compile-app')
     run('npm run build-all')
 elif target == 'clean':
-    run('rm -f ./package.json')
-    run('rm -f ./package-lock.json')
-    run('rm -rf ./node_modules')
-    run('rm -rf ./dist')
-    run('rm -rf ./app-out')
-    run('rm -rf ./extension-out')
-    run('rm -rf *.vsix')
+    removeIfExists('./package.json')
+    removeIfExists('./package-lock.json')
+    removeDirIfExists('./node_modules')
+    removeDirIfExists('./dist')
+    removeDirIfExists('./app-out')
+    removeDirIfExists('./extension-out')
+    removeDirIfExists('*.vsix')
 else:
     print('Error - unrecognized launch target specified: \"{}\"'.format(target))
     exit(1)
