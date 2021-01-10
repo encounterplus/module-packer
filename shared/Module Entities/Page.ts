@@ -28,4 +28,7 @@ export class Page extends ModuleEntity {
 
   /** The path of the page file */
   pagePath: string = ''
+
+  /** Whether the page is for print cover only */
+  printCoverOnly: boolean = false
 }

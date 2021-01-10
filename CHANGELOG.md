@@ -4,6 +4,7 @@
 
 ### Added
 - Added Large Quote blockquote style.
+- Added `print-cover-only` option to pages to make pages only contain cover contents.
 
 ### Changed
 - Made YAML parse errors more descriptive to help identify location of issues

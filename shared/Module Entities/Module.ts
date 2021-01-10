@@ -917,7 +917,8 @@ export class Module {
     let slug = frontMatter['slug'] as string
     let printMultiColumn = (frontMatter['pdf-page-style'] as string) !== 'single-column'
     let pagebreaks = forPrint ? (frontMatter['pdf-pagebreaks'] as string) : (frontMatter['module-pagebreaks'] as string)
-    
+    let printCoverOnly = (frontMatter['print-cover-only'] as boolean) === true
+
     // "parent-page" is the legacy way of defining the parent for a page
     let parentSlug = frontMatter['parent-page'] as string
     if (frontMatter['parent']) {
@@ -1029,6 +1030,7 @@ export class Module {
 
         page.includeIn = ModuleEntity.getIncludeModeFromString(includeIn)
         page.content += $.html(element)
+        page.printCoverOnly = printCoverOnly
         page.sort = order
 
         // If there is a cover image, apply to top current page
@@ -1110,8 +1112,8 @@ export class Module {
         Logger.info(`Slug for page "${page.name}": ${page.slug}`)
       }
 
-      
       page.includeIn = ModuleEntity.getIncludeModeFromString(includeIn)
+      page.printCoverOnly = printCoverOnly
       page.sort = order
       page.parentSlug = parentSlug
 
@@ -1162,7 +1164,14 @@ export class Module {
       prependContent += `</div>` // footer-page-number
       prependContent += `</div>` // print-page
       prependContent += `</div>` // print-section-cover-page
-      page.content = prependContent + page.content
+
+      // If the markdown is designed to show only the print cover, 
+      // then the content of the page can be removed
+      if(page.printCoverOnly) {
+        page.content = prependContent
+      } else {
+        page.content = prependContent + page.content        
+      }
     }
   }
 
