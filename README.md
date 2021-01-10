@@ -351,6 +351,15 @@ A flowchart text block style can be shown by adding custom class `flowchart` and
   <img src="./documentation/Flowchart.jpg" alt="Flowchart" width="400">
 </p>
 
+A large quote text block style can be shown by adding custom class `large-quote` to standard block quotes:
+
+```Markdown
+> "This is my large quote." {.large-quote}
+```
+<p align="left">
+  <img src="./documentation/LargeQuote.jpg" alt="Large quote" width="400">
+</p>
+
 ## Links
 
 Normally, in markdown, links would be used to link to other webpages. However, in EncounterPlus, you can add links to any monster, player, item and spell in the compendium or to other pages or maps. Always link to the item's slug. Slugs are absolute and do not need paths or groups specified when linking. Monster links should be prefaced with `/monster/`. Item links should be prefaced with `/item/`. Spell links should be prefaced with `/spell/`. 
