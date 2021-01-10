@@ -225,7 +225,7 @@ export class MarkdownRenderer {
         monsterHTML = monster.getHTML(MarkdownRenderer.getTokenClasses(token))
       } catch (error) {
         if (this.module !== undefined && this.module.exportMode === ModuleMode.ModuleExport) {
-          throw Error(`Error parsing monster: ${error.message}`)
+          throw Error(`Error parsing monster: ${error.message}. The following content likely contains invalid YAML:\n${token.content}`)
         }
         monsterHTML = '<div class="statblock">'
         monsterHTML += '<hr class="statblock-border" />'
@@ -247,7 +247,7 @@ export class MarkdownRenderer {
         itemHTML = item.getHTML(MarkdownRenderer.getTokenClasses(token))
       } catch (error) {
         if (this.module !== undefined && this.module.exportMode === ModuleMode.ModuleExport) {
-          throw Error(`Error parsing item: ${error.message}`)
+          throw Error(`Error parsing item: ${error.message}. The following content likely contains invalid YAML:\n${token.content}`)
         }
         return itemHTML
       }
@@ -263,7 +263,7 @@ export class MarkdownRenderer {
         itemHTML = spell.getHTML(MarkdownRenderer.getTokenClasses(token))
       } catch (error) {
         if (this.module !== undefined && this.module.exportMode === ModuleMode.ModuleExport) {
-          throw Error(`Error parsing item: ${error.message}`)
+          throw Error(`Error parsing spell: ${error.message}. The following content likely contains invalid YAML:\n${token.content}`)
         }
         return itemHTML
       }

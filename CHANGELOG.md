@@ -1,5 +1,10 @@
 # Change Log
 
+## [Unreleased]
+
+### Changed
+- Made YAML parse errors more descriptive to help identify location of issues
+
 ## 1.0.24
 
 ### Added
