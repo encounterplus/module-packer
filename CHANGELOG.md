@@ -5,6 +5,9 @@
 ### Changed
 - Made YAML parse errors more descriptive to help identify location of issues
 
+### Fixed
+- Fixed an issue where the Module projects could not be scanned on Windows
+
 ## 1.0.24
 
 ### Added

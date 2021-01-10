@@ -268,8 +268,8 @@
     "lint": "eslint . --ext .ts,.tsx",
     "vscode:prepublish": "npm run compile-extension",
     "compile-css": "lessc ./assets/base/css/global.less ./assets/base/css/global.css",
-    "compile-extension": "tsc -p tsconfig.extension.json && ncp ./vscode-extension/resources ./extension-out/resources && ncp ./assets ./extension-out",
-    "watch-extension": "tsc --watch -p tsconfig.extension.json && ncp ./vscode-extension/resources ./extension-out/resources && ncp ./assets ./extension-out"
+    "compile-extension": "tsc -p tsconfig.extension.json && ncp ./vscode-extension/resources ./extension-out/resources && ncp ./assets ./extension-out/assets",
+    "watch-extension": "tsc --watch -p tsconfig.extension.json && ncp ./vscode-extension/resources ./extension-out/resources && ncp ./assets ./extension-out/assets"
   },
   "devDependencies": {
     "@types/node": "^12.12.58",

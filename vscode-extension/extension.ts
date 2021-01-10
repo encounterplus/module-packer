@@ -128,7 +128,7 @@ export class VSCodeUtilities {
     if (vscode.workspace.workspaceFolders === undefined) {
       return undefined
     }
-    return vscode.workspace.workspaceFolders[0].uri.path
+    return vscode.workspace.workspaceFolders[0].uri.fsPath
   }
 }
 
