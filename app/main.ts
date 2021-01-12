@@ -61,11 +61,13 @@ function createWindow(isHidden: boolean) {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
-  let isDebug = process.argv[1].includes('--debug-brk') || 
+  let isDebug = process.argv &&
+    process.argv.length > 1 &&
+    (process.argv[1].includes('--debug-brk') || 
     process.argv[1].includes('--inspect-brk') || 
-    process.argv[1].includes('--remote-debugging-port')
+    process.argv[1].includes('--remote-debugging-port'))
   let isCommandLineInterface = process.argv && process.argv.length > 1 && !isDebug
-  
+
   createWindow(isCommandLineInterface)
 
   let isCommandLinePDFBuild = isCommandLineInterface && 

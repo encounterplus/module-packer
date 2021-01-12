@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.0.26
+
+### Fixed
+- Fixed standalone apps not showing their UI
+
 ## 1.0.25
 
 ### Added
