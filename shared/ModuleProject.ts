@@ -196,13 +196,13 @@ export class ModuleProject {
     }
 
     // If autoIncrementVersion is specified in Module project file, use that
-    let autoIncrementVersion = moduleData['autoIncrementVersion'] as boolean
+    let autoIncrementVersion = (moduleData['autoIncrementVersion'] as boolean || moduleData['auto-increment-version'] as boolean)
     if (autoIncrementVersion) {
       moduleProject.autoIncrementVersion = autoIncrementVersion
     }
 
     // If compressImages is specified in Module project file, use that
-    let compressImages = moduleData['compressImages'] as boolean
+    let compressImages = (moduleData['compressImages'] as boolean || moduleData['compress-images'] as boolean)
     if (compressImages) {
       moduleProject.compressImages = compressImages
     }
@@ -221,7 +221,7 @@ export class ModuleProject {
 
     // If cover image is specified in Module project file, use that.
     // Ensure cover image actually exists
-    let printCoverPath = moduleData['printCover'] as string
+    let printCoverPath = (moduleData['printCover'] as string || moduleData['print-cover'])
     if (printCoverPath) {
       let moduleDirectory = Path.dirname(projectFilePath)
       let fullImagePath = Path.join(moduleDirectory, printCoverPath)
@@ -344,13 +344,13 @@ export class ModuleProject {
       newModuleProject['cover'] = this.moduleCoverPath
     }
     if (this.printCoverPath) {
-      newModuleProject['printCover'] = this.printCoverPath
+      newModuleProject['print-cover'] = this.printCoverPath
     }
     if (this.compressImages !== undefined) {
-      newModuleProject['compressImages'] = this.compressImages
+      newModuleProject['compress-images'] = this.compressImages
     }
     newModuleProject['version'] = this.version    
-    newModuleProject['autoIncrementVersion'] = true
+    newModuleProject['auto-increment-version'] = true
     
     if (this.mapFiles.length > 0)
     {

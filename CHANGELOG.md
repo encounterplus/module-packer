@@ -1,5 +1,16 @@
 # Change Log
 
+[Unreleased]
+
+## Added
+- `compendium` option now allowed for `include-in` page property. This will allow pages to be used for compendium entries in E+, but will not show up as pages in PDF or E+ output.
+
+## Changed
+- Changed property naming to be more consistent in style:
+  - `autoIncrementVersion` module.yaml property may now be `auto-increment-version`
+  - `compressImages` module.yaml property may now be `compress-images`
+  - `printCover` module.yaml property may now be `print-cover`
+
 ## 1.0.26
 
 ### Fixed

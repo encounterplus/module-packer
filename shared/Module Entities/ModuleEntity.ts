@@ -76,6 +76,8 @@ export abstract class ModuleEntity {
         return IncludeMode.Print
       case 'module':
         return IncludeMode.Module
+      case 'compendium':
+        return IncludeMode.Compendium
       default:
         return IncludeMode.All
     }
@@ -92,4 +94,9 @@ export enum IncludeMode {
 
   /** Only Encounter+ module targets include the entity */
   Module,
+
+  /** Only Encounter+ module targets include the entity, 
+   * and only for the purposes of adding compendium entries. 
+   * No pages are created */
+  Compendium,
 }
