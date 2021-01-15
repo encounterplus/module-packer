@@ -92,9 +92,9 @@ category: adventure
 author: Dungeony MasterFace
 code: ABC-123
 cover: cover.jpg
+print-cover: cover.jpg
 version: 4
-autoIncrementVersion: true
-compressImages: false
+auto-increment-version: true
 maps:
   - path: Maps/my-first-map.zip
     order: 2
@@ -109,19 +109,19 @@ encounters:
 
 **Values:**
 All `Module.yaml` values are optional - and default values will be used for anything not specified.
-- `id`: If specified, will cause a module to be overwritten rather than duplicated when repeatedly imported. *Never* copy another module's UUID, or you will cause that module to be overwritten.
-- `name`: The name of the module.
-- `slug`: The slug for the module. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
-- `description`: The description of the module.
-- `category`: The category of the module. May be `adventure` or `other`.
 - `author`: The author of the module.
+- `auto-increment-version`: May be `true` or `false`. If `true`, it will cause the version number to automatically increment each time the module is packed. This is useful for keeping track 
+- `category`: The category of the module. May be `adventure` or `other`.
 - `code`: A reference code for the module.
 - `cover`: The file name of the cover image for the module (placed in the same directory).
-- `version`: The version of the module. Must be an integer.
-- `compressImages`: If true, the images will be automatically compressed to make the module smaller in file size.
-- `autoIncrementVersion`: May be `true` or `false`. If `true`, it will cause the version number to automatically increment each time the module is packed. This is useful for keeping track 
-- `maps`: The maps to include with the module. See more in the [Including Maps & Encounters Tutorial](MapsAndEncounters.md).
+- `description`: The description of the module.
 - `encounters`: The encounters to include with the module. See more in the [Including Maps & Encounters Tutorial](MapsAndEncounters.md).
+- `id`: If specified, will cause a module to be overwritten rather than duplicated when repeatedly imported. *Never* copy another module's UUID, or you will cause that module to be overwritten.
+- `maps`: The maps to include with the module. See more in the [Including Maps & Encounters Tutorial](MapsAndEncounters.md).
+- `name`: The name of the module.
+- `print-cover`: The cover to use as the cover image in PDF output (this will be, effectively, a page 0).
+- `slug`: The slug for the module. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
+- `version`: The version of the module. Must be an integer.
 
 ## Groups and Folders
 
@@ -137,9 +137,8 @@ order: 5
 
 All `Group.yaml` values are optional - and default values will be used for anything not specified. 
 - `name`: The name of the group.
-- `slug`: The slug for the group. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
 - `order`: An order for the group. Lower numbers will be placed before higher numbers. If two groups share the same order value, their effective order may differ upon each import. Pages and groups placed at the same place in the tree will respect each other's group values.
-
+- `slug`: The slug for the group. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
 
 ## Markdown File Front-Matter
 
@@ -154,20 +153,25 @@ module-pagebreaks: h1, h2, h3
 pdf-pagebreaks: h1
 footer: My Custom Footer Text
 hide-footer: false
+include-in: all
+cover: pageCover.jpg
+print-cover-only: false
 ---
 ```
 
 **Values:**
 All front-matter values are optional - and default values will be used for anything not specified.
-- `name`: The name of the page.
-- `slug`: The slug for the module. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
-- `order`: An order for the page. Lower numbers will be placed before higher numbers. If two pages share the same order value, their effective order may differ upon each import. Pages and groups placed at the same place in the tree will respect each other's group values.
-- `module-pagebreak`: Element tags that, when specified, will automatically result in the markdown being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to an EncounterPlus module.
-- `pdf-pagebreak`: Element tags that, when specified, will automatically result in the markdown output being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to a PDF.
-- `footer`: If specified, allows custom footer text to be entered. Otherwise the footer text follows the format of `Page Name | Parent Name`.
 - `cover`: The name of a cover image for this page/section when printing.. This cover image will appear on the page before and take up the entire page document.
+- `footer`: If specified, allows custom footer text to be entered. Otherwise the footer text follows the format of `Page Name | Parent Name`.
 - `hide-footer`: If true, will hide the footer entirely.
 - `hide-footer-text`: If true, will hide the footer text, but keep the footer background image. This is superseded by `hide-footer` if it is true.
+- `include-in`: Defines whether the page will be included in module output or PDF output. Valid values are `all` (default), `print`, and `module`, and `compendium`. If `compendium` is chosen, the page will be processed for compendium entries, but will not be shown in either print or the module.
+- `module-pagebreak`: Element tags that, when specified, will automatically result in the markdown being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to an EncounterPlus module.
+- `name`: The name of the page.
+- `order`: An order for the page. Lower numbers will be placed before higher numbers. If two pages share the same order value, their effective order may differ upon each import. Pages and groups placed at the same place in the tree will respect each other's group values.
+- `pdf-pagebreak`: Element tags that, when specified, will automatically result in the markdown output being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to a PDF.
+- `print-cover-only`: If true, and printing to PDF, this will cause the page content not to be output. This is useful for having multiple, consecutive pages that are full-images (like maps). Generally used in combination with `include-in: print`. This value is not used when exporting to a module.
+- `slug`: The slug for the module. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
 
 # Markdown Guide
 

@@ -3,7 +3,7 @@
   "displayName": "EncounterPlus Markdown",
   "description": "Renders markdown as it would appear in EncounterPlus",
   "icon": "Logo.png",
-  "version": "1.0.26",
+  "version": "1.0.27",
   "publisher": "jacobjohnston",
   "repository": {
     "type": "git",
@@ -23,7 +23,7 @@
   "activationEvents": [
     "*"
   ],
-  "main": "./extension-out/vscode-extension/extension.js",
+  "main": "./extension-out/vscode-extension/extension-packed.js",
   "contributes": {
     "viewsContainers": {
       "activitybar": [
@@ -266,9 +266,11 @@
   },
   "scripts": {
     "lint": "eslint . --ext .ts,.tsx",
-    "vscode:prepublish": "npm run compile-extension",
+    "vscode:prepublish": "webpack --mode production",
+    "webpack": "webpack --mode development && ncp ./vscode-extension/resources ./extension-out/resources && ncp ./assets ./extension-out/assets",
+    "webpack-dev": "webpack --mode development --watch",
     "compile-css": "lessc ./assets/base/css/global.less ./assets/base/css/global.css",
-    "compile-extension": "tsc -p tsconfig.extension.json && ncp ./vscode-extension/resources ./extension-out/resources && ncp ./assets ./extension-out/assets",
+    "compile-extension": "webpack --mode development && ncp ./vscode-extension/resources ./extension-out/resources && ncp ./assets ./extension-out/assets",
     "watch-extension": "tsc --watch -p tsconfig.extension.json && ncp ./vscode-extension/resources ./extension-out/resources && ncp ./assets ./extension-out/assets"
   },
   "devDependencies": {
@@ -279,14 +281,15 @@
     "eslint": "^7.6.0",
     "less": "^3.12.2",
     "ncp": "^2.0.0",
-    "typescript": "^4.1.2"
+    "ts-loader": "^8.0.14",
+    "typescript": "^4.1.2",
+    "webpack": "^5.14.0",
+    "webpack-cli": "^4.3.1"
   },
   "dependencies": {
     "@types/archiver": "^3.1.0",
     "@types/cheerio": "0.22.22",
     "@types/fs-extra": "^9.0.1",
-    "@types/imagemin": "^7.0.0",
-    "@types/imagemin-mozjpeg": "^8.0.0",
     "@types/markdown-it": "^10.0.1",
     "@types/puppeteer-core": "^2.0.0",
     "@types/unzipper": "^0.10.3",
@@ -297,9 +300,6 @@
     "cheerio": "1.0.0-rc.3",
     "fs-extra": "^9.0.1",
     "gray-matter": "^4.0.2",
-    "imagemin": "^7.0.1",
-    "imagemin-mozjpeg": "^9.0.0",
-    "imagemin-pngquant": "^9.0.1",
     "markdown-it": "^11.0.0",
     "markdown-it-anchor": "^5.3.0",
     "markdown-it-attrs": "^3.0.3",

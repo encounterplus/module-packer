@@ -65,7 +65,7 @@ export abstract class CommandBase {
     } catch (error) {
       let errorMessage = (error as Error).message
       vscode.window.showErrorMessage(errorMessage)
-      Logger.error(errorMessage)
+      Logger.error(`${errorMessage}\nStack: \n${(error as Error).stack}`)
       statusBarMessage?.dispose()
       CommandBase.isRunningCommand = false
     }

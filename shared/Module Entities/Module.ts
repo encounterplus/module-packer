@@ -2,9 +2,6 @@ import * as Archiver from 'archiver'
 import * as Cheerio from 'cheerio'
 import * as FileSystem from 'fs-extra'
 import * as GrayMatter from 'gray-matter'
-import * as ImageMin from 'imagemin'
-import * as ImageMinPngQuant from 'imagemin-pngquant'
-import * as ImageMinMozJpeg from 'imagemin-mozjpeg'
 import * as Path from 'path'
 import * as Logger from 'winston'
 import Slugify from 'slugify'
@@ -216,13 +213,13 @@ export class Module {
       FileSystem.removeSync(assetsOutputPath)
     }
     if (!scanOnly) {
-      let baseAssets = Path.join(__dirname, '../../assets/base')
+      let baseAssets = Path.join(__dirname, '../assets/base')
       FileSystem.copySync(baseAssets, assetsOutputPath)
     }
 
     // Copy print assets if doing the module for print.
     if (!scanOnly && forPrint) {
-      let printAssets = Path.join(__dirname, '../../assets/print')
+      let printAssets = Path.join(__dirname, '../assets/print')
       FileSystem.copySync(printAssets, assetsOutputPath)
     }
 
@@ -440,37 +437,41 @@ export class Module {
    * @param moduleBuildPath The module build directory
    */
   private async compressImages(moduleBuildPath: string) {
-    let allImages = this.getAllDirectoryImages(moduleBuildPath)
-    let compressPromises: Promise<void>[] = []
-    let startSizeDictionary: { [filePath: string]: number } = {}
+    
+    // This functionality was commented out until I can port
+    // the electron apps to using webpack.
 
-    allImages.forEach(async (filePath) => {
-      let folder = Path.dirname(filePath)
-      startSizeDictionary[filePath] = FileSystem.statSync(filePath).size
+    // let allImages = this.getAllDirectoryImages(moduleBuildPath)
+    // let compressPromises: Promise<void>[] = []
+    // let startSizeDictionary: { [filePath: string]: number } = {}
 
-      let compressPromise = ImageMin([filePath], {
-        destination: folder,
-        glob: false,
-        plugins: [ImageMinMozJpeg({ quality: 70.0 }), ImageMinPngQuant.default({ quality: [0.6, 0.8] })],
-      }).then((compressResults) => {
-        compressResults.forEach(compressResult => {
-          let startSize = startSizeDictionary[compressResult.destinationPath]
-          if (!startSize) {
-            return
-          }
-          let finalSize = FileSystem.statSync(compressResult.destinationPath).size
-          if (!finalSize) {
-            return
-          }
-  
-          let fileName = Path.basename(compressResult.destinationPath)
-          Logger.info(`Compressed Image "${fileName}". Uncompressed size: ${startSize}. Compressed size: ${finalSize}.`)
-        })
-      })
-      compressPromises.push(compressPromise)
-    })   
+    
+    // allImages.forEach(async (filePath) => {
+    //   startSizeDictionary[filePath] = FileSystem.statSync(filePath).size
+    //   let compressPromise = CompressImage({
+    //     source: filePath,
+    //     destination: filePath,
+    //     enginesSetup: {
+    //         jpg: { engine: 'mozjpeg', command: ['-quality', '80']},
+    //         png: { engine: 'pngquant', command: ['--quality=60-80', '-o']},
+    //     }
+    //   }).then(() => {
+    //     let startSize = startSizeDictionary[filePath]
+    //     if (!startSize) {
+    //       return
+    //     }
+    //     let finalSize = FileSystem.statSync(filePath).size
+    //     if (!finalSize) {
+    //       return
+    //     }
 
-    await Promise.all(compressPromises)
+    //     let fileName = Path.basename(filePath)
+    //     Logger.info(`Compressed Image "${fileName}". Uncompressed size: ${startSize}. Compressed size: ${finalSize}.`)
+    //   })
+    //   compressPromises.push(compressPromise)
+    // })   
+
+    // await Promise.all(compressPromises)
   }
 
   /**

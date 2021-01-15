@@ -1,11 +1,15 @@
 # Change Log
 
-[Unreleased]
+## [Unreleased]
 
-## Added
+### Breaking Changes
+- Removed `compress-images` functionality temporarily (hopefully)
+
+### Added
 - `compendium` option now allowed for `include-in` page property. This will allow pages to be used for compendium entries in E+, but will not show up as pages in PDF or E+ output.
 
-## Changed
+### Changed
+- Webpacked VS Code extension to improve load time and performance
 - Changed property naming to be more consistent in style:
   - `autoIncrementVersion` module.yaml property may now be `auto-increment-version`
   - `compressImages` module.yaml property may now be `compress-images`
