@@ -266,12 +266,12 @@
   },
   "scripts": {
     "lint": "eslint . --ext .ts,.tsx",
-    "vscode:prepublish": "webpack --mode production",
-    "webpack": "webpack --mode development && ncp ./vscode-extension/resources ./extension-out/resources && ncp ./assets ./extension-out/assets",
-    "webpack-dev": "webpack --mode development --watch",
+    "vscode:prepublish": "webpack --config webpack.extension.config.js --mode production",
+    "webpack": "webpack --config webpack.extension.config.js --mode development && ncp ./vscode-extension/resources ./extension-out/resources && ncp ./assets ./extension-out/assets",
+    "webpack-dev": "webpack ---config webpack.extension.config.js -mode development --watch",
     "compile-css": "lessc ./assets/base/css/global.less ./assets/base/css/global.css",
-    "compile-extension": "webpack --mode development && ncp ./vscode-extension/resources ./extension-out/resources && ncp ./assets ./extension-out/assets",
-    "watch-extension": "tsc --watch -p tsconfig.extension.json && ncp ./vscode-extension/resources ./extension-out/resources && ncp ./assets ./extension-out/assets"
+    "compile-extension": "webpack --config webpack.extension.config.js --mode development && ncp ./vscode-extension/resources ./extension-out/resources && ncp ./assets ./extension-out/assets",
+    "watch-extension": "webpack --config webpack.extension.config.js --mode development && ncp ./vscode-extension/resources ./extension-out/resources && ncp ./assets ./extension-out/assets"
   },
   "devDependencies": {
     "@types/node": "^12.12.58",
@@ -283,7 +283,7 @@
     "ncp": "^2.0.0",
     "ts-loader": "^8.0.14",
     "typescript": "^4.1.2",
-    "webpack": "^5.14.0",
+    "webpack": "^4.42.1",
     "webpack-cli": "^4.3.1"
   },
   "dependencies": {

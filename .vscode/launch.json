@@ -15,7 +15,8 @@
 			"outFiles": [
 				"${workspaceFolder}/extension-out/**/*.js"
 			],
-			"preLaunchTask": "build extension"
+			"preLaunchTask": "build extension",
+			"sourceMaps": true
 		},
 		{
 			"name": "Debug Module-Packer App",

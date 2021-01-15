@@ -12,7 +12,7 @@ const config = {
     path: path.resolve(__dirname, 'extension-out/vscode-extension'),
     filename: 'extension-packed.js',
     libraryTarget: 'commonjs2',
-    devtoolModuleFilenameTemplate: '../[resource-path]'
+    devtoolModuleFilenameTemplate: '../../[resource-path]'
   },
   optimization: {
     minimize: false
