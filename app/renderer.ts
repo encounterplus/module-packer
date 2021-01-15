@@ -114,6 +114,7 @@ Electron.ipcRenderer.on('error', (event, message) => {
   statusInfo.innerHTML =
     '<span class="text-danger"><strong>Error</strong>: ' + message + '</span>'
   statusLink.classList.add('invisible')
+  console.error(message)
 })
 
 container.ondragover = () => {

@@ -39,8 +39,9 @@ export class ExportToPdfCommand extends CommandBase {
     let projectDirectory = Path.dirname(moduleProjectPath)
  
     vscode.window.showInformationMessage(`Beginning export of "${this.moduleProject?.name}" to PDF`)
-    await PdfExporter.installChromiumForRendering(this.onBrowserDownload)    
-    let pdfPath = await PdfExporter.exportToPdf(projectDirectory, (path) => {
+    await PdfExporter.installChromiumForRendering(this.onBrowserDownload)
+    let appRootPath = Path.join(__dirname, '..')
+    let pdfPath = await PdfExporter.exportToPdf(projectDirectory, appRootPath, (path) => {
       return vscode.Uri.file(path).toString()
     })
 

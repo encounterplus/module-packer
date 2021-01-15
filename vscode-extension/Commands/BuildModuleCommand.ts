@@ -40,7 +40,8 @@ export class BuildModuleCommand extends CommandBase {
       throw Error('Could not locate module project directory.')
     }
 
-    let module = await Module.createModuleFromPath(projectDirectory, Path.basename(projectDirectory), ModuleMode.ModuleExport)
+    let appRootPath = Path.join(__dirname, "..")
+    let module = await Module.createModuleFromPath(projectDirectory, appRootPath, Path.basename(projectDirectory), ModuleMode.ModuleExport)
 
     let completeMessage = `Successfully created module: ${module.moduleProjectInfo.name}.`
     vscode.window.showInformationMessage(completeMessage, 'View Module File').then((selection) => {

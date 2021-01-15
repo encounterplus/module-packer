@@ -67,7 +67,8 @@ export class ModuleProjectProvider implements vscode.TreeDataProvider<vscode.Tre
           return
         }
 
-        let moduleTreeReturn = Module.createModuleFromPath(moduleProject.moduleProjectDirectory, moduleProject.name, ModuleMode.ScanModule).then((module) => {
+        let appRootPath = Path.join(__dirname, "..")
+        let moduleTreeReturn = Module.createModuleFromPath(moduleProject.moduleProjectDirectory, appRootPath, moduleProject.name, ModuleMode.ScanModule).then((module) => {
           return new ModuleTreeItem(module)
         })        
 

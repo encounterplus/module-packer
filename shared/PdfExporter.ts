@@ -14,10 +14,11 @@ export class PdfExporter {
   /**
    * Exports a module to PDF (needs the chromium rendering engine already installed)
    * @param projectDirectory The project directory
+   * @param appRootPath The application's root path
    * @param transformPageLocation An optional function to transform the page's location (needed for tools like VSCode)
    */
-  public static async exportToPdf(projectDirectory: string, transformPageLocation?: (path: string) => string): Promise<string> {
-    let module = await Module.createModuleFromPath(projectDirectory, Path.basename(projectDirectory), ModuleMode.PrintToPDF)
+  public static async exportToPdf(projectDirectory: string, appRootPath: string, transformPageLocation?: (path: string) => string): Promise<string> {
+    let module = await Module.createModuleFromPath(projectDirectory, appRootPath, Path.basename(projectDirectory), ModuleMode.PrintToPDF)
     let moduleOutputPath = Path.join(projectDirectory, 'ModuleBuild')
     let customStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'custom.css')
     let globalStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'global.css')

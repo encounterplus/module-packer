@@ -128,19 +128,24 @@ ipcMain.on('createModule', async (event, path, name) => {
  * @param name The name of the module
  */
 async function createModuleFromPath(path: string, name: string) {
-  let moduleProjects = ModuleProject.findModuleProjects(path)
-  if (moduleProjects.length === 0) {
-    let module = await Module.createModuleFromPath(path, name, ModuleMode.ModuleExport)
-    mainWindow.webContents.send('successModule', module.moduleProjectInfo.name, module.moduleArchivePath)
-    Logger.info('Module created successfully')
-  } else if (moduleProjects.length === 1) {
-    let modulePath = Path.dirname(moduleProjects[0].moduleProjectPath)
-    let module = await Module.createModuleFromPath(modulePath, name, ModuleMode.ModuleExport)
-    mainWindow.webContents.send('successModule', module.moduleProjectInfo.name, module.moduleArchivePath)
-    Logger.info('Module created successfully')
-  } else {
-    Logger.error('Error: Multiple modules at the specified path')
-    mainWindow.webContents.send('error', 'There are multiple modules in the specified path.')
+  try {
+    let moduleProjects = ModuleProject.findModuleProjects(path)
+    let appRootPath = Path.join(__dirname, '..')
+    if (moduleProjects.length === 0) {
+      let module = await Module.createModuleFromPath(path, appRootPath, name, ModuleMode.ModuleExport)
+      mainWindow.webContents.send('successModule', module.moduleProjectInfo.name, module.moduleArchivePath)
+      Logger.info('Module created successfully')
+    } else if (moduleProjects.length === 1) {
+      let modulePath = Path.dirname(moduleProjects[0].moduleProjectPath)
+      let module = await Module.createModuleFromPath(modulePath, appRootPath, name, ModuleMode.ModuleExport)
+      mainWindow.webContents.send('successModule', module.moduleProjectInfo.name, module.moduleArchivePath)
+      Logger.info('Module created successfully')
+    } else {
+      Logger.error('Error: Multiple modules at the specified path')
+      mainWindow.webContents.send('error', 'There are multiple modules in the specified path.')
+    }
+  } catch(error) {
+    mainWindow.webContents.send('error', error.message)
   }
 }
 
@@ -150,22 +155,27 @@ async function createModuleFromPath(path: string, name: string) {
  * @param name The name of the module
  */
 async function createPDFFromPath(path: string, name: string) {
-  let moduleProjects = ModuleProject.findModuleProjects(path)
-  if (moduleProjects.length === 0) {
-    await PdfExporter.installChromiumForRendering(updateChromiumInstallProgress)
-    let outputPath = await PdfExporter.exportToPdf(path)
-    mainWindow.webContents.send('successPdf', outputPath)
-    Logger.info('Module PDF created successfully')
-  } else if (moduleProjects.length === 1) {
-    let moduleFolderPath = Path.dirname(moduleProjects[0].moduleProjectPath)
-    await PdfExporter.installChromiumForRendering(updateChromiumInstallProgress)
-    let outputPath = await PdfExporter.exportToPdf(moduleFolderPath)
-    mainWindow.webContents.send('successPdf', outputPath)
-    Logger.info('Module PDF created successfully')
-  } else {
-    Logger.error('Error: Multiple modules at the specified path')
-    mainWindow.webContents.send('error', 'There are multiple modules in the specified path.')
-  }
+  try {
+    let moduleProjects = ModuleProject.findModuleProjects(path)
+    let appRootPath = Path.join(__dirname, '..')
+    if (moduleProjects.length === 0) {    
+      await PdfExporter.installChromiumForRendering(updateChromiumInstallProgress)
+      let outputPath = await PdfExporter.exportToPdf(path, appRootPath)
+      mainWindow.webContents.send('successPdf', outputPath)
+      Logger.info('Module PDF created successfully')
+    } else if (moduleProjects.length === 1) {
+      let moduleFolderPath = Path.dirname(moduleProjects[0].moduleProjectPath)
+      await PdfExporter.installChromiumForRendering(updateChromiumInstallProgress)
+      let outputPath = await PdfExporter.exportToPdf(moduleFolderPath,  appRootPath)
+      mainWindow.webContents.send('successPdf', outputPath)
+      Logger.info('Module PDF created successfully')
+    } else {
+      Logger.error('Error: Multiple modules at the specified path')
+      mainWindow.webContents.send('error', 'There are multiple modules in the specified path.')
+    }
+  } catch(error) {
+    mainWindow.webContents.send('error', error.message)
+  }  
 }
 
 process.on('uncaughtException', function (error) {

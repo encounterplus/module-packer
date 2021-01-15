@@ -156,12 +156,13 @@ export class Module {
   /**
    * Builds modules from markdown at a specified directory.
    * @param projectDirectory The module project directory.
+   * @param appRootPath The application's root path
    * @param name The name of the module.
    * @param mode The mode for creating the module. Valid values are 'module' -
    * for creating a module file, 'pdf' for creating a print PDF, and
    * 'scan' - for scanning the directory
    */
-  static async createModuleFromPath(projectDirectory: string, name: string, mode: ModuleMode = ModuleMode.ScanModule): Promise<Module> {
+  static async createModuleFromPath(projectDirectory: string, appRootPath: string, name: string, mode: ModuleMode = ModuleMode.ScanModule): Promise<Module> {
     // Ensure the path we're parsing is a directory
     if (!FileSystem.statSync(projectDirectory).isDirectory()) {
       throw Error('Specified module project path is not a directory.')
@@ -213,13 +214,13 @@ export class Module {
       FileSystem.removeSync(assetsOutputPath)
     }
     if (!scanOnly) {
-      let baseAssets = Path.join(__dirname, '../assets/base')
+      let baseAssets = Path.join(appRootPath, 'assets/base')
       FileSystem.copySync(baseAssets, assetsOutputPath)
     }
 
     // Copy print assets if doing the module for print.
     if (!scanOnly && forPrint) {
-      let printAssets = Path.join(__dirname, '../assets/print')
+      let printAssets = Path.join(appRootPath, 'assets/print')
       FileSystem.copySync(printAssets, assetsOutputPath)
     }
 

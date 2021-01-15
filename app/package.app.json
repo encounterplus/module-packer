@@ -33,9 +33,10 @@
       "hardenedRuntime": true,
       "entitlements": "./app/entitlements.mac.plist",
       "entitlementsInherit": "./app/entitlements.mac.plist",
-      "target": [
-        "dmg"
-      ]
+      "target": ["dmg"]
+    },
+    "linux": {
+      "target": ["tar.gz"]
     },
     "asar": false
   },
@@ -47,12 +48,13 @@
   "scripts": {
     "lint": "eslint . --ext .ts,.tsx",
     "compile-css": "lessc ./assets/base/css/global.less ./assets/base/css/global.css",
-		"compile-app": "tsc -p tsconfig.app.json && ncp ./app/resources ./app-out/resources && ncp ./assets ./app-out",
+		"compile-app": "tsc -p tsconfig.app.json && ncp ./app/resources ./app-out/resources && ncp ./assets ./app-out/assets",
     "watch-app": "tsc -watch -p tsconfig.app.json",
     "start": "npm run compile-app && electron ./app-out/app/main.js",
     "build-mac": "electron-builder build --mac",
     "build-win": "electron-builder build --win",
-    "build-all": "electron-builder -mw"
+    "build-linux": "electron-builder build --linux",
+    "build-all": "electron-builder -mwl"
   },
   "devDependencies": {
     "@types/node": "^12.12.58",
