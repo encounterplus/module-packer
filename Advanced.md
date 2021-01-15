@@ -19,5 +19,3 @@ This document is a placeholder for advanced topics. The following topics are int
 ### Print-Only
 
 ### Hiding Footer Text
-
-## Compressing Images

@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.0.28
+
+### Added
+- Added CLI build option. Use it by invoking `python launcher.py run --path <module path>` and `python launcher.py run --path <module path> --output pdf`
+
+### Changed
+- Removed CLI from electron app (it wasn't working well)
+
 ## 1.0.27
 
 ### Breaking Changes

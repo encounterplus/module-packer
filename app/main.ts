@@ -12,17 +12,15 @@ let mainWindow: BrowserWindow
 
 /**
  * Creates the apps window
- * @param isHidden If true, launches the window hidden (for CLI runs of the app)
  */
-function createWindow(isHidden: boolean) {
+function createWindow() {
   const modulePackerLogger = new ModulePackerLogger()
   Logger.add(modulePackerLogger)
 
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    show: !isHidden,
-    width: isHidden ? 0 : 400,
-    height: isHidden ? 0 : 600,
+    width: 400,
+    height: 600,
     resizable: true,
     backgroundColor: '#333333',
     icon: Path.join(__dirname, '../resources/img/icon.png'),
@@ -31,13 +29,9 @@ function createWindow(isHidden: boolean) {
     },
   })
 
-  mainWindow.once('ready-to-show', () => {
-		if(isHidden) {
-			mainWindow.hide();
-		} else {
-			mainWindow.show();
-			mainWindow.maximize();
-		}
+  mainWindow.once('ready-to-show', () => {		
+    mainWindow.show();
+    mainWindow.maximize();		
 	})
 
   // If running in a development environment, customize the window size
@@ -61,34 +55,12 @@ function createWindow(isHidden: boolean) {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
-  let isDebug = process.argv &&
-    process.argv.length > 1 &&
-    (process.argv[1].includes('--debug-brk') || 
-    process.argv[1].includes('--inspect-brk') || 
-    process.argv[1].includes('--remote-debugging-port'))
-  let isCommandLineInterface = process.argv && process.argv.length > 1 && !isDebug
-
-  createWindow(isCommandLineInterface)
-
-  let isCommandLinePDFBuild = isCommandLineInterface && 
-    process.argv.length > 2 &&
-    process.argv[2].toLowerCase() === 'pdf'
-
-  if(isCommandLineInterface) {
-    let path = process.argv[1]
-    if (isCommandLinePDFBuild) {
-      await createPDFFromPath(path, Path.basename(path))
-    } else {
-      await createModuleFromPath(path, Path.basename(path))
-    }    
-    app.quit()
-  }
-
+  createWindow()
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (!isCommandLineInterface && BrowserWindow.getAllWindows().length === 0) {
-      createWindow(true)
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow()
     }
   })
 })

@@ -81,8 +81,8 @@ export class Module {
   /** The items associated with the module */
   items: Item[] = []
 
-   /** The spells associated with the module */
-   spells: Spell[] = []
+  /** The spells associated with the module */
+  spells: Spell[] = []
 
   /** The path for the module archive (after it is created) */
   moduleArchivePath: string | undefined = undefined
@@ -162,7 +162,12 @@ export class Module {
    * for creating a module file, 'pdf' for creating a print PDF, and
    * 'scan' - for scanning the directory
    */
-  static async createModuleFromPath(projectDirectory: string, appRootPath: string, name: string, mode: ModuleMode = ModuleMode.ScanModule): Promise<Module> {
+  static async createModuleFromPath(
+    projectDirectory: string,
+    appRootPath: string,
+    name: string,
+    mode: ModuleMode = ModuleMode.ScanModule
+  ): Promise<Module> {
     // Ensure the path we're parsing is a directory
     if (!FileSystem.statSync(projectDirectory).isDirectory()) {
       throw Error('Specified module project path is not a directory.')
@@ -246,9 +251,11 @@ export class Module {
     let encounterPromises: Promise<void>[] = []
     if (!scanOnly) {
       module.moduleProjectInfo.encounterFiles.forEach(async (encounter) => {
-        let parseEncounterPromise = encounter.extractEncounterObject(moduleBuildPath, projectDirectory, module.moduleProjectInfo.id).then((encounterObject) => {
-          module.encounters.push(encounterObject)
-        })
+        let parseEncounterPromise = encounter
+          .extractEncounterObject(moduleBuildPath, projectDirectory, module.moduleProjectInfo.id)
+          .then((encounterObject) => {
+            module.encounters.push(encounterObject)
+          })
         encounterPromises.push(parseEncounterPromise)
       })
 
@@ -259,8 +266,10 @@ export class Module {
     let allEntities = module.getAllEntities()
     allEntities.forEach((entity) => {
       let parentSlug = entity.parentSlug
-      if(parentSlug !== undefined) {
-        entity.parent = allEntities.filter((entity) => { return entity.slug === parentSlug})[0]
+      if (parentSlug !== undefined) {
+        entity.parent = allEntities.filter((entity) => {
+          return entity.slug === parentSlug
+        })[0]
         entity.parent?.children.push(entity)
       }
     })
@@ -343,10 +352,6 @@ export class Module {
     // Sort module children
     module.children = module.sortChildren(module.children)
 
-    if (!scanOnly && module.moduleProjectInfo.compressImages) {
-      await module.compressImages(moduleBuildPath)
-    } 
-    
     // Export module.xml file
     if (mode == ModuleMode.ModuleExport) {
       module.exportXML(moduleBuildPath)
@@ -384,12 +389,12 @@ export class Module {
     if (this.hideFooter) {
       html += '<div class="footer-background hidden"></div>'
       html += `<div class="footer-content hidden"></div>`
-      html += '<div class="footer-page-number hidden"></div>'      
+      html += '<div class="footer-page-number hidden"></div>'
     } else {
       html += '<div class="footer-background"></div>'
       html += `<div class="footer-content">${this.printFooterContent}</div>`
       html += '<div class="footer-page-number"></div>'
-    }    
+    }
 
     html += '</div>'
     return html
@@ -404,11 +409,19 @@ export class Module {
    */
   private getAllEntities = (): ModuleEntity[] => {
     let allEntities: ModuleEntity[] = []
-    this.pages.forEach((page) => { allEntities.push(page) })
-    this.groups.forEach((group) => { allEntities.push(group) })
-    this.maps.forEach((map) => { allEntities.push(map) })
-    this.encounters.forEach((encounter) => { allEntities.push(encounter) })
-    return allEntities  
+    this.pages.forEach((page) => {
+      allEntities.push(page)
+    })
+    this.groups.forEach((group) => {
+      allEntities.push(group)
+    })
+    this.maps.forEach((map) => {
+      allEntities.push(map)
+    })
+    this.encounters.forEach((encounter) => {
+      allEntities.push(encounter)
+    })
+    return allEntities
   }
 
   /**
@@ -431,48 +444,6 @@ export class Module {
 
       return aVal < bVal ? -1 : 1
     })
-  }
-
-  /**
-   * Compresses the images for the module
-   * @param moduleBuildPath The module build directory
-   */
-  private async compressImages(moduleBuildPath: string) {
-    
-    // This functionality was commented out until I can port
-    // the electron apps to using webpack.
-
-    // let allImages = this.getAllDirectoryImages(moduleBuildPath)
-    // let compressPromises: Promise<void>[] = []
-    // let startSizeDictionary: { [filePath: string]: number } = {}
-
-    
-    // allImages.forEach(async (filePath) => {
-    //   startSizeDictionary[filePath] = FileSystem.statSync(filePath).size
-    //   let compressPromise = CompressImage({
-    //     source: filePath,
-    //     destination: filePath,
-    //     enginesSetup: {
-    //         jpg: { engine: 'mozjpeg', command: ['-quality', '80']},
-    //         png: { engine: 'pngquant', command: ['--quality=60-80', '-o']},
-    //     }
-    //   }).then(() => {
-    //     let startSize = startSizeDictionary[filePath]
-    //     if (!startSize) {
-    //       return
-    //     }
-    //     let finalSize = FileSystem.statSync(filePath).size
-    //     if (!finalSize) {
-    //       return
-    //     }
-
-    //     let fileName = Path.basename(filePath)
-    //     Logger.info(`Compressed Image "${fileName}". Uncompressed size: ${startSize}. Compressed size: ${finalSize}.`)
-    //   })
-    //   compressPromises.push(compressPromise)
-    // })   
-
-    // await Promise.all(compressPromises)
   }
 
   /**
@@ -703,8 +674,8 @@ export class Module {
         duration: spell.duration,
         classes: spell.classes,
         source: spell.source,
-        image: spell.image,        
-        text: spell.description
+        image: spell.image,
+        text: spell.description,
       }
 
       // Delete undefined fields
@@ -729,19 +700,19 @@ export class Module {
       group: groups,
       page: pages,
       map: maps,
-      encounter: encounters
+      encounter: encounters,
     }
 
     let moduleBuilder = new XML2JS.Builder({ rootName: 'module' })
     let moduleXML = moduleBuilder.buildObject(moduleData)
 
     FileSystem.writeFileSync(modulePath, moduleXML)
-    
+
     let hasCompendiumData = monsters.length > 0 || items.length > 0 || spells.length > 0
     let compendiumData = {
       monster: monsters,
       item: items,
-      spell: spells
+      spell: spells,
     }
 
     if (hasCompendiumData) {
@@ -780,7 +751,7 @@ export class Module {
     let subdirectoryNames: string[] = FileSystem.readdirSync(directoryPath).filter(function (file) {
       let childPath = Path.join(directoryPath, file)
       // skip hidden directories
-      return FileSystem.statSync(childPath).isDirectory() && !(/(^|\/)\.[^\/\.]/g).test(file)
+      return FileSystem.statSync(childPath).isDirectory() && !/(^|\/)\.[^\/\.]/g.test(file)
     })
 
     // Ensure there are files in the modules directory
@@ -925,7 +896,7 @@ export class Module {
     let parentSlug = frontMatter['parent-page'] as string
     if (frontMatter['parent']) {
       parentSlug = frontMatter['parent']
-    }    
+    }
 
     let pagebreakContentFound = false
 
@@ -992,7 +963,7 @@ export class Module {
 
     let coverImagePath: string | undefined = undefined
     let moduleProjectPath = this.moduleProjectInfo.moduleProjectPath
-    if(frontMatter['cover'] && moduleProjectPath !== undefined) {      
+    if (frontMatter['cover'] && moduleProjectPath !== undefined) {
       let moduleDirectory = Path.dirname(moduleProjectPath)
       coverImagePath = Path.join(moduleDirectory, frontMatter['cover'])
     }
@@ -1156,8 +1127,8 @@ export class Module {
 
     // Process anchors
     page.content = this.postProcessAnchors(page.content, page.slug)
-    
-    // Prepend a cover page if this section has one      
+
+    // Prepend a cover page if this section has one
     if (coverImagePath && printToPDF) {
       let coverImageData = FileSystem.readFileSync(coverImagePath).toString('base64')
       let prependContent = `<div class="print-section-cover-page" style="background-image: url(data:image;base64,${coverImageData})">`
@@ -1167,12 +1138,12 @@ export class Module {
       prependContent += `</div>` // print-page
       prependContent += `</div>` // print-section-cover-page
 
-      // If the markdown is designed to show only the print cover, 
+      // If the markdown is designed to show only the print cover,
       // then the content of the page can be removed
-      if(page.printCoverOnly) {
+      if (page.printCoverOnly) {
         page.content = prependContent
       } else {
-        page.content = prependContent + page.content        
+        page.content = prependContent + page.content
       }
     }
   }
