@@ -23,8 +23,12 @@ def copy(source, destination):
 # Parse the arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("target", help='The target to run')
+parser.add_argument("--path", help='The path to build when running CLI')
+parser.add_argument("--output", help='If specified, PDF output will be used')
 args = parser.parse_args()
 target = args.target
+path = args.path
+output = args.output
 
 if target == 'build-extension':
     removeIfExists('./package.json')
@@ -63,6 +67,14 @@ elif target == 'start-app':
     run('npm run compile-css')
     run('npm run compile-app')
     run('npm run start')
+elif target == 'run':
+    removeIfExists('./package.json')
+    removeIfExists('./package-lock.json')
+    copy('./cli/package.cli.json', './package.json')
+    run('npm install')
+    run('npm run compile-css')
+    run('npm run compile-cli')
+    run('node ./cli-out/cli/main.js "{}" "{}"'.format(path or "", output or ""))
 elif target == 'package-app':
     removeIfExists('./package.json')
     removeIfExists('./package-lock.json')

@@ -1,6 +1,7 @@
 /node_modules
 /dist
 /app-out
+/cli-out
 /extension-out
 /example
 /examples
