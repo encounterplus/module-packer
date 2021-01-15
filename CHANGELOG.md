@@ -1,12 +1,13 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.27
 
 ### Breaking Changes
 - Removed `compress-images` functionality temporarily (hopefully)
 
 ### Added
 - `compendium` option now allowed for `include-in` page property. This will allow pages to be used for compendium entries in E+, but will not show up as pages in PDF or E+ output.
+- Added linux build
 
 ### Changed
 - Webpacked VS Code extension to improve load time and performance
