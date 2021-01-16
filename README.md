@@ -21,7 +21,7 @@
   - [Monsters](#monsters)
   - [Items](#items)
   - [Spells](#spells)
-  - [Page Breaks for Print](#page-breaks-for-print)
+  - [Special Tags for Print/PDF](#special-tags-for-print-pdf)
 - [Visual Studio Code Extension](#visual-studio-code-extension)
 - [Other Editors](#other-editors)
 - [License](#license)

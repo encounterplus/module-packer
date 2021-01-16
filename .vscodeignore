@@ -1,7 +1,9 @@
 *
 **
 !Logo.png
+!README.md
 !package.json
+!documentation
 !extension-out/
 !node_modules/markdown-it-anchor
 !node_modules/markdown-it-attrs

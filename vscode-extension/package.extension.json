@@ -3,7 +3,7 @@
   "displayName": "EncounterPlus Markdown",
   "description": "Renders markdown as it would appear in EncounterPlus",
   "icon": "Logo.png",
-  "version": "1.0.28",
+  "version": "1.0.29",
   "publisher": "jacobjohnston",
   "repository": {
     "type": "git",
@@ -228,13 +228,13 @@
     },
     "markdown.markdownItPlugins": true,
     "markdown.previewStyles": [
-      "vscode-extension/resources/vscode.css",
-      "assets/base/css/global.css"
+      "extension-out/resources/vscode.css",
+      "extension-out/assets/base/css/global.css"
     ],
     "grammars": [
       {
         "scopeName": "markdown.monster.codeblock",
-        "path": "vscode-extension/resources/monster-codeblock.json",
+        "path": "extension-out/resources/monster-codeblock.json",
         "injectTo": [
           "text.html.markdown"
         ],
@@ -244,7 +244,7 @@
       },
       {
         "scopeName": "markdown.item.codeblock",
-        "path": "vscode-extension/resources/item-codeblock.json",
+        "path": "extension-out/resources/item-codeblock.json",
         "injectTo": [
           "text.html.markdown"
         ],
@@ -254,7 +254,7 @@
       },
       {
         "scopeName": "markdown.spell.codeblock",
-        "path": "vscode-extension/resources/spell-codeblock.json",
+        "path": "extension-out/resources/spell-codeblock.json",
         "injectTo": [
           "text.html.markdown"
         ],

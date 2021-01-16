@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.0.29
+
+### Fixed
+- Fixed preview and lack of readme in Webpacked extension
+
 ## 1.0.28
 
 ### Added
