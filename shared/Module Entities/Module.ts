@@ -802,9 +802,13 @@ export class Module {
       // their content to the module output (as they may be an
       // image or resource folder) if they're in the root level.
       let ignoreFilePath = Path.join(subdirectoryPath, '.ignoreGroup')
-      if (!scanOnly && FileSystem.existsSync(ignoreFilePath)) {
-        let copyPath = Path.join(moduleBuildClonePath, subdirectoryName)
-        FileSystem.copySync(subdirectoryPath, copyPath)
+      if (FileSystem.existsSync(ignoreFilePath)) {
+        // If not simply scanning - still copy the directory
+        // so the resources are part of the module
+        if(!scanOnly) {
+          let copyPath = Path.join(moduleBuildClonePath, subdirectoryName)
+          FileSystem.copySync(subdirectoryPath, copyPath)
+        }
         return
       }
 
