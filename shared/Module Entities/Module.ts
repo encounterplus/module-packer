@@ -236,7 +236,7 @@ export class Module {
 
     // Add Maps
     let mapPromises: Promise<void>[] = []
-    if (!scanOnly) {
+    if (forModule) {
       module.moduleProjectInfo.mapFiles.forEach(async (map) => {
         let parseMapPromise = map.extractMapObject(moduleBuildPath, projectDirectory, module.moduleProjectInfo.id).then((mapObject) => {
           module.maps.push(mapObject)
@@ -249,7 +249,7 @@ export class Module {
 
     // Add Encounters
     let encounterPromises: Promise<void>[] = []
-    if (!scanOnly) {
+    if (forModule) {
       module.moduleProjectInfo.encounterFiles.forEach(async (encounter) => {
         let parseEncounterPromise = encounter
           .extractEncounterObject(moduleBuildPath, projectDirectory, module.moduleProjectInfo.id)

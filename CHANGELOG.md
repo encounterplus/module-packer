@@ -1,5 +1,13 @@
 # Change Log
 
+# [Unreleased]
+
+### Changed
+- Optimization: Exporting to PDF no longer processes maps or encounters
+
+### Fixed
+- Fixed module view in VS Code showing ignored groups/folders
+
 ## 1.0.29
 
 ### Fixed
