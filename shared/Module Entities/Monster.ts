@@ -118,6 +118,12 @@ export class Monster extends ModuleEntity {
   /** The filename of an image of the monster's token */
   token: string | undefined = undefined
 
+  /** Where the column split occurs in a two-column stat block */
+  columnAfter: ColumnAfter = ColumnAfter.Traits
+
+  /** A particular property to split the column after */
+  columnAfterProperty: string | undefined = undefined
+
   // ---------------------------------------------------------------
   // Public Methods
   // ---------------------------------------------------------------
@@ -346,7 +352,33 @@ export class Monster extends ModuleEntity {
       monster.token = token
     }
 
+    // Get a monster's column after value
+    const columnAfterString = monsterData['column-after'] as string
+    if (columnAfterString) {
+      monster.columnAfter = Monster.getColumnAfter(columnAfterString)
+    }
+
+    // Get a monster's column after property
+    const columnAfterProperty = monsterData['column-after-property'] as string
+    if (columnAfterProperty) {
+      monster.columnAfterProperty = columnAfterProperty
+    }
+
     return monster
+  }
+
+  static getColumnAfter(columnAfterString: string): ColumnAfter {
+    switch (columnAfterString.toLowerCase()) {
+      case 'stats':
+        return ColumnAfter.Stats
+      case 'traits':
+        return ColumnAfter.Traits
+      case 'actions':
+        return ColumnAfter.Actions
+      case 'reactions':
+        return ColumnAfter.Reactions
+    }
+    return ColumnAfter.Traits
   }
 
   /**
@@ -537,6 +569,7 @@ export class Monster extends ModuleEntity {
     } (${getAbilityMod(this.cha)})</p></div>`
     monsterHTML += '</div>' // statblock-abilities
     monsterHTML += drawTaperRule()
+    let hasHadColumnBreak: Boolean = false
     properties.forEach((property, index) => {
       if (index === 0) {
         monsterHTML += '<div class="statblock-property-line first">'
@@ -548,6 +581,11 @@ export class Monster extends ModuleEntity {
       monsterHTML += `<p class="statblock-property-name">${property.name}</p> <p class="statblock-property-value">${property.description}</p></div>`
     })
     monsterHTML += drawTaperRule()
+    if (this.columnAfter === ColumnAfter.Stats && !hasHadColumnBreak) {
+      monsterHTML += '</div>' // statblock-section-left
+      monsterHTML += '<div class="statblock-section-right">'
+      hasHadColumnBreak = true
+    }
     this.traits.forEach((trait, index) => {
       monsterHTML += '<div class="statblock-property-block">'
       if (trait.name) {
@@ -555,9 +593,17 @@ export class Monster extends ModuleEntity {
       }
       monsterHTML += `<p class="statblock-trait-description">${formatDescription(trait.description)}</p>`
       monsterHTML += '</div>' // statblock-property-block
+      if (this.columnAfter === ColumnAfter.Traits && !hasHadColumnBreak && this.columnAfterProperty !== undefined && this.columnAfterProperty.toLowerCase() === trait.name.toLowerCase()) {
+        monsterHTML += '</div>' // statblock-section-left
+        monsterHTML += '<div class="statblock-section-right">'
+        hasHadColumnBreak = true
+      }
     })
-    monsterHTML += '</div>' // statblock-section-left
-    monsterHTML += '<div class="statblock-section-right">'
+    if (this.columnAfter === ColumnAfter.Traits && !hasHadColumnBreak) {
+      monsterHTML += '</div>' // statblock-section-left
+      monsterHTML += '<div class="statblock-section-right">'
+      hasHadColumnBreak = true
+    }
     if (this.actions.length > 0) {
       monsterHTML += '<div class="statblock-actions">'
       monsterHTML += '<p class="statblock-section-title">Actions</p>'
@@ -568,8 +614,20 @@ export class Monster extends ModuleEntity {
         }
         monsterHTML += `<p class="statblock-action-description">${formatDescription(action.description)}</p>`
         monsterHTML += '</div>' // statblock-property-block
+        if (this.columnAfter === ColumnAfter.Actions && !hasHadColumnBreak && this.columnAfterProperty !== undefined && this.columnAfterProperty.toLowerCase() === action.name.toLowerCase()) {
+          monsterHTML += '</div>' // statblock-actions
+          monsterHTML += '</div>' // statblock-section-left
+          monsterHTML += '<div class="statblock-section-right">'
+          monsterHTML += '<div class="statblock-actions">'
+          hasHadColumnBreak = true
+        }
       })
       monsterHTML += '</div>' // statblock-actions
+    }
+    if (this.columnAfter === ColumnAfter.Actions && !hasHadColumnBreak) {
+      monsterHTML += '</div>' // statblock-section-left
+      monsterHTML += '<div class="statblock-section-right">'
+      hasHadColumnBreak = true
     }
     if (this.reactions.length > 0) {
       monsterHTML += '<div class="statblock-reactions">'
@@ -581,8 +639,20 @@ export class Monster extends ModuleEntity {
         }
         monsterHTML += `<p class="statblock-action-description">${formatDescription(reaction.description)}</p>`
         monsterHTML += '</div>' // statblock-property-block
+        if (this.columnAfter === ColumnAfter.Reactions && !hasHadColumnBreak && this.columnAfterProperty !== undefined && this.columnAfterProperty.toLowerCase() === reaction.name.toLowerCase()) {
+          monsterHTML += '</div>' // statblock-reactions
+          monsterHTML += '</div>' // statblock-section-left
+          monsterHTML += '<div class="statblock-section-right">'
+          monsterHTML += '<div class="statblock-reactions">'
+          hasHadColumnBreak = true
+        }
       })
       monsterHTML += '</div>' // statblock-reactions
+    }
+    if (!hasHadColumnBreak) {
+      monsterHTML += '</div>' // statblock-section-left
+      monsterHTML += '<div class="statblock-section-right">'
+      hasHadColumnBreak = true
     }
     if (this.legendaryActions.length > 0) {
       monsterHTML += '<div class="statblock-legendary-actions">'
@@ -604,6 +674,22 @@ export class Monster extends ModuleEntity {
     return monsterHTML
   }
 }
+
+/** The module include mode */
+enum ColumnAfter {
+  /** In a two-column statblock, place the column split after the Stats */
+  Stats = 1,
+
+  /** In a two-column statblock, place the column split after the Traits */
+  Traits,
+
+  /** In a two-column statblock, place the column split after the Actions */
+  Actions,
+
+  /** In a two-column statblock, place the column split after the Reactions */
+  Reactions,
+}
+
 
 /** Describes a Property */
 interface Property {

@@ -1,6 +1,10 @@
 # Change Log
 
-# [Unreleased]
+# 1.0.30
+
+### Added
+- Added `.print-center` attribute
+- Added `column-after` and `column-after-property` properties to monster stat blocks.
 
 ### Changed
 - Optimization: Exporting to PDF no longer processes maps or encounters

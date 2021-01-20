@@ -77,3 +77,7 @@ TODO
 ## Running from the Command Line
 
 TODO
+
+## Splitting Monster Block Columns on Specific Properties
+
+TODO

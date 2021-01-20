@@ -1289,6 +1289,25 @@ table.sidebar td:first-child {
     left: 1px;
     z-index: -1;
   }
+  .print-top-left {
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    z-index: -1;
+  }
+  .print-top-right {
+    position: absolute;
+    right: 1px;
+    left: 1px;
+    z-index: -1;
+  }
+  .print-top-center {
+    position: absolute;
+    top: 1px;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: -1;
+  }
   .screen-only {
     display: none;
   }
@@ -1401,5 +1420,10 @@ table.sidebar td:first-child {
   }
   .print-float-right {
     float: right;
+  }
+  .print-center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
