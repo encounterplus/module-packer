@@ -8,6 +8,7 @@
 
 ### Fixed
 - Fixed `cover` images for pages only working in root folder.
+- Fixed monsters, spells, and items only allowing same-folder paths for images/tokens.
 
 ## 1.0.30
 

@@ -931,12 +931,18 @@ export class Module {
     markdownRenderer.monsters.forEach((monster) => {
       if (forModuleExport && monster.image) {
         let imageAbsolutePath = Path.join(fileFolderPath, monster.image)
-        let imageDestinationPath = Path.join(monsterModulePath, monster.image)
+        let monsterImageExtension = Path.extname(imageAbsolutePath)
+        let newMonsterImageFileName = `${monster.id}-image.${monsterImageExtension}`
+        let imageDestinationPath = Path.join(monsterModulePath, newMonsterImageFileName)
+        monster.image = newMonsterImageFileName
         FileSystem.copyFileSync(imageAbsolutePath, imageDestinationPath)
       }
       if (forModuleExport && monster.token) {
         let tokenAbsolutePath = Path.join(fileFolderPath, monster.token)
-        let tokenDestinationPath = Path.join(monsterModulePath, monster.token)
+        let tokenImageExtension = Path.extname(tokenAbsolutePath)
+        let newTokenImageFileName = `${monster.id}-token.${tokenImageExtension}`
+        let tokenDestinationPath = Path.join(monsterModulePath, newTokenImageFileName)
+        monster.token = newTokenImageFileName
         FileSystem.copyFileSync(tokenAbsolutePath, tokenDestinationPath)
       }
 
@@ -948,7 +954,10 @@ export class Module {
     markdownRenderer.items.forEach((item) => {
       if (forModuleExport && item.image) {
         let imageAbsolutePath = Path.join(fileFolderPath, item.image)
-        let imageDestinationPath = Path.join(itemModulePath, item.image)
+        let imageExtension = Path.extname(imageAbsolutePath)
+        let newImageFileName = `${item.id}-image.${imageExtension}`
+        let imageDestinationPath = Path.join(itemModulePath, newImageFileName)
+        item.image = newImageFileName
         FileSystem.copyFileSync(imageAbsolutePath, imageDestinationPath)
       }
       this.items.push(item)
@@ -959,7 +968,10 @@ export class Module {
     markdownRenderer.spells.forEach((spell) => {
       if (forModuleExport && spell.image) {
         let imageAbsolutePath = Path.join(fileFolderPath, spell.image)
-        let imageDestinationPath = Path.join(spellModulePath, spell.image)
+        let imageExtension = Path.extname(imageAbsolutePath)
+        let newImageFileName = `${spell.id}-image.${imageExtension}`
+        let imageDestinationPath = Path.join(spellModulePath, newImageFileName)
+        spell.image = newImageFileName
         FileSystem.copyFileSync(imageAbsolutePath, imageDestinationPath)
       }
       this.spells.push(spell)

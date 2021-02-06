@@ -1284,7 +1284,7 @@ table.sidebar td:first-child {
   }
   .print-bottom-right {
     position: absolute;
-    bottom: -0.6in;
+    bottom: -0.60208333in;
     right: -0.5in;
     z-index: -1;
   }
@@ -1294,7 +1294,7 @@ table.sidebar td:first-child {
   }
   .print-bottom-left {
     position: absolute;
-    bottom: -0.6in;
+    bottom: -0.60208333in;
     left: -0.5in;
     z-index: -1;
   }
@@ -1304,7 +1304,7 @@ table.sidebar td:first-child {
   }
   .print-top-left {
     position: absolute;
-    top: -0.6in;
+    top: -0.55in;
     left: -0.5in;
     z-index: -1;
   }
@@ -1314,7 +1314,7 @@ table.sidebar td:first-child {
   }
   .print-top-right {
     position: absolute;
-    top: -0.6in;
+    top: -0.55in;
     right: -0.5in;
     z-index: -1;
   }
