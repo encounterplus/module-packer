@@ -131,7 +131,7 @@ Groups can have some properties defined by creating a `Group.yaml` file in the g
 
 ```YAML
 name: Example Group
-slug: example-grup
+slug: example-group
 order: 5
 ```
 

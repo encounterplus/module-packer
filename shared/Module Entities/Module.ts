@@ -966,10 +966,8 @@ export class Module {
     })
 
     let coverImagePath: string | undefined = undefined
-    let moduleProjectPath = this.moduleProjectInfo.moduleProjectPath
-    if (frontMatter['cover'] && moduleProjectPath !== undefined) {
-      let moduleDirectory = Path.dirname(moduleProjectPath)
-      coverImagePath = Path.join(moduleDirectory, frontMatter['cover'])
+    if (frontMatter['cover']) {
+      coverImagePath = Path.join(fileFolderPath, frontMatter['cover'])
     }
 
     // If we have pagebreaks defined, we'll attempt to split

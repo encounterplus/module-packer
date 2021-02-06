@@ -1270,43 +1270,57 @@ table.sidebar td:first-child {
   figure.size-cover,
   img.size-cover {
     max-width: none;
-    width: calc(100% + 0.5in);
+    width: calc(100% + 1in);
     margin-top: -0.5in;
-    margin-left: -0.25in;
-    margin-right: -0.25in;
+    margin-left: -0.5in;
+    margin-right: -0.5in;
     margin-bottom: 0;
     height: auto;
   }
+  figure.size-cover.with-margin,
+  img.size-cover.with-margin {
+    margin-left: -0.25in;
+    margin-right: -0.25in;
+  }
   .print-bottom-right {
     position: absolute;
+    bottom: -0.6in;
+    right: -0.5in;
+    z-index: -1;
+  }
+  .print-bottom-right.with-margin {
     bottom: 1px;
     right: 1px;
-    z-index: -1;
   }
   .print-bottom-left {
     position: absolute;
+    bottom: -0.6in;
+    left: -0.5in;
+    z-index: -1;
+  }
+  .print-bottom-left.with-margin {
     bottom: 1px;
     left: 1px;
-    z-index: -1;
   }
   .print-top-left {
     position: absolute;
+    top: -0.6in;
+    left: -0.5in;
+    z-index: -1;
+  }
+  .print-top-left.with-margin {
     top: 1px;
     left: 1px;
-    z-index: -1;
   }
   .print-top-right {
     position: absolute;
-    right: 1px;
-    left: 1px;
+    top: -0.6in;
+    right: -0.5in;
     z-index: -1;
   }
-  .print-top-center {
-    position: absolute;
+  .print-top-right.with-margin {
     top: 1px;
-    margin-left: auto;
-    margin-right: auto;
-    z-index: -1;
+    right: 1px;
   }
   .screen-only {
     display: none;
@@ -1365,7 +1379,7 @@ table.sidebar td:first-child {
     position: absolute;
     bottom: 0.1in;
     left: 0;
-    z-index: 100;
+    z-index: -10;
     height: 0.5in;
     width: 8.5in;
     background-size: 8.5in 0.5in;
@@ -1386,6 +1400,7 @@ table.sidebar td:first-child {
     color: #aea41a;
     right: 2px;
     text-align: center;
+    z-index: -10;
   }
   .print-page .footer-page-number {
     font-family: 'Andada SC', '-apple-system', sans-serif;
@@ -1396,6 +1411,7 @@ table.sidebar td:first-child {
     color: #aea41a;
     right: 2px;
     text-align: center;
+    z-index: -10;
   }
   .two-column table.sidebar {
     float: none;

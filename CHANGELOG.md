@@ -1,6 +1,15 @@
 # Change Log
 
-# 1.0.30
+## [Unreleased]
+
+### Breaking Changes
+- `.size-cover`, `.print-bottom-left`, `.print-bottom-right`, `.print-top-left`, and `.print-top-right` no long apply margins in PDF output. Added `.with-margin` attribute to augment to get the older spacing.
+- `.print-bottom-left`, `.print-bottom-right`, `.print-top-left`, and `.print-top-right` will now appear on top of footer.
+
+### Fixed
+- Fixed `cover` images for pages only working in root folder.
+
+## 1.0.30
 
 ### Added
 - Added `.print-center` attribute
