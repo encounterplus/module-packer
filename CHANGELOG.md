@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.31
 
 ### Breaking Changes
 - `.size-cover`, `.print-bottom-left`, `.print-bottom-right`, `.print-top-left`, and `.print-top-right` no long apply margins in PDF output. Added `.with-margin` attribute to augment to get the older spacing.
