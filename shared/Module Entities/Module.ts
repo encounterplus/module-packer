@@ -1181,6 +1181,14 @@ export class Module {
         remove: /[*+~.()'"!:@&’]/g,
         strict: true,
       })
+
+      // Create an anchor out of just the header slug. In
+      // many cases, this will create duplicates. Which anchor
+      // the client will navigate to one of the IDs
+      // (which one is not specified, but probably the first)
+      $(element).prepend(`<a id="${headerSlug}"></a>`)
+      Logger.info(`Anchor created: ${headerSlug}`)
+
       let anchorID = `${slug}-${headerSlug}`
       $(element).prepend(`<a id="${anchorID}"></a>`)
       Logger.info(`Anchor created: ${anchorID}`)
