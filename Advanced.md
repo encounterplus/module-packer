@@ -62,9 +62,33 @@ TODO
 
 TODO
 
+
 ### Print-Only or Module-Only Items
 
-TODO
+Any element can be modified with the `.print-only` element to show up only in PDF output. Likewise, any element can be modified with the `.screen-only` attribute to only show up in EncounterPlus module output. Below is an example of having two images, one that only shows up in EncounterPlus, and a subsequent that only shows up in PDF output.
+
+**Note**: When previewing in Visual Studio Code's live Markdown Preview window, items with `.print-only` will not appear (it treats the preview as if it were in EncounterPlus).
+
+```Markdown
+![My EncounterPlus Image](EncounterPlusImage.jpg){.screen-only}
+![My PDF Image](PDFImage.jpg){.print-only}
+```
+
+### Automatically Update Compendium Links
+
+When exporting to PDF, links to EncounterPlus's compendium entries will just appear as broken links in the PDF document. Often, a more useful thing to do is to have the PDF output link to D&D Beyond's item, spell, and monster entries when outputting to PDF. This can be done automatically with the `print-link-update` entry in your Module.yaml file:
+
+The following will update compendium links to individual D&D Beyond Entries (e.g., a link to `/spell/fireball` in EncounterPlus will appear as `https://www.dndbeyond.com/spells/fireball` in PDF output).
+
+```YAML
+print-link-update: D&D Beyond Entries
+```
+
+The following will update compendium links to individual D&D Beyond Search Results (e.g., a link to `/spell/fireball` in EncounterPlus will appear as `https://www.dndbeyond.com/search?q=fireball` in PDF output).
+
+```YAML
+print-link-update: D&D Beyond Search
+```
 
 ### Hiding Footer Text
 
@@ -76,7 +100,15 @@ TODO
 
 ## Running from the Command Line
 
-TODO
+The Module Packer can be run from the command line. It will, however, require NodeJS and Python 3 to be installed on the local system.
+
+1. Download the source code from this repository.
+2. Navigate to the source code directory in your terminal.
+2. Enter the following in your terminal where <Path to Module> is the root path of your module (i.e., the folder containing the Module.yaml file):
+`python3 launcher.py run --path "<Path to Module>"`
+
+If you want to output PDF, add `--output pdf` to your command:
+`python3 launcher.py run --path "<Path to Module>" --output pdf`
 
 ## Splitting Monster Block Columns on Specific Properties
 

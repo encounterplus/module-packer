@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.32
 
 ### Added
 - Added `print-link-update` option to Module Projects to allow compendium links to link to D&D Beyond instead when outputting to PDF. Valid values are "None", "D&D Beyond Entries", and "D&D Beyond Search".
