@@ -60,6 +60,9 @@ export class ModuleProject {
   /** Whether the module will automatically compress images when building */
   compressImages: boolean | undefined = undefined
 
+  /** The print link mode */
+  printLinkMode: PrintLinkMode | undefined = undefined
+
   /** The module map references for the project */
   mapFiles: MapFileReference[] = []
 
@@ -207,6 +210,12 @@ export class ModuleProject {
       moduleProject.compressImages = compressImages
     }
 
+    // If printLinkMode is specified in Module project file, use that
+    let printLinkModeString = (moduleData['printLinkUpdate'] as string || moduleData['print-link-update'] as string)
+    if (printLinkModeString) {
+      moduleProject.printLinkMode = ModuleProject.getPrintLinkMode(printLinkModeString)
+    }
+
     // If cover image is specified in Module project file, use that.
     // Ensure cover image actually exists
     let moduleCoverPath = moduleData['cover'] as string
@@ -349,6 +358,9 @@ export class ModuleProject {
     if (this.compressImages !== undefined) {
       newModuleProject['compress-images'] = this.compressImages
     }
+    if (this.printLinkMode !== undefined) {
+      newModuleProject['print-link-update'] = ModuleProject.getPrintLinkModeString(this.printLinkMode)
+    }
     newModuleProject['version'] = this.version    
     newModuleProject['auto-increment-version'] = true
     
@@ -396,4 +408,50 @@ export class ModuleProject {
     FileSystem.writeFileSync(projectFilePath, outputYAML)
   }
 
+  /**
+   * Converts the print link mode string to a 
+   * @param printLinkModeString print link mode string
+   */
+  static getPrintLinkMode(printLinkModeString: string): PrintLinkMode {
+    switch (printLinkModeString.toLowerCase()) {
+      case 'dnd beyond entries':
+        return PrintLinkMode.DNDBeyondEntries
+      case 'd&d beyond entries':
+        return PrintLinkMode.DNDBeyondEntries
+      case 'dnd beyond search':
+        return PrintLinkMode.DNDBeyondSearch
+      case 'd&d beyond search':
+        return PrintLinkMode.DNDBeyondSearch
+      default:
+          return PrintLinkMode.None
+    }
+  }
+
+  /**
+   * Converts the print link mode string to a 
+   * @param printLinkModeString print link mode string
+   */
+  static getPrintLinkModeString(printLinkMode: PrintLinkMode): string {
+    switch (printLinkMode) {
+      case PrintLinkMode.DNDBeyondEntries:
+        return 'D&D Beyond Entries'
+      case PrintLinkMode.DNDBeyondSearch:
+        return 'D&D Beyond Search'
+      default:
+          return 'none'
+    }
+  }
+
+}
+
+/** The link mode when exporting to PDF */
+export enum PrintLinkMode {
+  /** Do not modify links when  */
+  None = 1,
+
+  /** Change compendium entry links to D&D Beyond entry links */
+  DNDBeyondEntries,
+
+  /** Change compendium entry links to D&D Beyond search links */
+  DNDBeyondSearch,
 }

@@ -8,6 +8,7 @@ import { Module, ModuleMode } from './Module Entities/Module'
 import { ModuleEntity } from './Module Entities/ModuleEntity'
 import { Page } from './Module Entities/Page'
 import { Group } from './Module Entities/Group'
+import { PrintLinkMode } from './ModuleProject'
 
 
 export class PdfExporter {
@@ -49,6 +50,10 @@ export class PdfExporter {
     }
     html += PdfExporter.getChildPageContent(module.children)
     html = PdfExporter.formatTableOfContents(html)
+    let printLinkMode = module.moduleProjectInfo.printLinkMode
+    if(printLinkMode !== undefined && printLinkMode !== PrintLinkMode.None) {
+      html = PdfExporter.postProcessLinks(html, printLinkMode)
+    }    
     html = PdfExporter.alternateFooters(html)
     FileSystem.writeFileSync(pageLocation, html)
 
@@ -140,6 +145,67 @@ export class PdfExporter {
 
       isEvenPage = !isEvenPage
     })
+    return $.html()
+  }
+
+  /**
+   * Converts monster and spell links 
+   * @param html The page HTML
+   */
+  private static postProcessLinks(html: string, printLinkMode: PrintLinkMode): string {
+    let $ = Cheerio.load(html)
+
+    $('a').each((i, element) => {
+      let link = $(element).attr('href')
+      if(link === undefined) {
+        return
+      }
+
+      let ignoreLinkUpdate = $(element).hasClass('no-link-update')
+      if(ignoreLinkUpdate === true) {
+        return
+      }
+
+      let newLink = link
+      if(link.startsWith('/monster/')) {
+        if(printLinkMode === PrintLinkMode.DNDBeyondEntries) {
+          newLink = link.replace('/monster/', 'https://www.dndbeyond.com/monsters/')
+        }
+        if(printLinkMode === PrintLinkMode.DNDBeyondSearch) {
+          newLink = link.replace('/monster/', 'https://www.dndbeyond.com/search?q=')
+        }       
+        $(element).attr('href', newLink)
+      }
+      if(link.startsWith('/spell/')) {
+        if(printLinkMode === PrintLinkMode.DNDBeyondEntries) {
+          newLink = link.replace('/spell/', 'https://www.dndbeyond.com/spells/')
+        }
+        if(printLinkMode === PrintLinkMode.DNDBeyondSearch) {
+          newLink = link.replace('/spell/', 'https://www.dndbeyond.com/search?q=')
+        }
+        $(element).attr('href', newLink)
+      }
+      if(link.startsWith('/item/')) {
+        let isMagicItem = $(element).hasClass('magic-item')
+        let isEquipment = $(element).hasClass('equipment')
+        if(printLinkMode === PrintLinkMode.DNDBeyondEntries) {
+          if(isMagicItem) {
+            newLink = link.replace('/item/', 'https://www.dndbeyond.com/magic-items/')
+          }
+          else if(isEquipment) {
+            newLink = link.replace('/item/', 'https://www.dndbeyond.com/equipment/')
+          }
+          else {
+            newLink = link.replace('/item/', 'https://www.dndbeyond.com/search?q=')
+          }
+        }
+        if(printLinkMode === PrintLinkMode.DNDBeyondSearch) {
+          newLink = link.replace('/item/', 'https://www.dndbeyond.com/search?q=')
+        }
+        $(element).attr('href', newLink)
+      }
+    })
+
     return $.html()
   }
 
