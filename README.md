@@ -664,6 +664,20 @@ The EncounterPlus Markdown Extension also provides access to the same module pac
 8. Use the standard Visual Studio Code preview to preview markdown (they will now be styled as if they were in EncounterPlus).
 9. Use the EncounterPlus Module View to build and export your module!
 
+## EncounterPlus Markdown Extension Keyboard Shortcuts
+
+| Mac | Windows | Description |
+|:---:|:---:|:---|
+|`Cmd+B`|`Ctrl+B`|Toggle Bold|
+|`Cmd+I`|`Ctrl+I`|Toggle Italics|
+|`Cmd+U`|`Ctrl+U`|Toggle Underline|
+|`Cmd+M`|`Ctrl+M`|Toggle Mark|
+|`Cmd+K`|`Ctrl+K`|Create Link|
+|`Cmd+Shift+=`|`Ctrl+Shift+=`|Toggle Superscript|
+|`Cmd+Shift+-`|`Ctrl+Shift+-`|Toggle Subscript|
+|`Cmd+Shift+X`|`Ctrl+Shift+X`|Toggle Strikethrough|
+|`Alt+Shift+Q`|`Alt+Shift+Q`|Toggle Blockquote|
+
 # Other Editors
 
 ### Ulysses

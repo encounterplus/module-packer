@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+- Added `Cmd-K` shortcut for creating links (`Ctrl-K` on Windows)
+- Added "Create Monster Link", "Create Spell Link", and "Create Item Link" commands (no default keybindings)
+
 ### Changed
 - Changed front from Bookinsanity to Bookinsanity remake to handle accented characters.
 - Made most links bold by default in PDF output. Table of content links still remain the same.

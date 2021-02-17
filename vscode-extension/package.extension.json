@@ -141,6 +141,26 @@
         "title": "Markdown: Toggle Block Quote",
         "command": "encounterPlusMarkdown.toggleBlockQuote",
         "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Create Link",
+        "command": "encounterPlusMarkdown.createLink",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Create Monster Link",
+        "command": "encounterPlusMarkdown.createMonsterLink",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Create Item Link",
+        "command": "encounterPlusMarkdown.createItemLink",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Create Spell Link",
+        "command": "encounterPlusMarkdown.createSpellLink",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
       }
     ],
     "keybindings": [
@@ -200,8 +220,14 @@
       },
       {
         "command": "encounterPlusMarkdown.toggleBlockQuote",
-        "key": "alt-shift-q",
-        "mac": "alt-shift-q",
+        "key": "alt+shift+q",
+        "mac": "alt+shift+q",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.createLink",
+        "key": "ctrl+k",
+        "mac": "cmd+k",
         "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
       }
     ],

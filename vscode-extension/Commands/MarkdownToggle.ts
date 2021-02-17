@@ -26,4 +26,7 @@ export interface MarkdownToggle {
   /** The character offset count when the format is applied */
   characterOffset: number
 
+  /** Whether the command should deselect after the format is applied */
+  deselectAfter: boolean
+
 }

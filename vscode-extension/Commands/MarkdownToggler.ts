@@ -20,6 +20,7 @@ export class MarkdownToggler {
       disableFormat: '$1',
       lineOffset: 0,
       characterOffset: 2,
+      deselectAfter: false,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleItalics'] = {
@@ -31,6 +32,7 @@ export class MarkdownToggler {
       disableFormat: '$1',
       lineOffset: 0,
       characterOffset: 1,
+      deselectAfter: false,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleUnderLine'] = {
@@ -42,6 +44,7 @@ export class MarkdownToggler {
       disableFormat: '$1',
       lineOffset: 0,
       characterOffset: 1,
+      deselectAfter: false,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleMark'] = {
@@ -53,6 +56,7 @@ export class MarkdownToggler {
       disableFormat: '$1',
       lineOffset: 0,
       characterOffset: 2,
+      deselectAfter: false,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleSuperscript'] = {
@@ -64,6 +68,7 @@ export class MarkdownToggler {
       disableFormat: '$1',
       lineOffset: 0,
       characterOffset: 1,
+      deselectAfter: false,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleSubscript'] = {
@@ -75,6 +80,7 @@ export class MarkdownToggler {
       disableFormat: '$1',
       lineOffset: 0,
       characterOffset: 1,
+      deselectAfter: false,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleStrikethrough'] = {
@@ -86,6 +92,7 @@ export class MarkdownToggler {
       disableFormat: '$1',
       lineOffset: 0,
       characterOffset: 2,
+      deselectAfter: false,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleCodeInline'] = {
@@ -97,6 +104,7 @@ export class MarkdownToggler {
       disableFormat: '$1',
       lineOffset: 0,
       characterOffset: 1,
+      deselectAfter: false,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleCodeBlock'] = {
@@ -108,6 +116,7 @@ export class MarkdownToggler {
       disableFormat: '$1',
       lineOffset: 1,
       characterOffset: 0,
+      deselectAfter: false,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleUList'] = {
@@ -119,6 +128,7 @@ export class MarkdownToggler {
       disableFormat: '$1$2',
       lineOffset: 0,
       characterOffset: 2,
+      deselectAfter: false,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleOList'] = {
@@ -130,6 +140,7 @@ export class MarkdownToggler {
       disableFormat: '$1$2',
       lineOffset: 0,
       characterOffset: 3,
+      deselectAfter: false,
     }
 
     this.toggleDictionary['encounterPlusMarkdown.toggleBlockQuote'] = {
@@ -141,6 +152,55 @@ export class MarkdownToggler {
       disableFormat: '$1$2',
       lineOffset: 0,
       characterOffset: 2,
+      deselectAfter: false,
+    }
+
+    this.toggleDictionary['encounterPlusMarkdown.createLink'] = {
+      isMultiline: false,
+      detectRegExp: /\[(\S.*?\S)\]\((\S*?)\)/gi,
+      enableRegExp: /(.+)/gi,
+      disableRegExp: /\[(\S.*?\S)\]\((\S*?)\)/gi,
+      enableFormat: '[$1]()',
+      disableFormat: '$1',
+      lineOffset: 0,
+      characterOffset: 3,
+      deselectAfter: true,
+    }
+
+    this.toggleDictionary['encounterPlusMarkdown.createMonsterLink'] = {
+      isMultiline: false,
+      detectRegExp: /\[(\S.*?\S)\]\((\S*?)\)/gi,
+      enableRegExp: /(.+)/gi,
+      disableRegExp: /\[(\S.*?\S)\]\((\S*?)\)/gi,
+      enableFormat: '[$1](/mosnter/)',
+      disableFormat: '$1',
+      lineOffset: 0,
+      characterOffset: 12,
+      deselectAfter: true,
+    }
+
+    this.toggleDictionary['encounterPlusMarkdown.createItemLink'] = {
+      isMultiline: false,
+      detectRegExp: /\[(\S.*?\S)\]\((\S*?)\)/gi,
+      enableRegExp: /(.+)/gi,
+      disableRegExp: /\[(\S.*?\S)\]\((\S*?)\)/gi,
+      enableFormat: '[$1](/item/)',
+      disableFormat: '$1',
+      lineOffset: 0,
+      characterOffset: 9,
+      deselectAfter: true,
+    }
+
+    this.toggleDictionary['encounterPlusMarkdown.createSpellLink'] = {
+      isMultiline: false,
+      detectRegExp: /\[(\S.*?\S)\]\((\S*?)\)/gi,
+      enableRegExp: /(.+)/gi,
+      disableRegExp: /\[(\S.*?\S)\]\((\S*?)\)/gi,
+      enableFormat: '[$1](/spell/)',
+      disableFormat: '$1',
+      lineOffset: 0,
+      characterOffset: 10,
+      deselectAfter: true,
     }
   }
 
@@ -175,51 +235,54 @@ export class MarkdownToggler {
     let shouldEnable = !toggle.detectRegExp.test(firstSelectionText)
     let edits: vscode.TextEdit[] = []
 
-    if (toggle.isMultiline) {
+    if (!toggle.isMultiline && selectionLineRanges.length > 1) {
+      return
+    } 
 
-    } else {
-      selectionLineRanges.forEach( selectionLineRange => {
-        let selectionText = document.getText(selectionLineRange)
-        let matches: RegExpMatchArray | null
-        let matchRegExp = shouldEnable ? toggle.enableRegExp : toggle.disableRegExp
-        let replaceFormat = shouldEnable ? toggle.enableFormat : toggle.disableFormat
-        
-        matches = selectionText.match(matchRegExp)
-        if (matches) {
-          let lineNumber = selectionLineRange.start.line
-          let startCharacter = selectionLineRange.start.character + (matches.index ?? 0)
-          let endCharacter = startCharacter + matches[0].length
-          let matchRange = new vscode.Range(lineNumber, startCharacter, lineNumber, endCharacter)
-          let replacedText = selectionText.replace(matchRegExp, replaceFormat)
-          edits.push(new vscode.TextEdit(matchRange, replacedText))
-        }
-      })
-    }
+    selectionLineRanges.forEach( selectionLineRange => {
+      let selectionText = document.getText(selectionLineRange)
+      let matches: RegExpMatchArray | null
+      let matchRegExp = shouldEnable ? toggle.enableRegExp : toggle.disableRegExp
+      let replaceFormat = shouldEnable ? toggle.enableFormat : toggle.disableFormat
+      
+      matches = selectionText.match(matchRegExp)
+      if (matches) {
+        let lineNumber = selectionLineRange.start.line
+        let startCharacter = selectionLineRange.start.character + (matches.index ?? 0)
+        let endCharacter = startCharacter + matches[0].length
+        let matchRange = new vscode.Range(lineNumber, startCharacter, lineNumber, endCharacter)
+        let replacedText = selectionText.replace(matchRegExp, replaceFormat)
+        edits.push(new vscode.TextEdit(matchRange, replacedText))
+      }
+    })
 
+    let selections: vscode.Selection[] = []
     editor.edit(editBuilder => {
       edits.forEach(edit => {
-        // If the selection region is the entirety of the replaced region, then we do not need to
-        // offset the selection, VS Code handles that
-        let selectionCoversEdit = selection.isEqual(edit.range)
-
         // Replace the text
         editBuilder.replace(edit.range, edit.newText)
         let lineDifference = shouldEnable ? toggle.lineOffset : -toggle.lineOffset
         let characterDifference = shouldEnable ? toggle.characterOffset : -toggle.characterOffset        
         
-        // Modify the selection if the text changed out from under it (sometimes VS Code handles this
-        // for us, see note above)
-        editor.selections = editor.selections.map( selection => {
-          if (selectionCoversEdit) {
-            return selection
+        // Modify the selection if the text changed out from under it. Do not apply the
+        // selections in the editor until AFTER the edit has been made, or odd things
+        // will happen
+        selections = editor.selections.map( selection => {
+          if(toggle.deselectAfter && shouldEnable) {
+            return new vscode.Selection(
+              new vscode.Position(edit.range.end.line, edit.range.end.character + characterDifference),
+              new vscode.Position(edit.range.end.line, edit.range.end.character + characterDifference))
           }
-
+          
           return new vscode.Selection(
               new vscode.Position(selection.start.line + lineDifference, selection.start.character + characterDifference),
               new vscode.Position(selection.end.line + lineDifference, selection.end.character + characterDifference))
         })        
       })
-    })    
+    })
+
+    // After edit has been made, apply any new selections
+    editor.selections = selections
   }
 
   /**
