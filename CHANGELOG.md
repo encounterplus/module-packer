@@ -1,5 +1,11 @@
 # Change Log
 
+## [Unreleased]
+
+### Changed
+- Changed front from Bookinsanity to Bookinsanity remake to handle accented characters.
+- Made most links bold by default in PDF output. Table of content links still remain the same.
+
 ## 1.0.32
 
 ### Added

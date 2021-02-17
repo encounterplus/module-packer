@@ -1240,6 +1240,13 @@ table.sidebar td:first-child {
     size: auto;
     margin: 0;
   }
+  a {
+    font-weight: bold;
+  }
+  ul.toc > li > a,
+  ul.toc > li > span > a {
+    font-weight: unset;
+  }
   div.print-two-column:not(.statblock) {
     width: 7.5in;
     position: relative;
