@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.33
 
 ### Added
 - Added `Cmd-K` shortcut for creating links (`Ctrl-K` on Windows)
