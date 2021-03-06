@@ -648,7 +648,7 @@ table.sidebar td:first-child {
   font-size: 2.3rem;
   line-height: 1.2em;
   margin: 1rem 0 0;
-  letter-spacing: 1rem;
+  letter-spacing: 0.1rem;
   font-variant: small-caps;
   font-weight: bold;
 }
