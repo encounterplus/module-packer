@@ -87,6 +87,7 @@
 
 html {
   -webkit-print-color-adjust: exact;
+  font-size:89.2%;
 }
 
 p {
@@ -102,12 +103,12 @@ p {
 
 .float-left {
   float: left;
-  margin-right: 10px;
+  margin-right: 1.0rem;
 }
 
 .float-right {
   float: right;
-  margin-left: 10px;
+  margin-left: 1.0rem;
 }
 
 .hidden {
@@ -142,44 +143,44 @@ h6 {
   color: @accent-color;
   font-weight: normal;
   display: block;
-  padding: 0px;
-  margin: 5px 0px;
+  padding: 0;
+  margin: .5rem 0;
 }
 
 h1 {
-  font-size: 30px;
-  line-height: 34px;
-  padding-bottom: 5px;
+  font-size: 3.0rem;
+  line-height: 3.4rem;
+  padding-bottom: .5rem;
 }
 
 h2 {
-  font-size: 23px;
-  line-height: 28px;
+  font-size: 2.3rem;
+  line-height: 2.8rem;
 }
 
 h3 {
-  font-size: 20px;
-  border-bottom: 1px solid @accent-color;
-  line-height: 28px;
+  font-size: 2.0rem;
+  border-bottom: .1rem solid @accent-color;
+  line-height: 2.8rem;
   overflow: hidden;
 }
 
 h4 {
-  font-size: 18px;
-  line-height: 23px;
+  font-size: 1.8rem;
+  line-height: 2.3rem;
 }
 
 h1 + p {
   &:not(.no-fancy) {
     &::first-letter {
       font-family: 'Solbera Imitation' !important;
-      font-size: 93px;
+      font-size: 9.3rem;
       text-decoration: none;
       font-style: normal;
       font-weight: normal;
       line-height: 1;
-      margin-top: -3px;
-      padding-right: 8px;
+      margin-top: -.3rem;
+      padding-right: .8rem;
       float: left;
     }
   }
@@ -189,39 +190,39 @@ h1 + p {
 
 hr {
   border-color: @accent-color;
-  height: 1px;
-  border-bottom: 1px solid;
+  height: .1rem;
+  border-bottom: .1rem solid;
 }
 
 /******** Standard Block Quote ********/
 
 .blockquote-wrap {
-  padding-top: 8px;
-  padding-bottom: 8px;
-  padding-left: 0px;
-  padding-right: 0px;
-  margin: 0px;
+  padding-top: .8rem;
+  padding-bottom: .8rem;
+  padding-left: 0;
+  padding-right: 0;
+  margin: 0;
   overflow: hidden;
   page-break-inside: avoid;
 }
 
 blockquote {
   font-family: @body-font-family !important;
-  font-size: 13px;
+  font-size: 1.3rem;
   display: block;
   background-color: #e0e4c3;
-  padding: 10px 15px;
-  margin: 20px 0px;
+  padding: 1.0rem 1.5rem;
+  margin: 2.0rem 0;
   position: relative;
-  border-top: 2px solid black;
-  border-bottom: 2px solid black;
+  border-top: .2rem solid black;
+  border-bottom: .2rem solid black;
 
   p {
     &:first-child {
-      margin-top: 0px;
+      margin-top: 0;
     }
     &:last-child {
-      margin-bottom: 0px;
+      margin-bottom: 0;
     }
   }
 
@@ -231,20 +232,20 @@ blockquote {
     position: absolute;
     background-repeat: no-repeat;
     background-position: top center, bottom center;
-    width: 14px;
-    top: -8px;
-    bottom: -8px;
-    background-size: 14px 7px;
+    width: 1.4rem;
+    top: -.8rem;
+    bottom: -.8rem;
+    background-size: 1.4rem .7rem;
   }
 
   &:before {
-    left: 0px;
+    left: 0;
     background-image: linear-gradient(to bottom right, #fff0 0%, #fff0 50%, #000 50%, #000 100%),
       linear-gradient(to top right, #fff0 0%, #fff0 50%, #000 50%, #000 100%);
   }
 
   &:after {
-    right: 0px;
+    right: 0;
     background-image: linear-gradient(to bottom left, #fff0 0%, #fff0 50%, #000 50%, #000 100%),
       linear-gradient(to top left, #fff0 0%, #fff0 50%, #000 50%, #000 100%);
   }
@@ -253,11 +254,11 @@ blockquote {
 /******** Read-Aloud Block Quote ********/
 
 .blockquote-read-wrap {
-  padding-top: 3px;
-  padding-bottom: 3px;
-  padding-left: 3px;
-  padding-right: 3px;
-  margin: 0px;
+  padding-top: .3rem;
+  padding-bottom: .3rem;
+  padding-left: .3rem;
+  padding-right: .3rem;
+  margin: 0rem;
   overflow: hidden;
   page-break-inside: avoid;
 }
@@ -265,39 +266,39 @@ blockquote {
 blockquote.read {
   border-top: none;
   border-bottom: none;
-  border-left: 2px solid @accent-color;
-  border-right: 2px solid @accent-color;
+  border-left: .2rem solid @accent-color;
+  border-right: .2rem solid @accent-color;
   background-color: #edebe8;
   box-shadow: none;
 
   &:before,
   &:after {
-    width: 4px;
-    background-size: 4px 4px;
+    width: .4rem;
+    background-size: .4rem .4rem;
     background-position: top center, bottom center;
-    top: -3px;
-    bottom: -3px;
-    background-image: radial-gradient(circle at center, @accent-color 2px, transparent 0px),
-      radial-gradient(circle at center, @accent-color 2px, transparent 0px);
+    top: -.3rem;
+    bottom: -.3rem;
+    background-image: radial-gradient(circle at center, @accent-color .2rem, transparent 0),
+      radial-gradient(circle at center, @accent-color .2rem, transparent 0);
   }
 
   &:before {
-    left: -3px;
+    left: -.3rem;
   }
 
   &:after {
-    right: -3px;
+    right: -.3rem;
   }
 }
 
 /******** Large Quote Block Quote ********/
 
 blockquote.large-quote {
-  font-size: 20px;
+  font-size: 2.0rem;
   font-style: italic;
   text-align: center;
-  margin: 10px 40px;
-  padding: 20px 0px;
+  margin: 1.0rem 4.0rem;
+  padding: 2.0rem 0;
   line-height: 1.45;
   position: relative;
   color: #58180d;
@@ -305,8 +306,8 @@ blockquote.large-quote {
   border-bottom: none;
   background-color: transparent;
   box-shadow: none;
-  border-top: 2px solid #58180d;
-  border-bottom: 2px solid #58180d;
+  border-top: .2rem solid #58180d;
+  border-bottom: .2rem solid #58180d;
 }
 
 blockquote.large-quote:before {
@@ -320,23 +321,23 @@ blockquote.large-quote:after {
 /******** Paper Block Quote ********/
 
 .blockquote-paper-wrap {
-  padding-top: 15px;
-  padding-bottom: 15px;
-  padding-left: 1px;
-  padding-right: 1px;
-  margin: 10px;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  padding-left: .1rem;
+  padding-right: .1rem;
+  margin: 1.0rem;
   overflow: hidden;
   page-break-inside: avoid;
 }
 
 blockquote.paper {
   font-family: @flavor-font-family !important;
-  border-left: 1px solid #d7d2d0;
-  border-right: 1px solid #d7d2d0;
+  border-left: .1rem solid #d7d2d0;
+  border-right: .1rem solid #d7d2d0;
   border-top: 0;
   border-bottom: 0;
   background-color: #fbf4df;
-  padding: 20px;
+  padding: 2.0rem;
   box-shadow: none;
 
   &:before,
@@ -344,22 +345,22 @@ blockquote.paper {
     content: '';
     background-image: url('../img/note.png');
     background-size: 100% 100%;
-    height: 15px;
+    height: 1.5rem;
     position: absolute;
-    left: -1px;
-    right: -1px;
+    left: -.1rem;
+    right: -.1rem;
     width: auto;
   }
 
   &:before {
     transform: rotateY(180deg);
-    top: -15px;
+    top: -1.5rem;
     bottom: unset;
   }
 
   &:after {
     transform: rotateX(180deg);
-    bottom: -15px;
+    bottom: -1.5rem;
     top: unset;
   }
 }
@@ -369,16 +370,16 @@ blockquote.paper {
 blockquote.flowchart,
 blockquote.flowchart-with-link {
   box-shadow: none;
-  border-width: 16px 16px 16px 16px;
+  border-width: 1.6rem 1.6rem 1.6rem 1.6rem;
   border-style: solid;
   border-color: transparent;
   border-image-repeat: repeat;
   border-image-slice: 16 16 16 16 fill;
   background-color: transparent;
-  padding: 10px;
+  padding: 1.0rem;
   position: relative;
   border-image-source: url('../img/flowchart.png');
-  margin: 50px 25px;
+  margin: 5.0rem 2.5rem;
 
   &:before,
   &:after {
@@ -389,11 +390,11 @@ blockquote.flowchart-with-link {
 blockquote.flowchart-with-link {
   &:before {
     content: '';
-    border-left: 3px solid @accent-color;
-    height: 100px;
+    border-left: .3rem solid @accent-color;
+    height: 10.0rem;
     left: 50%;
     position: absolute;
-    margin-top: -80px;
+    margin-top: -8.0rem;
     z-index: -1;
   }
 }
@@ -401,10 +402,10 @@ blockquote.flowchart-with-link {
 /******** Flavor Text Block Quote ********/
 
 .blockquote-flavortext-wrap {
-  padding-top: 50px;
-  padding-bottom: 50px;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-top: 5.0rem;
+  padding-bottom: 5.0rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
   overflow: hidden;
   display: table;
   page-break-inside: avoid;
@@ -418,12 +419,12 @@ blockquote.flavortext {
   border-bottom: 0;
   background-image: url('../img/flavortext.png');
   background-size: cover;
-  padding: 20px;
+  padding: 2.0rem;
   filter: opacity(1);
-  max-width: 500px;
+  max-width: 50.0rem;
   -webkit-filter: opacity(1);
   transform: rotate(-7deg);
-  margin: 0px;
+  margin: 0;
 }
 
 blockquote.flavortext:before,
@@ -449,19 +450,19 @@ ul.toc {
   padding-left: 0;
 
   li {
-    font-size: 13px;
+    font-size: 1.3rem;
     font-weight: normal;
     display: flex;
-    margin-bottom: 10px;
+    margin-bottom: 1.0rem;
     padding-left: 2em;
 
     span.toc-title {
       order: 1;
-      margin-right: 0.25em;
+      margin-right: 0.25rem;
     }
 
     span.toc-page-number {
-      font-size: 13px;
+      font-size: 1.3rem;
       font-weight: normal;
       color: @foreground-color;
       order: 3;
@@ -475,7 +476,7 @@ ul.toc {
     &::after {
       content: "";
       color: @foreground-color;
-      border-bottom: 2px dotted;
+      border-bottom: .2rem dotted;
       flex-grow: 1;
       order: 2;
     }
@@ -491,10 +492,10 @@ ul.toc {
 
   li.part {
     padding-left: 0;    
-    border-bottom: 1px solid @accent-color;
+    border-bottom: .1rem solid @accent-color;
     font-family: @heading-font-family;
-    font-size: 18px;
-    line-height: 22px;
+    font-size: 1.8rem;
+    line-height: 2.2rem;
     font-weight: bold;
     color: @accent-color;
 
@@ -509,7 +510,7 @@ ul.toc {
 
   li.category {
     padding-left: 1em;
-    font-size: 14px;
+    font-size: 1.4rem;
     font-family: @heading-font-family;
     font-weight: bold;
     color: @accent-color;
@@ -526,10 +527,10 @@ code,
 pre {
   display: block;
   background: #f5f5f5;
-  padding: 10px 15px;
-  margin: 10px 0px;
-  border-top: 2px solid black;
-  border-bottom: 2px solid black;
+  padding: 1.0rem 1.5rem;
+  margin: 1.0rem 0;
+  border-top: .2rem solid black;
+  border-bottom: .2rem solid black;
   white-space: pre-wrap;
   white-space: -moz-pre-wrap;
   white-space: -pre-wrap;
@@ -579,7 +580,7 @@ figure {
 
 figcaption {
   text-align: center;
-  font-size: 9px;
+  font-size: .9rem;
 }
 
 img {
@@ -607,7 +608,7 @@ img.size-full {
 table {
   font-family: @body-font-family;
   border-collapse: collapse;
-  margin-bottom: 30px;
+  margin-bottom: 3.0rem;
   page-break-inside: avoid;
   overflow-wrap: break-word;
 
@@ -691,7 +692,7 @@ table {
 
 td,
 th {
-  padding: 10px;
+  padding: 1.0rem;
 }
 
 th p,
@@ -707,7 +708,7 @@ tbody tr:nth-child(odd) {
 /******** Shop Tables ********/
 table.shop {
   tbody {
-    font-size: 11px;
+    font-size: 1.1rem;
     tr {
       &:nth-child(odd) {
         background: #edebe840;
@@ -719,7 +720,7 @@ table.shop {
 table.shop tbody table.shop > thead > tr > td,
 table.shop > tbody > tr > td {
   border-color: @accent-color;
-  border-bottom-width: 1px;
+  border-bottom-width: .1rem;
   border-bottom-style: solid;
 }
 
@@ -731,7 +732,7 @@ table.shop > tbody > tr.shopH1 {
   font-weight: bold;
   font-family: @heading-font-family;
   color: @accent-color;
-  font-size: 14px;
+  font-size: 1.4rem;
   font-weight: bold;
 }
 
@@ -739,20 +740,20 @@ table.shop > tbody > tr.shopH2 {
   font-weight: bold;
   font-family: @heading-font-family;
   color: @accent-color;
-  font-size: 12px;
+  font-size: 1.2rem;
   font-weight: bold;
 }
 
 /******** Sidebar Tables ********/
 
 table.sidebar {
-  line-height: 13px;
+  line-height: 1.3rem;
   background: @neutral-background-primary;
-  font-size: 11px;
+  font-size: 1.1rem;
   page-break-inside: avoid;
   float: right;
-  margin-left: 10px;
-  max-width: 400px;
+  margin-left: 1.0rem;
+  max-width: 40.0rem;
   width: 45%;
 
   tbody {
@@ -775,7 +776,7 @@ table.sidebar {
     font-weight: bold;
     font-family: @heading-font-family;
     color: @accent-color;
-    font-size: 18px;
+    font-size: 1.8rem;
     border-top: none;
   }
 
@@ -789,8 +790,8 @@ table.sidebar {
     font-weight: bold;
     font-family: @heading-font-family;
     color: @accent-color;
-    font-size: 9px;
-    padding: 4px 8px;
+    font-size: .9rem;
+    padding: .4rem .8rem;
   }
 }
 
@@ -805,18 +806,18 @@ table.sidebar {
 
   font-family: @body-font-family;
   text-align: left;
-  margin: 10px 20px;
+  margin: 1.0rem 2.0rem;
   display: inline-block;
   vertical-align: top;
-  width: 300px;
+  width: 30.0rem;
   background: @statblock-background-default;
-  padding: 5px 10px 20px;
+  padding: .5rem 1.0rem 2.0rem;
   page-break-inside: avoid;
 
   &.two-column {
     width: 90%;
     display: inline-block;
-    max-width: 850px;
+    max-width: 85.0rem;
     position: relative;
     left: 50%;
     transform: translateX(-50%);
@@ -844,10 +845,10 @@ table.sidebar {
   .statblock-title {
     font-family: @heading-font-family;
     color: @statblock-title-color;
-    font-size: 23px;
+    font-size: 2.3rem;
     line-height: 1.2em;
-    margin: 10px 0 0;
-    letter-spacing: 1px;
+    margin: 1.0rem 0 0;
+    letter-spacing: 1.0rem;
     font-variant: small-caps;
     font-weight: bold;
   }
@@ -882,21 +883,21 @@ table.sidebar {
   .statblock-border {
     display: block;
     background: @statblock-border-top-bottom-color;
-    border: 1px solid @statblock-border-sides-color;
-    height: 5px;
-    padding: 0 10px 0;
-    margin: -5px -10px 0;
+    border: .1rem solid @statblock-border-sides-color;
+    height: .5rem;
+    padding: 0 1.0rem 0;
+    margin: -.5rem -1.0rem 0;
     box-sizing: initial;
   }
 
   .statblock-border.bottom {
-    margin: 15px -10px -20px;
+    margin: 1.5rem -1.0rem -2.0rem;
   }
 
   .statblock-tapered-rule {
     display: block;
     width: 100%;
-    height: 5px;
+    height: .5rem;
     border: none;
     color: @statblock-title-color;
     fill: @statblock-title-color;
@@ -906,15 +907,15 @@ table.sidebar {
   .statblock-subtitle {
     font-weight: normal;
     font-style: italic;
-    font-size: 12px;
+    font-size: 1.2rem;
     line-height: 1.2em;
-    margin: 0 0 10px;
+    margin: 0 0 1.0rem;
   }
 
   .statblock-topstat-name,
   .statblock-topstat-value {
     margin: 0;
-    font-size: 13px;
+    font-size: 1.3rem;
     line-height: 1.2em;
   }
 
@@ -929,11 +930,11 @@ table.sidebar {
   }
 
   .statblock-property-line.first {
-    margin: 8px 0 0;
+    margin: .8rem 0 0;
   }
 
   .statblock-property-line.last {
-    margin: 0 0 10px;
+    margin: 0 0 1.0rem;
   }
 
   .statblock-abilities {
@@ -945,21 +946,21 @@ table.sidebar {
     display: inline-block;
     vertical-align: middle;
     width: 16.5%;
-    min-width: 40px;
-    font-size: 12px;
+    min-width: 4.0rem;
+    font-size: 1.2rem;
     line-height: 1em;
   }
 
   .statblock-ability-abbrev {
-    margin: 10px 0 2px;
-    font-size: 13px;
+    margin: 1.0rem 0 .2rem;
+    font-size: 1.3rem;
     line-height: 1.2em;
     text-transform: uppercase;
     color: @statblock-title-color;
   }
 
   .statblock-ability-value {
-    margin: 0 0 10px;
+    margin: 0 0 1.0rem;
     line-height: 1.2em;
     font-weight: lighter;
   }
@@ -967,7 +968,7 @@ table.sidebar {
   .statblock-action-name,
   .statblock-trait-name {
     color: @foreground-color;
-    font-size: 13.5px;
+    font-size: 1.35rem;
     line-height: 1.2em;
     display: inline;
     margin: 0;
@@ -980,24 +981,24 @@ table.sidebar {
   }
 
   .statblock-property-block {
-    padding: 10px 2px 0;
+    padding: 1.0rem .2rem 0;
   }
 
   .statblock-actions,
   .statblock-reactions,
   .statblock-legendary-actions {
-    margin: 0 0 20px;
+    margin: 0 0 2.0rem;
   }
 
   .statblock-section-title {
-    border-bottom: 1px solid @statblock-title-color;
-    font-size: 21px;
+    border-bottom: .1rem solid @statblock-title-color;
+    font-size: 2.1rem;
     font-variant: small-caps;
     font-weight: normal;
-    letter-spacing: 1px;
-    margin: 20px 0 0;
-    padding: 0 0 10px;
-    text-indent: 5px;
+    letter-spacing: .1rem;
+    margin: 2.0rem 0 0;
+    padding: 0 0 1.0rem;
+    text-indent: .5rem;
   }
 
   .statblock-actions:last-child,
@@ -1096,20 +1097,20 @@ table.sidebar {
   @item-block-border-top-bottom-color: #588ede;
   @item-block-border-sides-color: #d4d4d4;
   font-family: @body-font-family;
-  margin: 15px 0px 15px 0px;
+  margin: 1.5rem 0 1.5rem 0;
 
   .item-block-body {
-    padding: 10px 10px 10px 10px;
-    border-left: 1px solid @item-block-border-sides-color;
-    border-right: 1px solid @item-block-border-sides-color;
+    padding: 1.0rem 1.0rem 1.0rem 1.0rem;
+    border-left: .1rem solid @item-block-border-sides-color;
+    border-right: .1rem solid @item-block-border-sides-color;
     background: @item-block-background-default;
   }
 
   .item-block-title {
-    font-size: 20px;
+    font-size: 2.0rem;
     line-height: 1.2em;
-    margin-bottom: 5px;
-    letter-spacing: 1px;
+    margin-bottom: .5rem;
+    letter-spacing: .1rem;
     font-variant: small-caps;
     font-weight: bold;
   }
@@ -1117,16 +1118,16 @@ table.sidebar {
   .item-block-top-border {
     display: block;
     background: @item-block-border-top-bottom-color;
-    height: 3px;
-    padding: 0 10px 0;
+    height: .3rem;
+    padding: 0 1.0rem 0;
     box-sizing: initial;
   }
 
   .item-block-heading-border {
     display: block;
     background: @item-block-border-top-bottom-color;
-    height: 1px;
-    margin: 0px 20px 10px 0px;
+    height: .1rem;
+    margin: 0 2.0rem 1.0rem 0;
     box-sizing: initial;
   }
 
@@ -1134,20 +1135,20 @@ table.sidebar {
     content: '';
     background-image: url('../img/item.png');
     background-size: 100% 100%;
-    height: 15px;
+    height: 1.5rem;
     width: auto;
-    margin: 0 -11px -15px -11px;
+    margin: 0 -1.1rem -1.5rem -1.1rem;
   }
 
   .item-block-description {
-    font-size: 13px;
+    font-size: 1.3rem;
     display: inline;
   }
 
   .item-block-heading {
-    font-size: 13px;
+    font-size: 1.3rem;
     font-style: italic;
-    margin: 0px;
+    margin: 0;
   }
 }
 
@@ -1189,20 +1190,20 @@ table.sidebar {
   @item-block-border-top-bottom-color: #6431ab;
   @item-block-border-sides-color: #d4d4d4;
   font-family: @body-font-family;
-  margin: 15px 0px 15px 0px;
+  margin: 1.5rem 0 1.5rem 0;
 
   .spell-block-body {
-    padding: 10px 10px 10px 10px;
-    border-left: 1px solid @item-block-border-sides-color;
-    border-right: 1px solid @item-block-border-sides-color;
+    padding: 1.0rem 1.0rem 1.0rem 1.0rem;
+    border-left: .1rem solid @item-block-border-sides-color;
+    border-right: .1rem solid @item-block-border-sides-color;
     background: @item-block-background-default;
   }
 
   .spell-block-title {
-    font-size: 20px;
+    font-size: 2.0rem;
     line-height: 1.2em;
-    margin-bottom: 5px;
-    letter-spacing: 1px;
+    margin-bottom: .5rem;
+    letter-spacing: .1rem;
     font-variant: small-caps;
     font-weight: bold;
   }
@@ -1210,16 +1211,16 @@ table.sidebar {
   .spell-block-top-border {
     display: block;
     background: @item-block-border-top-bottom-color;
-    height: 3px;
-    padding: 0 10px 0;
+    height: .3rem;
+    padding: 0 1.0rem 0;
     box-sizing: initial;
   }
 
   .spell-block-heading-border {
     display: block;
     background: @item-block-border-top-bottom-color;
-    height: 1px;
-    margin: 0px 20px 10px 0px;
+    height: .1rem;
+    margin: 0 2.0rem 1.0rem 0;
     box-sizing: initial;
   }
 
@@ -1227,19 +1228,19 @@ table.sidebar {
     content: '';
     background-image: url('../img/item.png');
     background-size: 100% 100%;
-    height: 15px;
+    height: 1.5rem;
     width: auto;
-    margin: 0 -11px -15px -11px;
+    margin: 0 -1.1rem -1.5rem -1.1rem;
   }
 
   .spell-block-description {
-    font-size: 13px;
+    font-size: 1.3rem;
   }
 
   .spell-block-heading {
-    font-size: 13px;
+    font-size: 1.3rem;
     font-style: italic;
-    margin: 0px;
+    margin: 0;
   }
 }
 
@@ -1275,12 +1276,12 @@ table.sidebar {
 
 /******** Screen-Specific Styles ********/
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 40.0rem) {
   /* Make the sidebar not float when the screen width is too small */
   table.sidebar {
     float: none;
-    margin-left: 0.1in;
-    margin-right: 0.1in;
+    margin-left: 0.1rem;
+    margin-right: 0.1rem;
     width: calc(100% - 0.2in);
   }
 }
@@ -1291,19 +1292,19 @@ table.sidebar {
   }
 
   html {
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 0px;
-    padding-bottom: 20px;
-    margin: 0px;
+    padding-left: 1.0rem;
+    padding-right: 1.0rem;
+    padding-top: 0;
+    padding-bottom: 2.0rem;
+    margin: 0;
   }
 
   body {
     font-family: @body-font-family;
-    font-size: 13px;
-    line-height: 18px;
-    padding: 0px;
-    margin: 0px;
+    font-size: 1.3rem;
+    line-height: 1.8rem;
+    padding: 0;
+    margin: 0;
     color: black;
     background: url('../img/bg.png') #fefefc repeat;
   }
@@ -1316,21 +1317,21 @@ table.sidebar {
   figure.size-cover,
   img.size-cover {
     max-width: none;
-    width: calc(100% + 40px);
-    margin-top: calc(-30px);
-    margin-left: calc(-20px);
-    margin-right: calc(-20px);
-    margin-bottom: calc(+20px);
+    width: calc(100% + 4.0rem);
+    margin-top: calc(-3.0rem);
+    margin-left: calc(-2.0rem);
+    margin-right: calc(-2.0rem);
+    margin-bottom: calc(+2.0rem);
     height: auto;
   }
 
   #page {
-    padding: 15px 20px;
+    padding: 1.5rem 2.0rem;
     overflow: hidden;
   }
 
   blockquote {
-    box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 .3rem 1.0rem 0 rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -1402,26 +1403,26 @@ table.sidebar {
 
   .print-bottom-right {
     position: absolute;
-    bottom: -0.55in - 5px;
+    bottom: -0.55in - .5rem;
     right: -0.5in;
     z-index: -1;
   }
 
   .print-bottom-right.with-margin {
-    bottom: 1px;
-    right: 1px;
+    bottom: .1rem;
+    right: .1rem;
   }
 
   .print-bottom-left {
     position: absolute;
-    bottom:  -0.55in - 5px;
+    bottom:  -0.55in - .5rem;
     left: -0.5in;
     z-index: -1;
   }
 
   .print-bottom-left.with-margin {
-    bottom: 1px;
-    left: 1px;
+    bottom: .1rem;
+    left: .1rem;
   }
 
   .print-top-left {
@@ -1432,8 +1433,8 @@ table.sidebar {
   }
  
   .print-top-left.with-margin {
-    top: 1px;
-    left: 1px;
+    top: .1rem;
+    left: .1rem;
   }
 
   .print-top-right {
@@ -1444,8 +1445,8 @@ table.sidebar {
   }
 
   .print-top-right.with-margin {
-    top: 1px;
-    right: 1px;
+    top: .1rem;
+    right: .1rem;
   }
 
   .screen-only {
@@ -1453,16 +1454,16 @@ table.sidebar {
   }
 
   body {
-    font-size: 13px;
-    line-height: 18px;
-    padding: 0px;
-    margin: 0px;
+    font-size: 1.3rem;
+    line-height: 1.8rem;
+    padding: 0;
+    margin: 0;
     color: @foreground-color;
   }
 
   blockquote {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 1.0rem;
+    margin-bottom: 1.0rem;
   }
 
   /* Enable this if you want to print with
@@ -1529,9 +1530,9 @@ table.sidebar {
       font-variant: small-caps;
       bottom: 0.2in;
       width: 8.5in;
-      font-size: 15px;
+      font-size: 1.5rem;
       color: #aea41a;
-      right: 2px;
+      right: .2rem;
       text-align: center;
       z-index: -10;
     }
@@ -1540,10 +1541,10 @@ table.sidebar {
       font-family: @heading-font-family;
       position: absolute;
       bottom: 0.3in;
-      width: 50px;
-      font-size: 15px;
+      width: 5.0rem;
+      font-size: 1.5rem;
       color: #aea41a;
-      right: 2px;
+      right: .2rem;
       text-align: center;
       z-index: -10;
     }
