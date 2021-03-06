@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.0.34
+
+### Changed
+- Changed many sizes to use rem instead of px so EncounterPlus can scale content appropriately.
+
 ## 1.0.33
 
 ### Added
