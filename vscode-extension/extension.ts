@@ -107,6 +107,48 @@ export function activate(context: vscode.ExtensionContext) {
       })
     )
 
+    context.subscriptions.push(
+      vscode.commands.registerCommand('encounterPlusMarkdown.createMonsterStub', (moduleTreeItem) => {       
+        let editor = vscode.window.activeTextEditor
+        if (editor === undefined) {
+          return
+        }
+        let insertText = `\`\`\`Monster\nname:\nslug:\nsize:\ntype:\nalignment:\nac:\nhp:\nspeed:\nstr:\ndex:\ncon:\nint:\nwis:\ncha:\nsaves:\nskills:\nvulnerabilities:\nresistances:\ndamageImmunities:\nconditionImmunities:\nsenses:\nlanguages:\nchallenge:\nenvironments:\nimage:\ntoken:\ntraits:\n  - name:\n    description:\nactions:\n  - name:\n    description:\nreactions:\n  - name:\n    description:\nlegendaryActions:\n  - description:\n  - name:\n    description:\n\`\`\``
+        let insertPosition = editor.selection.end
+        editor.edit(editBuilder => {
+          editBuilder.insert(insertPosition, insertText)
+        })        
+      })
+    )
+
+    context.subscriptions.push(
+      vscode.commands.registerCommand('encounterPlusMarkdown.createItemStub', (moduleTreeItem) => {       
+        let editor = vscode.window.activeTextEditor
+        if (editor === undefined) {
+          return
+        }
+        let insertText = `\`\`\`Item\nname:\nslug:\ntype:\nattunement:\nprimaryDamage:\nsecondaryDamage:\nproperties:\n  - \ndamageType:\ndescription:\nvalue:\nsource:\n\`\`\``
+        let insertPosition = editor.selection.end
+        editor.edit(editBuilder => {
+          editBuilder.insert(insertPosition, insertText)
+        })        
+      })
+    )
+
+    context.subscriptions.push(
+      vscode.commands.registerCommand('encounterPlusMarkdown.createSpellStub', (moduleTreeItem) => {       
+        let editor = vscode.window.activeTextEditor
+        if (editor === undefined) {
+          return
+        }
+        let insertText = `\`\`\`Spell\nname:\nslug:\nlevel:\nschool:\nritual:\ntime:\nrange:\ncomponents:\nduration:\ndescription:\nclasses:\nimage:\nsource:\n\`\`\``
+        let insertPosition = editor.selection.end
+        editor.edit(editBuilder => {
+          editBuilder.insert(insertPosition, insertText)
+        })        
+      })
+    )
+
     vscode.workspace.onDidCreateFiles((event: vscode.FileCreateEvent) => {
       moduleProjectProvider.refresh()
     })

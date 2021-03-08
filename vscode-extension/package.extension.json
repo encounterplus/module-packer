@@ -83,6 +83,24 @@
         "when": "view == encounter-plus-modules && viewItem == moduleProject"
       },
       {
+        "command": "encounterPlusMarkdown.createMonsterStub",
+        "title": "Create Monster Stub",
+        "category": "EncounterPlus Markdown",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.createItemStub",
+        "title": "Create Item Stub",
+        "category": "EncounterPlus Markdown",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.createSpellStub",
+        "title": "Create Spell Stub",
+        "category": "EncounterPlus Markdown",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
         "title": "Markdown: Toggle Bold",
         "command": "encounterPlusMarkdown.toggleBold",
         "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
