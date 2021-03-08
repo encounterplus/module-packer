@@ -1,9 +1,11 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.35
 
 ### Added
 - Added support for .catalyst class font size
+- Added commands to create stubs
+- Added navigation from Extension menu items to headers
 
 ### Changed
 - Changed page view for VS Code extension to be expanded by default
