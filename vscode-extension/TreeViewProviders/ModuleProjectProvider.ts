@@ -116,7 +116,7 @@ class GroupTreeItem extends vscode.TreeItem {
    * @param groupPath The group directory path
    */
   constructor(public readonly group: Group) {
-    super(group.name, vscode.TreeItemCollapsibleState.Collapsed)
+    super(group.name, vscode.TreeItemCollapsibleState.Expanded)
     const groupFilePath = Path.join(group.groupPath, Group.groupSettingsFileName)
     this.command = {
       command: 'encounterPlusMarkdown.openGroupFile',
@@ -137,7 +137,7 @@ class PageTreeItem extends vscode.TreeItem {
    * @param page The page name
    */
   constructor(public readonly page: Page) {
-    super(page.name, page.children.length > 0 ? vscode.TreeItemCollapsibleState.Collapsed : vscode.TreeItemCollapsibleState.None)
+    super(page.name, page.children.length > 0 ? vscode.TreeItemCollapsibleState.Expanded : vscode.TreeItemCollapsibleState.None)
     this.command = {
       command: 'encounterPlusMarkdown.openPage',
       title: 'Open Page',
@@ -156,7 +156,7 @@ class ModuleTreeItem extends vscode.TreeItem {
    * @param moduleProject The module project
    */
   constructor(public readonly module: Module) {
-    super(module.moduleProjectInfo.name, vscode.TreeItemCollapsibleState.Collapsed)
+    super(module.moduleProjectInfo.name, vscode.TreeItemCollapsibleState.Expanded)
     this.command = {
       command: 'encounterPlusMarkdown.openModuleProjectFile',
       title: 'Open Module',

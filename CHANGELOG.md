@@ -1,5 +1,16 @@
 # Change Log
 
+## [Unreleased]
+
+### Added
+- Added support for .catalyst class font size
+
+### Changed
+- Changed page view for VS Code extension to be expanded by default
+
+### Fixed
+- Fixed broken font spacing on statblock titles
+
 ## 1.0.34
 
 ### Changed

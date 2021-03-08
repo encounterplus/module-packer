@@ -142,3 +142,9 @@ code {
 	border-color: #000;
 	height: 5px;
 }
+
+.vscode-body {
+	font-size: 13px;
+	padding: 1.5rem 2rem;
+	overflow: hidden;
+}

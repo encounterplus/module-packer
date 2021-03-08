@@ -60,7 +60,10 @@
 /******** Body / HTML ********/
 html {
   -webkit-print-color-adjust: exact;
-  font-size: 62.5%;
+  font-size: 10px;
+}
+html .catalyst {
+  font-size: 13px;
 }
 p {
   margin-block-start: 0;
@@ -1198,10 +1201,6 @@ table.sidebar td:first-child {
     display: none;
   }
   html {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-top: 0;
-    padding-bottom: 2rem;
     margin: 0;
   }
   body {
