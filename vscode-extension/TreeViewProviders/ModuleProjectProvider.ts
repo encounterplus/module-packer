@@ -141,7 +141,7 @@ class PageTreeItem extends vscode.TreeItem {
     this.command = {
       command: 'encounterPlusMarkdown.openPage',
       title: 'Open Page',
-      arguments: [page.pagePath],
+      arguments: [page.pagePath, page.name],
     }
     this.contextValue = 'modulePage'
     this.tooltip = this.page.pagePath

@@ -32,13 +32,30 @@ export function activate(context: vscode.ExtensionContext) {
     )
 
     context.subscriptions.push(
-      vscode.commands.registerCommand('encounterPlusMarkdown.openPage', async (pagePath) => {
+      vscode.commands.registerCommand('encounterPlusMarkdown.openPage', async (pagePath, pageName) => {
         if (!FileSystem.existsSync(pagePath)) {
           return
         }
-        let uri = vscode.Uri.file(pagePath)
+        let uri = vscode.Uri.file(`${pagePath}`)
         let doc = await vscode.workspace.openTextDocument(uri)
-        vscode.window.showTextDocument(doc, vscode.ViewColumn.One)
+
+        let docText = doc.getText()
+        let lineNumber = 0
+        let headerIndex = docText.indexOf(`# ${pageName}`)
+        if (headerIndex != -1) {
+          let textToHeader = docText.substring(0, headerIndex)
+          lineNumber = textToHeader.split('\n').length - 1
+        }       
+        
+        let openPosition = new vscode.Position(lineNumber, 0)
+        let openRange = new vscode.Range(openPosition, openPosition)
+        let showOptions = {
+          viewColumn: vscode.ViewColumn.One,
+          preserveFocus: false,
+          preview: false,
+          selection: openRange,
+        }
+        vscode.window.showTextDocument(doc, showOptions)
       })
     )
 
