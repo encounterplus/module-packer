@@ -172,7 +172,7 @@ export class MarkdownToggler {
       detectRegExp: /\[(\S.*?\S)\]\((\S*?)\)/gi,
       enableRegExp: /(.+)/gi,
       disableRegExp: /\[(\S.*?\S)\]\((\S*?)\)/gi,
-      enableFormat: '[$1](/mosnter/)',
+      enableFormat: '[$1](/monster/)',
       disableFormat: '$1',
       lineOffset: 0,
       characterOffset: 12,

@@ -1,5 +1,10 @@
 # Change Log
 
+## [Unreleased]
+
+### Fixed
+- Fixed typo in monster link creation
+
 ## 1.0.35
 
 ### Added
