@@ -86,17 +86,23 @@ export abstract class ModuleEntity {
 
 /** The module include mode */
 export enum IncludeMode {
-  /** All module targets include the entity */
+  /** All output formats include the entity */
   All = 1,
 
-  /** Only print targets include the entity */
+  /** 
+   * Only print targets include the entities. Image files
+   * will not be copied for module targets.
+   */
   Print,
 
-  /** Only Encounter+ module targets include the entity */
+  /** Only Encounter+ module targets include the entity. */
   Module,
 
   /** Only Encounter+ module targets include the entity, 
    * and only for the purposes of adding compendium entries. 
-   * No pages are created */
+   * No pages are created. (Only applicable to pages) */
   Compendium,
+
+  /** Copy Files only, do not include page content (only applicable to groups)  */
+  Files
 }

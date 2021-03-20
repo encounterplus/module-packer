@@ -8,7 +8,7 @@ import { BuildModuleCommand } from './Commands/BuildModuleCommand'
 import { CreateModuleProjectFileCommand } from './Commands/CreateModuleProjectFileCommand'
 import { ExportToPdfCommand } from './Commands/ExportToPdfCommand'
 import { MarkdownToggler } from './Commands/MarkdownToggler'
-import { ModuleProjectProvider } from './TreeViewProviders/ModuleProjectProvider'
+import { ModuleProjectProvider, ModuleTreeItem } from './TreeViewProviders/ModuleProjectProvider'
 import { MarkdownRenderer } from '../shared/MarkdownRenderer'
 
 const buildModuleCommand = new BuildModuleCommand()
@@ -31,6 +31,7 @@ export function activate(context: vscode.ExtensionContext) {
       vscode.commands.registerCommand('encounterPlusMarkdown.refreshModules', () => moduleProjectProvider.refresh())
     )
 
+    // Open Page
     context.subscriptions.push(
       vscode.commands.registerCommand('encounterPlusMarkdown.openPage', async (pagePath, pageName) => {
         if (!FileSystem.existsSync(pagePath)) {
@@ -45,8 +46,8 @@ export function activate(context: vscode.ExtensionContext) {
         if (headerIndex != -1) {
           let textToHeader = docText.substring(0, headerIndex)
           lineNumber = textToHeader.split('\n').length - 1
-        }       
-        
+        }
+
         let openPosition = new vscode.Position(lineNumber, 0)
         let openRange = new vscode.Range(openPosition, openPosition)
         let showOptions = {
@@ -59,6 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
       })
     )
 
+    // Open Module Project File
     context.subscriptions.push(
       vscode.commands.registerCommand('encounterPlusMarkdown.openModuleProjectFile', async (moduleProjectPath) => {
         if (!FileSystem.existsSync(moduleProjectPath)) {
@@ -70,6 +72,7 @@ export function activate(context: vscode.ExtensionContext) {
       })
     )
 
+    // Open Group File
     context.subscriptions.push(
       vscode.commands.registerCommand('encounterPlusMarkdown.openGroupFile', async (groupFilePath) => {
         if (!FileSystem.existsSync(groupFilePath)) {
@@ -81,6 +84,7 @@ export function activate(context: vscode.ExtensionContext) {
       })
     )
 
+    // Markdown Toggler
     let markdownToggler = new MarkdownToggler()
     let toggles = markdownToggler.toggleDictionary
     for (const command in toggles) {
@@ -89,63 +93,117 @@ export function activate(context: vscode.ExtensionContext) {
       })
     }
 
+    // Build Module
     context.subscriptions.push(
-      vscode.commands.registerCommand('encounterPlusMarkdown.buildModule', (moduleTreeItem) => {
-        buildModuleCommand.startModuleBuild(moduleTreeItem.module.moduleProjectInfo)
+      vscode.commands.registerCommand('encounterPlusMarkdown.buildModule', async (moduleTreeItem) => {
+        if (moduleTreeItem !== undefined) {
+          buildModuleCommand.startModuleBuild(moduleTreeItem.module.moduleProjectInfo)
+        } else { // If no module selected, build the first module
+          moduleProjectProvider.refresh()
+          let moduleItems = await moduleProjectProvider.getChildren()
+          let firstModuleItem = moduleItems[0] as ModuleTreeItem
+          if (firstModuleItem !== undefined) {
+            buildModuleCommand.startModuleBuild(firstModuleItem.module.moduleProjectInfo)
+          }          
+        }
       })
     )
 
+    // Create Module Project File
     context.subscriptions.push(
       vscode.commands.registerCommand('encounterPlusMarkdown.createModuleProjectFile', () => {
         createModuleProjectFileCommand.startCommand()
       })
     )
 
+    // Export Module to PDF
     context.subscriptions.push(
-      vscode.commands.registerCommand('encounterPlusMarkdown.exportModuleToPDF', (moduleTreeItem) => {
-        exportToPdfCommand.startModuleExport(moduleTreeItem.module.moduleProjectInfo)
+      vscode.commands.registerCommand('encounterPlusMarkdown.exportModuleToPDF', async (moduleTreeItem) => {
+        if (moduleTreeItem !== undefined) {
+          exportToPdfCommand.startModuleExport(moduleTreeItem.module.moduleProjectInfo)
+        } else { // If no module selected, build the first module
+          moduleProjectProvider.refresh()
+          let moduleItems = await moduleProjectProvider.getChildren()
+          let firstModuleItem = moduleItems[0] as ModuleTreeItem
+          if (firstModuleItem !== undefined) {
+            exportToPdfCommand.startModuleExport(moduleTreeItem.module.moduleProjectInfo)
+          }          
+        }        
       })
     )
 
+    // Create Page Stub
     context.subscriptions.push(
-      vscode.commands.registerCommand('encounterPlusMarkdown.createMonsterStub', (moduleTreeItem) => {       
+      vscode.commands.registerCommand('encounterPlusMarkdown.createPageStub', (moduleTreeItem) => {
         let editor = vscode.window.activeTextEditor
         if (editor === undefined) {
           return
         }
-        let insertText = `\`\`\`Monster\nname:\nslug:\nsize:\ntype:\nalignment:\nac:\nhp:\nspeed:\nstr:\ndex:\ncon:\nint:\nwis:\ncha:\nsaves:\nskills:\nvulnerabilities:\nresistances:\ndamageImmunities:\nconditionImmunities:\nsenses:\nlanguages:\nchallenge:\nenvironments:\nimage:\ntoken:\ntraits:\n  - name:\n    description:\nactions:\n  - name:\n    description:\nreactions:\n  - name:\n    description:\nlegendaryActions:\n  - description:\n  - name:\n    description:\n\`\`\``
+        let insertText = `---\nname:\nslug:\norder:\nparent:\nmodule-pagebreaks:\npdf-pagebreaks:\nfooter:\nhide-footer: false\nhide-footer-text: false\ninclude-in: all\ncover:\nprint-cover-only: false\n---`
         let insertPosition = editor.selection.end
-        editor.edit(editBuilder => {
+        editor.edit((editBuilder) => {
           editBuilder.insert(insertPosition, insertText)
-        })        
+        })
       })
     )
 
+    // Create Group Stub
     context.subscriptions.push(
-      vscode.commands.registerCommand('encounterPlusMarkdown.createItemStub', (moduleTreeItem) => {       
+      vscode.commands.registerCommand('encounterPlusMarkdown.createGroupStub', (moduleTreeItem) => {
+        let editor = vscode.window.activeTextEditor
+        if (editor === undefined) {
+          return
+        }
+        let insertText = `---\nname:\nslug:\norder:\nparent:\ninclude-in: all\ncopy-files: true\n---`
+        let insertPosition = editor.selection.end
+        editor.edit((editBuilder) => {
+          editBuilder.insert(insertPosition, insertText)
+        })
+      })
+    )
+
+    // Create Monster Stub
+    context.subscriptions.push(
+      vscode.commands.registerCommand('encounterPlusMarkdown.createMonsterStub', (moduleTreeItem) => {
+        let editor = vscode.window.activeTextEditor
+        if (editor === undefined) {
+          return
+        }
+        let insertText = `\`\`\`Monster\nname:\nslug:\nsize:\ntype:\nalignment:\nac:\nhp:\nspeed:\nstr:\ndex:\ncon:\nint:\nwis:\ncha:\nsaves:\nskills:\nvulnerabilities:\nresistances:\ndamageImmunities:\nconditionImmunities:\nsenses:\nlanguages:\nchallenge:\nenvironments:\ntraits:\n  - name:\n    description:\nactions:\n  - name:\n    description:\nreactions:\n  - name:\n    description:\nlegendaryActions:\n  - description:\n  - name:\n    description:\nimage:\ntoken:\ncolumn-after: traits\ncolumn-after-property:\n\`\`\``
+        let insertPosition = editor.selection.end
+        editor.edit((editBuilder) => {
+          editBuilder.insert(insertPosition, insertText)
+        })
+      })
+    )
+
+    // Create Item Stub
+    context.subscriptions.push(
+      vscode.commands.registerCommand('encounterPlusMarkdown.createItemStub', (moduleTreeItem) => {
         let editor = vscode.window.activeTextEditor
         if (editor === undefined) {
           return
         }
         let insertText = `\`\`\`Item\nname:\nslug:\ntype:\nattunement:\nprimaryDamage:\nsecondaryDamage:\nproperties:\n  - \ndamageType:\ndescription:\nvalue:\nsource:\n\`\`\``
         let insertPosition = editor.selection.end
-        editor.edit(editBuilder => {
+        editor.edit((editBuilder) => {
           editBuilder.insert(insertPosition, insertText)
-        })        
+        })
       })
     )
 
+    // Create Spell Stub
     context.subscriptions.push(
-      vscode.commands.registerCommand('encounterPlusMarkdown.createSpellStub', (moduleTreeItem) => {       
+      vscode.commands.registerCommand('encounterPlusMarkdown.createSpellStub', (moduleTreeItem) => {
         let editor = vscode.window.activeTextEditor
         if (editor === undefined) {
           return
         }
         let insertText = `\`\`\`Spell\nname:\nslug:\nlevel:\nschool:\nritual:\ntime:\nrange:\ncomponents:\nduration:\ndescription:\nclasses:\nimage:\nsource:\n\`\`\``
         let insertPosition = editor.selection.end
-        editor.edit(editBuilder => {
+        editor.edit((editBuilder) => {
           editBuilder.insert(insertPosition, insertText)
-        })        
+        })
       })
     )
 

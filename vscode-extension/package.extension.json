@@ -83,6 +83,18 @@
         "when": "view == encounter-plus-modules && viewItem == moduleProject"
       },
       {
+        "command": "encounterPlusMarkdown.createPageStub",
+        "title": "Create Page Stub",
+        "category": "EncounterPlus Markdown",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.createGroupStub",
+        "title": "Create Group Stub",
+        "category": "EncounterPlus Markdown",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == yaml"
+      },
+      {
         "command": "encounterPlusMarkdown.createMonsterStub",
         "title": "Create Monster Stub",
         "category": "EncounterPlus Markdown",

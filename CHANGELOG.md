@@ -2,8 +2,16 @@
 
 ## [Unreleased]
 
+### Added
+- Added page and group stubs creation commands
+- Added column-after and column-after-property to monster stubs
+- Added images and proficiency bonus to monster stat blocks
+
 ### Fixed
 - Fixed typo in monster link creation
+
+### Changed
+- Made the Build Module command build the default module if no module selected in tree view
 
 ## 1.0.35
 

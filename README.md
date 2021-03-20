@@ -58,7 +58,7 @@ Below is an example of how you might structure your Module content.
 .
 └── Assets               # Optional - allows override of the default style
 └── Encounters           # The folder for maps
-    ├── .ignoregroup     # An empty file that instructs the Module Packer not to turn this into a Group
+    ├── Group.yaml       # Sets 'include-in' to 'files' to only copy files, and not create a module group
     └── Encounter.zip    # The encounter zip file exported from EncounterPlus
 └── Group A              # A group for the module.
     ├── Page A.md        # A page in Group A of the module.
@@ -69,11 +69,11 @@ Below is an example of how you might structure your Module content.
     ├── Page C.md        # A page in Group B of the module.
     └── Page D.md        # A page in Group B of the module.
 └── Images               # A folder to store shared images.
-    ├── .ignoregroup     # An empty file that instructs the Module Packer not to turn this into a Group
+    ├── Group.yaml       # Sets 'include-in' to 'files' to only copy files, and not create a module group
     ├── Image1.png       # An image used in multiple pages.
     └── Image2.jpg       # An image used in multiple pages.
 └── Maps                 # The folder for maps
-    ├── .ignoregroup     # An empty file that instructs the Module Packer not to turn this into a Group
+    ├── Group.yaml       # Sets 'include-in' to 'files' to only copy files, and not create a module group
     └── Map1.zip         # The map zip file exported from EncounterPlus
 ├── Module.yaml          # Optional - can define attributes of the module (e.g., Title, Author, Slug, etc.)
 └── My Module.md         # A page at the root level of the module.
@@ -125,20 +125,27 @@ All `Module.yaml` values are optional - and default values will be used for anyt
 
 ## Groups and Folders
 
-Subdirectories under the main module folder will automatically be turned into Groups in the module. To have a folder *not* be made into a Group, create a file named `.ignoregroup` in the folder. That folder and all subfolders will no longer be turned into groups. They will, however, be included as a resource folder in the module (e.g. for the `images` folder).
-
 Groups can have some properties defined by creating a `Group.yaml` file in the group's folder on the file system. 
 
 ```YAML
 name: Example Group
 slug: example-group
+parent: parent-slug
 order: 5
+include-in: all
+copy-files: true
 ```
 
 All `Group.yaml` values are optional - and default values will be used for anything not specified. 
+- `copy-files`: If set to false, image and other files from the group folder will not be copied to the module. This is useful for reducing file size of module files when there is print-only content. Default value is `true`.
+- `include-in`: Defines whether the group will be included in module output or PDF output. Valid values are `all` (default), `print`, and `module`, and `files`. If `files` is specified, only the group's files will be copied, but no pages will be parsed.
 - `name`: The name of the group.
 - `order`: An order for the group. Lower numbers will be placed before higher numbers. If two groups share the same order value, their effective order may differ upon each import. Pages and groups placed at the same place in the tree will respect each other's group values.
+- `parent`: The slug of the parent entity (page or group). If not specified, the parent will be based on the folder structure.
 - `slug`: The slug for the group. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
+
+### Folders that aren't groups
+Subdirectories under the main module folder will automatically be turned into Groups in the module. To have a folder *not* be made into a Group, create a Group.yaml file in the folder and set the `include-in` value to `files`. That folder and all subfolders will no longer be turned into groups. They will, however, be included as a resource folder in the module (e.g. for the `images` folder).
 
 ## Markdown File Front-Matter
 
@@ -149,10 +156,13 @@ Each markdown document can contain front matter block for additional configurati
 name: Page name
 slug: page-name
 order: 3
+parent: parent-slug
 module-pagebreaks: h1, h2, h3
+pdf-pagebreaks: h1, h2, h3
 pdf-pagebreaks: h1
 footer: My Custom Footer Text
 hide-footer: false
+hide-footer-text: false
 include-in: all
 cover: pageCover.jpg
 print-cover-only: false
@@ -169,6 +179,7 @@ All front-matter values are optional - and default values will be used for anyth
 - `module-pagebreak`: Element tags that, when specified, will automatically result in the markdown being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to an EncounterPlus module.
 - `name`: The name of the page.
 - `order`: An order for the page. Lower numbers will be placed before higher numbers. If two pages share the same order value, their effective order may differ upon each import. Pages and groups placed at the same place in the tree will respect each other's group values.
+- `parent`: The slug of the parent entity (page or group). If not specified, the parent will be based on the folder structure.
 - `pdf-pagebreak`: Element tags that, when specified, will automatically result in the markdown output being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to a PDF.
 - `print-cover-only`: If true, and printing to PDF, this will cause the page content not to be output. This is useful for having multiple, consecutive pages that are full-images (like maps). Generally used in combination with `include-in: print`. This value is not used when exporting to a module.
 - `slug`: The slug for the module. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.

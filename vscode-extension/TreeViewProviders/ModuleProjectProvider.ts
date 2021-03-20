@@ -108,7 +108,7 @@ export class ModuleProjectProvider implements vscode.TreeDataProvider<vscode.Tre
 }
 
 /** A module group tree item */
-class GroupTreeItem extends vscode.TreeItem {
+export class GroupTreeItem extends vscode.TreeItem {
   
   /**
    * Initializes an instance of a `GroupTreeItem`
@@ -130,7 +130,7 @@ class GroupTreeItem extends vscode.TreeItem {
 }
 
 /** A module page tree item */
-class PageTreeItem extends vscode.TreeItem {
+export class PageTreeItem extends vscode.TreeItem {
 
   /**
    * Initializes an instance of a `PageTreeItem`
@@ -150,7 +150,7 @@ class PageTreeItem extends vscode.TreeItem {
 }
 
 /** A module project tree item */
-class ModuleTreeItem extends vscode.TreeItem {
+export class ModuleTreeItem extends vscode.TreeItem {
   /**
    * Initializes an instance of a `ModuleTreeItem`
    * @param moduleProject The module project

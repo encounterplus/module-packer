@@ -797,14 +797,23 @@ export class Module {
         return
       }
 
+      // Create a new group with a random UUID
+      // and assign the parent
+      let newGroup = new Group(subdirectoryName, this.moduleProjectInfo.id, subdirectoryPath)
+      newGroup.parent = parentGroup
+
       // Skip any folder with an ".ignoregroup" file for the purpose of
       // creating groups or reading .md files. However, copy
       // their content to the module output (as they may be an
-      // image or resource folder) if they're in the root level.
+      // image or resource folder) if they're in the root level. This is legacy
+      // behavior, and is now taken care of by setting the include-in to files for
+      // Groups in the group.yaml.
       let ignoreFilePath = Path.join(subdirectoryPath, '.ignoreGroup')
-      if (FileSystem.existsSync(ignoreFilePath)) {
+
+      if (newGroup.includeIn === IncludeMode.Files || FileSystem.existsSync(ignoreFilePath)) {        
         // If not simply scanning - still copy the directory
-        // so the resources are part of the module
+        // so the resources are part of the module (unless the group is explicitly
+        // marked not to)
         if(!scanOnly) {
           let copyPath = Path.join(moduleBuildClonePath, subdirectoryName)
           FileSystem.copySync(subdirectoryPath, copyPath)
@@ -812,10 +821,13 @@ export class Module {
         return
       }
 
-      // Create a new group with a random UUID
-      // and assign the parent
-      let newGroup = new Group(subdirectoryName, this.moduleProjectInfo.id, subdirectoryPath)
-      newGroup.parent = parentGroup
+      if (newGroup.includeIn === IncludeMode.Print && this.exportMode !== ModuleMode.PrintToPDF) {
+        return
+      }
+
+      if (newGroup.includeIn === IncludeMode.Module && this.exportMode !== ModuleMode.ModuleExport) {
+        return
+      }
 
       if (parentGroup) {
         parentGroup.children.push(newGroup)
@@ -1016,6 +1028,11 @@ export class Module {
         }
 
         page.includeIn = ModuleEntity.getIncludeModeFromString(includeIn)
+        if(page.includeIn === IncludeMode.Files)
+        {
+          throw Error(`The 'include-in' value for groups cannot be 'files'`)
+        }
+
         page.content += $.html(element)
         page.printCoverOnly = printCoverOnly
         page.sort = order

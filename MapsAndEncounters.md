@@ -10,7 +10,7 @@
 </p>
 
 4. In your Module's directory, create a subfolder for maps (I named mine "Maps").
-5. Create an empty `.ignoregroup` file for this directory so the raw zip files are not included in your module.
+5. Create a `Group.yaml` file for this directory and set `include-in` to `files` so the raw zip files are not included in your module.
 6. Copy the map's zip file into this folder.
 7. In your `Module.yaml` file, create a property named `maps`. Then, as a children maps, create individual elements for each map. Each element must contain a "path" property pointing to the map's `.zip` file. Optionally, each element can also specify a `parent`, and `order`, and a `slug` property. These specify the parent the map will be nested under, the order it will show up under its parent, and its slug link respectively.
 
@@ -43,7 +43,7 @@ Encounters are added in a way very similar to maps.
 </p>
 
 4. In your Module's directory, create a subfolder for maps (I named mine "Encounters").
-5. Create an empty `.ignoregroup` file for this directory so the raw zip files are not included in your module.
+5. Create a `Group.yaml` file for this directory and set `include-in` to `files` so the raw zip files are not included in your module.
 6. Copy the encounter's zip file into this folder.
 7. In your `Module.yaml` file, create a property named `encounters`. Then, as children of encounters, create individual elements for each encounter. Each element must contain a "path" property pointing to the encounter's `.zip` file. Optionally, each element can also specify a `parent`, and `order`, and a `slug` property. These specify the parent the encounter will be nested under, the order it will show up under its parent, and its slug link respectively.
 

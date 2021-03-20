@@ -2,7 +2,7 @@ import * as YAML from 'yaml'
 import * as FileSystem from 'fs-extra'
 import * as Path from 'path'
 import { Module } from './Module'
-import { ModuleEntity } from './ModuleEntity'
+import { IncludeMode, ModuleEntity } from './ModuleEntity'
 
 /** Represents a Group in a Module */
 export class Group extends ModuleEntity {
@@ -64,6 +64,11 @@ export class Group extends ModuleEntity {
     super(effectiveName, moduleUUID, slug)
     this.groupPath = groupPath
     this.includeIn = ModuleEntity.getIncludeModeFromString(includeIn) 
+    if(this.includeIn === IncludeMode.Compendium)
+    {
+      throw Error(`The 'include-in' value for groups cannot be 'compendium'`)
+    }
+
     this.parentSlug = parentSlug
 
     if(order) {
@@ -80,5 +85,4 @@ export class Group extends ModuleEntity {
 
   /** The path of the group */
   groupPath: string
-  
 }
