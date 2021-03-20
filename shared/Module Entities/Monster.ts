@@ -124,6 +124,9 @@ export class Monster extends ModuleEntity {
   /** A particular property to split the column after */
   columnAfterProperty: string | undefined = undefined
 
+  /** Whether the monster stat block should show the image of the monster */
+  showImage: boolean = true
+
   // ---------------------------------------------------------------
   // Public Methods
   // ---------------------------------------------------------------
@@ -431,8 +434,92 @@ export class Monster extends ModuleEntity {
       return newDescription
     }
 
-    function getChallengeXP(xp: string): string {
-      switch (xp) {
+    /**
+     * Gets the proficiency bonus for the challenge rating
+     * @param challenge The challenge rating
+     * @returns The proficiency bonus for the challenge rating
+     */
+    function getProficiencyForChallenge(challenge: string): number {
+      switch (challenge) {
+        case '0':
+          return 2
+        case '1/8':
+          return 2
+        case '1/4':
+          return 2
+        case '1/2':
+          return 2
+        case '1':
+          return 2
+        case '2':
+          return 2
+        case '3':
+          return 2
+        case '4':
+          return 2
+        case '5':
+          return 3
+        case '6':
+          return 3
+        case '7':
+          return 3
+        case '8':
+          return 3
+        case '9':
+          return 4
+        case '10':
+          return 4
+        case '11':
+          return 4
+        case '12':
+          return 4
+        case '13':
+          return 5
+        case '14':
+          return 5
+        case '15':
+          return 5
+        case '16':
+          return 5
+        case '17':
+          return 6
+        case '18':
+          return 6
+        case '19':
+          return 6
+        case '20':
+          return 6
+        case '21':
+          return 7
+        case '22':
+          return 7
+        case '23':
+          return 7
+        case '24':
+          return 7
+        case '25':
+          return 8
+        case '26':
+          return 8
+        case '27':
+          return 8
+        case '28':
+          return 8
+        case '29':
+          return 9
+        case '30':
+          return 9
+      }
+      return 2
+    }
+
+    /**
+     * Gets the XP for a challenge rating
+     * @param challenge The challenge rating
+     * @returns The XP for a challenge rating
+     */
+    function getChallengeXP(challenge: string): string {
+      switch (challenge) {
         case '0':
           return '0 XP'
         case '1/8':
@@ -530,6 +617,7 @@ export class Monster extends ModuleEntity {
     }
     properties.push({ name: 'Languages', description: this.languages })
     properties.push({ name: 'Challenge', description: `${this.challenge} (${getChallengeXP(this.challenge)})` })
+    properties.push({ name: 'Proficiency Bonus', description: `+${getProficiencyForChallenge(this.challenge)}` })
 
     let allClasses = Array.from(classes)
     allClasses.splice(0, 0, 'statblock')
@@ -573,12 +661,20 @@ export class Monster extends ModuleEntity {
     properties.forEach((property, index) => {
       if (index === 0) {
         monsterHTML += '<div class="statblock-property-line first">'
-      } else if (index === properties.length - 1) {
-        monsterHTML += '<div class="statblock-property-line last">'
+      } else if (property.name === 'Challenge') {
+        monsterHTML += '<div class="statblock-property-line last">'        
+      } else if (property.name === 'Proficiency Bonus') {
+        // Allow proficiency bonus to be displayed on the same line as Challenge
+        monsterHTML += '<span class="statblock-spacer"></span>'        
       } else {
         monsterHTML += '<div class="statblock-property-line">'
       }
-      monsterHTML += `<p class="statblock-property-name">${property.name}</p> <p class="statblock-property-value">${property.description}</p></div>`
+      
+      monsterHTML += `<span class="statblock-property-name">${property.name}</span> <span class="statblock-property-value">${property.description}</span>`
+      if (property.name !== 'Challenge') {
+        // Don't close the div after challenge, allow that to be after the proficiency bonus
+        monsterHTML += '</div>'
+      }
     })
     monsterHTML += drawTaperRule()
     if (this.columnAfter === ColumnAfter.Stats && !hasHadColumnBreak) {
@@ -666,6 +762,11 @@ export class Monster extends ModuleEntity {
         monsterHTML += '</div>' // statblock-property-block
       })
       monsterHTML += '</div>' // statblock-legendaryActions
+    }
+    if (this.showImage && this.image !== undefined) {
+      monsterHTML += '<div class="statblock-image-block">'
+      monsterHTML += `<img src=${this.image} class="statblock-image">`
+      monsterHTML += '</div>' // statblock-image-block
     }
     monsterHTML += '</div>' // statblock-section-right
     monsterHTML += '<hr class="statblock-border bottom" />'

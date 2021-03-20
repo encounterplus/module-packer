@@ -819,7 +819,6 @@ table.sidebar {
 
   &.two-column {
     width: 90%;
-    display: inline-block;
     max-width: 85.0rem;
     position: relative;
     left: 50%;
@@ -1002,6 +1001,18 @@ table.sidebar {
     margin: 2.0rem 0 0;
     padding: 0 0 1.0rem;
     text-indent: .5rem;
+  }
+
+  .statblock-spacer {
+    width: 2.5rem;
+    min-width: 1.0rem;
+    display: inline-block;
+  }
+
+  img.stablock-image {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
   }
 
   .statblock-actions:last-child,
@@ -1278,6 +1289,35 @@ table.sidebar {
 .spellBlockColor(~"purple");
 
 /******** Screen-Specific Styles ********/
+
+@media screen and (max-width: 45.0rem) {
+  /* Make the statblock single column when the screen width is too small */
+  .statblock {
+    &.two-column {
+      width: 30rem;
+      max-width: unset;
+      position: unset;
+      left: unset;
+      transform: unset;
+  
+      .statblock-section-left,
+      .statblock-section-right {
+        display: unset;
+        vertical-align: unset;
+        width: unset;
+        text-align: unset;
+      }
+  
+      .statblock-section-left {
+        margin-right: unset;
+      }
+  
+      .statblock-section-right {
+        margin-left: unset;
+      }
+    }
+  }
+}
 
 @media screen and (max-width: 40.0rem) {
   /* Make the sidebar not float when the screen width is too small */

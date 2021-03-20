@@ -626,7 +626,6 @@ table.sidebar td:first-child {
 }
 .statblock.two-column {
   width: 90%;
-  display: inline-block;
   max-width: 85rem;
   position: relative;
   left: 50%;
@@ -781,6 +780,16 @@ table.sidebar td:first-child {
   margin: 2rem 0 0;
   padding: 0 0 1rem;
   text-indent: 0.5rem;
+}
+.statblock .statblock-spacer {
+  width: 2.5rem;
+  min-width: 1rem;
+  display: inline-block;
+}
+.statblock img.stablock-image {
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
 }
 .statblock .statblock-actions:last-child,
 .statblock .statblock-reactions:last-child,
@@ -1187,6 +1196,29 @@ table.sidebar td:first-child {
   background: #6431ab;
 }
 /******** Screen-Specific Styles ********/
+@media screen and (max-width: 45rem) {
+  /* Make the statblock single column when the screen width is too small */
+  .statblock.two-column {
+    width: 30rem;
+    max-width: unset;
+    position: unset;
+    left: unset;
+    transform: unset;
+  }
+  .statblock.two-column .statblock-section-left,
+  .statblock.two-column .statblock-section-right {
+    display: unset;
+    vertical-align: unset;
+    width: unset;
+    text-align: unset;
+  }
+  .statblock.two-column .statblock-section-left {
+    margin-right: unset;
+  }
+  .statblock.two-column .statblock-section-right {
+    margin-left: unset;
+  }
+}
 @media screen and (max-width: 40rem) {
   /* Make the sidebar not float when the screen width is too small */
   table.sidebar {
