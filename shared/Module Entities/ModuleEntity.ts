@@ -71,13 +71,15 @@ export abstract class ModuleEntity {
 
   /** Gets the include mode from a string */
   static getIncludeModeFromString(includeString: string): IncludeMode {
-    switch(includeString) {
+    switch(includeString.toLowerCase()) {
       case 'print':
         return IncludeMode.Print
       case 'module':
         return IncludeMode.Module
       case 'compendium':
         return IncludeMode.Compendium
+      case 'files':
+        return IncludeMode.Files
       default:
         return IncludeMode.All
     }

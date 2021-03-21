@@ -800,7 +800,6 @@ export class Module {
       // Create a new group with a random UUID
       // and assign the parent
       let newGroup = new Group(subdirectoryName, this.moduleProjectInfo.id, subdirectoryPath)
-      newGroup.parent = parentGroup
 
       // Skip any folder with an ".ignoregroup" file for the purpose of
       // creating groups or reading .md files. However, copy
@@ -809,8 +808,25 @@ export class Module {
       // behavior, and is now taken care of by setting the include-in to files for
       // Groups in the group.yaml.
       let ignoreFilePath = Path.join(subdirectoryPath, '.ignoreGroup')
+      let isFilesOnly = newGroup.includeIn === IncludeMode.Files || FileSystem.existsSync(ignoreFilePath)
 
-      if (newGroup.includeIn === IncludeMode.Files || FileSystem.existsSync(ignoreFilePath)) {        
+      var includeGroup: boolean = (newGroup.includeIn === IncludeMode.All ||
+        (newGroup.includeIn === IncludeMode.Print && this.exportMode === ModuleMode.PrintToPDF) ||
+        (newGroup.includeIn === IncludeMode.Module && this.exportMode === ModuleMode.ModuleExport))
+        && !isFilesOnly
+        
+      if (includeGroup) {        
+        newGroup.parent = parentGroup
+        if (parentGroup) {
+          parentGroup.children.push(newGroup)
+        } else {
+          this.children.push(newGroup)
+        }
+
+        // Push group to list of groups and recursively start
+        // parsing subdirectory
+        this.groups.push(newGroup)
+      } else {
         // If not simply scanning - still copy the directory
         // so the resources are part of the module (unless the group is explicitly
         // marked not to)
@@ -818,26 +834,13 @@ export class Module {
           let copyPath = Path.join(moduleBuildClonePath, subdirectoryName)
           FileSystem.copySync(subdirectoryPath, copyPath)
         }
+      }
+
+      // Do not process subdirectories if files only
+      if (isFilesOnly) {
         return
       }
 
-      if (newGroup.includeIn === IncludeMode.Print && this.exportMode !== ModuleMode.PrintToPDF) {
-        return
-      }
-
-      if (newGroup.includeIn === IncludeMode.Module && this.exportMode !== ModuleMode.ModuleExport) {
-        return
-      }
-
-      if (parentGroup) {
-        parentGroup.children.push(newGroup)
-      } else {
-        this.children.push(newGroup)
-      }
-
-      // Push group to list of groups and recursively start
-      // parsing subdirectory
-      this.groups.push(newGroup)
       this.processDirectory(subdirectoryPath, moduleBuildPath, newGroup)
     })
   }
@@ -917,9 +920,6 @@ export class Module {
     let pagebreakContentFound = false
 
     let includeIn = frontMatter['include-in']
-    if (includeIn === undefined) {
-      includeIn = 'all'
-    }
 
     // Get footer text. By default, it will be "<Page Name> | <Parent Name>"
     let parentName = parentGroup ? parentGroup.name : this.moduleProjectInfo.name
@@ -1027,12 +1027,6 @@ export class Module {
           Logger.info(`Slug for page "${page.name}": ${page.slug}`)
         }
 
-        page.includeIn = ModuleEntity.getIncludeModeFromString(includeIn)
-        if(page.includeIn === IncludeMode.Files)
-        {
-          throw Error(`The 'include-in' value for groups cannot be 'files'`)
-        }
-
         page.content += $.html(element)
         page.printCoverOnly = printCoverOnly
         page.sort = order
@@ -1099,6 +1093,19 @@ export class Module {
           this.children.push(page)
         }
 
+        // If page doesn't explicitly set IncludeIn, inherit it
+        if(includeIn !== undefined) {
+          page.includeIn = ModuleEntity.getIncludeModeFromString(includeIn)
+        } else if (page.parent !== undefined) {
+          page.includeIn = page.parent.includeIn
+        } else {
+          page.includeIn = IncludeMode.All
+        }        
+        if(page.includeIn === IncludeMode.Files)
+        {
+          throw Error(`The 'include-in' value for groups cannot be 'files'`)
+        }
+
         this.postProcessPage(page, filePath, printMultiColumn, coverImagePath)
 
         // Finally, add the page to the module
@@ -1116,7 +1123,6 @@ export class Module {
         Logger.info(`Slug for page "${page.name}": ${page.slug}`)
       }
 
-      page.includeIn = ModuleEntity.getIncludeModeFromString(includeIn)
       page.printCoverOnly = printCoverOnly
       page.sort = order
       page.parentSlug = parentSlug
@@ -1129,6 +1135,20 @@ export class Module {
       }
 
       page.content = html
+
+      // If page doesn't explicitly set IncludeIn, inherit it
+      if(includeIn !== undefined) {
+        page.includeIn = ModuleEntity.getIncludeModeFromString(includeIn)
+      } else if (page.parent !== undefined) {
+        page.includeIn = page.parent.includeIn
+      } else {
+        page.includeIn = IncludeMode.All
+      }        
+      if(page.includeIn === IncludeMode.Files)
+      {
+        throw Error(`The 'include-in' value for groups cannot be 'files'`)
+      }
+
       this.postProcessPage(page, filePath, printMultiColumn, coverImagePath)
 
       pages.push(page)
