@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.36
 
 ### Added
 - Added page and group stubs creation commands
@@ -9,6 +9,7 @@
 
 ### Fixed
 - Fixed typo in monster link creation
+- Fixed .size-full and .size-content images sometimes disappearing in modules
 
 ### Changed
 - Made the Build Module command build the default module if no module selected in tree view
