@@ -62,7 +62,7 @@ html {
   -webkit-print-color-adjust: exact;
   font-size: 10px;
 }
-html .catalyst {
+html.catalyst {
   font-size: 13px;
 }
 p {
