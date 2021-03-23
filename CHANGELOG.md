@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.0.37
+
+### Fixed
+- Fixed catalyst-specific font sizes
+
 ## 1.0.36
 
 ### Added
