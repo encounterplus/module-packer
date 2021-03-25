@@ -1008,7 +1008,7 @@ export class Module {
       $(firstPageBreak)
         .prevAll()
         .each((i, element) => {
-          if ($(element).find('.size-cover,.size-full').length > 0 && cover === undefined) {
+          if ($(element).find('.before-next-page-header').length > 0) {
             cover = element
           }
         })
@@ -1031,25 +1031,24 @@ export class Module {
         page.printCoverOnly = printCoverOnly
         page.sort = order
 
+        // If there is a cover image, apply to top current page
+        if (cover) {
+          page.content = $.html(cover) + page.content
+          cover = undefined
+        }
+
         // Advance through page content until the next header
         $(element)
           .nextUntil(pagebreaks)
           .each((i, element) => {
             // Special case cover images - they will be moved
             // to the beginning of the page later
-            if ($(element).find('.size-cover,.size-full').length > 0 && cover === undefined) {
+            if ($(element).find('.before-next-page-header').length > 0) {
               cover = element              
             } else {
               page.content += $.html(element)
             }
           })
-
-          
-        // If there is a cover image, apply to top current page
-        if (cover) {
-          page.content = $.html(cover) + page.content
-          cover = undefined
-        }
 
         pagesByHeader[headerText] = page
 
