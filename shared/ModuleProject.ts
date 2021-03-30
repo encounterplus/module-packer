@@ -84,7 +84,7 @@ export class ModuleProject {
     // through these, creating Groups.
     let subdirectoryNames: string[] = FileSystem.readdirSync(rootDirectory).filter(function (file) {
       let childPath = Path.join(rootDirectory, file)
-      return FileSystem.statSync(childPath).isDirectory()
+      return FileSystem.statSync(childPath).isDirectory() && !(file === 'ModuleBuild')
     })
 
     // Get module projects from subdirectories
