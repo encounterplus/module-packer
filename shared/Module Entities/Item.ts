@@ -261,6 +261,10 @@ export class Item extends ModuleEntity {
 
     let propertyValues: string[] = []
     item.properties.forEach((property) => {
+      if(property === undefined || property === null) {
+        return
+      }
+
       switch (property.toLowerCase()) {
         case 'ammunition':
           propertyValues.push('A')

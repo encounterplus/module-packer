@@ -768,12 +768,15 @@ export class Module {
       const imageExtensions = ['.gif', '.jpeg', '.jpg', '.png']
       let extension = Path.extname(fullPath)
 
+      // Copy source files to the output so they are stored with the module
+      const sourceExtensions = ['.md', '.yaml']
+
       if (!moduleProjectDirectory) {
         throw Error('The module project directory was empty. Was the module project file deleted?')
       }
       let imageRelativePath = Path.relative(moduleProjectDirectory, fullPath)
       let imageClonePath = Path.join(moduleBuildPath, imageRelativePath)
-      if (!scanOnly && imageExtensions.includes(extension)) {
+      if (!scanOnly && (imageExtensions.includes(extension) || sourceExtensions.includes(extension))) {
         FileSystem.copyFileSync(fullPath, imageClonePath)
       }
 

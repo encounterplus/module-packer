@@ -1,5 +1,16 @@
 # Change Log
 
+1.0.38
+
+### Breaking Changes
+- `.size-full` and `.size-cover` will no longer automatically get grouped to the next pagebreak. They will, instead, need to be marked with the `.before-next-page-header` class
+
+### Changes
+- Made module packer copy source text files to ModuleBuild when building.
+
+### Fixes
+- Fixed a module build error that could occur with null item properties
+
 ## 1.0.37
 
 ### Fixed
