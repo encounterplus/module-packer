@@ -1,5 +1,10 @@
 # Change Log
 
+1.0.39
+
+### Fixed
+- Fixed Modules showing up twice in the module view because it was including the ModuleBuild folder.
+
 1.0.38
 
 ### Breaking Changes
@@ -8,7 +13,7 @@
 ### Changes
 - Made module packer copy source text files to ModuleBuild when building.
 
-### Fixes
+### Fixed
 - Fixed a module build error that could occur with null item properties
 
 ## 1.0.37
