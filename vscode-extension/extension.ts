@@ -184,7 +184,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (editor === undefined) {
           return
         }
-        let insertText = `\`\`\`Item\nname:\nslug:\ntype:\nattunement:\nprimaryDamage:\nsecondaryDamage:\nproperties:\n  - \ndamageType:\ndescription:\nvalue:\nsource:\n\`\`\``
+        let insertText = `\`\`\`Item\nname:\nslug:\ntype:\nrarity:\nattunement:\nprimaryDamage:\nsecondaryDamage:\nproperties:\n  - \ndamageType:\ndescription:\nvalue:\nsource:\n\`\`\``
         let insertPosition = editor.selection.end
         editor.edit((editBuilder) => {
           editBuilder.insert(insertPosition, insertText)

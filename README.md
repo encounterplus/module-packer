@@ -540,6 +540,7 @@ Items can created within a Markdown file. When exported as a module, these items
 ```Item
 name: Quarterstaff of Thwacking
 slug: quarterstaff-of-thwacking
+rarity: Uncommon
 type: Weapon
 attunement: Requires attunement by a monk
 primaryDamage: 1d6

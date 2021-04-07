@@ -1,11 +1,16 @@
 # Change Log
 
-1.0.39
+## 1.0.40
+
+### Fixed
+- Added rarity to items stub
+
+## 1.0.39
 
 ### Fixed
 - Fixed Modules showing up twice in the module view because it was including the ModuleBuild folder.
 
-1.0.38
+## 1.0.38
 
 ### Breaking Changes
 - `.size-full` and `.size-cover` will no longer automatically get grouped to the next pagebreak. They will, instead, need to be marked with the `.before-next-page-header` class
