@@ -4,6 +4,7 @@
 
 ### Fixed
 - Added rarity to items stub
+- Fixed double periods in compendium image filenames
 
 ## 1.0.39
 

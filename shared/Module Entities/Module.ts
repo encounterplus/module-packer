@@ -947,7 +947,7 @@ export class Module {
       if (forModuleExport && monster.image) {
         let imageAbsolutePath = Path.join(fileFolderPath, monster.image)
         let monsterImageExtension = Path.extname(imageAbsolutePath)
-        let newMonsterImageFileName = `${monster.id}-image.${monsterImageExtension}`
+        let newMonsterImageFileName = `${monster.id}-image${monsterImageExtension}`
         let imageDestinationPath = Path.join(monsterModulePath, newMonsterImageFileName)
         monster.image = newMonsterImageFileName
         FileSystem.copyFileSync(imageAbsolutePath, imageDestinationPath)
@@ -955,7 +955,7 @@ export class Module {
       if (forModuleExport && monster.token) {
         let tokenAbsolutePath = Path.join(fileFolderPath, monster.token)
         let tokenImageExtension = Path.extname(tokenAbsolutePath)
-        let newTokenImageFileName = `${monster.id}-token.${tokenImageExtension}`
+        let newTokenImageFileName = `${monster.id}-token${tokenImageExtension}`
         let tokenDestinationPath = Path.join(monsterModulePath, newTokenImageFileName)
         monster.token = newTokenImageFileName
         FileSystem.copyFileSync(tokenAbsolutePath, tokenDestinationPath)
@@ -970,7 +970,7 @@ export class Module {
       if (forModuleExport && item.image) {
         let imageAbsolutePath = Path.join(fileFolderPath, item.image)
         let imageExtension = Path.extname(imageAbsolutePath)
-        let newImageFileName = `${item.id}-image.${imageExtension}`
+        let newImageFileName = `${item.id}-image${imageExtension}`
         let imageDestinationPath = Path.join(itemModulePath, newImageFileName)
         item.image = newImageFileName
         FileSystem.copyFileSync(imageAbsolutePath, imageDestinationPath)
@@ -984,7 +984,7 @@ export class Module {
       if (forModuleExport && spell.image) {
         let imageAbsolutePath = Path.join(fileFolderPath, spell.image)
         let imageExtension = Path.extname(imageAbsolutePath)
-        let newImageFileName = `${spell.id}-image.${imageExtension}`
+        let newImageFileName = `${spell.id}-image${imageExtension}`
         let imageDestinationPath = Path.join(spellModulePath, newImageFileName)
         spell.image = newImageFileName
         FileSystem.copyFileSync(imageAbsolutePath, imageDestinationPath)
