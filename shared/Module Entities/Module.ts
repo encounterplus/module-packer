@@ -598,6 +598,7 @@ export class Module {
         action: actions,
         reaction: reactions,
         legendary: legendaryActions,
+        description: monster.description
       }
 
       // Delete undefined fields

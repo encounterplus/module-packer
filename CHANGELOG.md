@@ -1,5 +1,10 @@
 # Change Log
 
+## [Unreleased]
+
+### Fixed
+- Fixed the description property of monster stat blocks not making it into the compendium export.
+
 ## 1.0.40
 
 ### Fixed
