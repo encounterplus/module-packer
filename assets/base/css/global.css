@@ -193,6 +193,27 @@ blockquote:after {
   right: 0;
   background-image: linear-gradient(to bottom left, #fff0 0%, #fff0 50%, #000 50%, #000 100%), linear-gradient(to top left, #fff0 0%, #fff0 50%, #000 50%, #000 100%);
 }
+blockquote.green {
+  background: #e0e4c3;
+}
+blockquote.red {
+  background: #e4c3c3;
+}
+blockquote.blue {
+  background: #c3d3e4;
+}
+blockquote.yellow {
+  background: #e4e1c3;
+}
+blockquote.gray {
+  background: #d4d4d4;
+}
+blockquote.purple {
+  background: #cec3e4;
+}
+blockquote.neutral {
+  background: #d8d6d2;
+}
 /******** Read-Aloud Block Quote ********/
 .blockquote-read-wrap {
   padding-top: 0.3rem;

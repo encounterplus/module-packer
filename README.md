@@ -56,25 +56,29 @@ Below is an example of how you might structure your Module content.
 
 ```
 .
-└── Assets               # Optional - allows override of the default style
+└── assets               # Optional - allows custom CSS and Javascript styling (note lowercase folderpaths)
+  └── css                # Contains custom CSS files to be included in your module
+    └── custom.css       # Custom CSS to be applied to all of your pages (for advanced use cases)
+  └── js                 # Contains custom Javscript files to be included in your module
+    └── custom.js        # Custom Javascript to be applied to all of your pages (for advanced use cases)
 └── Encounters           # The folder for maps
-    ├── Group.yaml       # Sets 'include-in' to 'files' to only copy files, and not create a module group
-    └── Encounter.zip    # The encounter zip file exported from EncounterPlus
+  ├── Group.yaml         # Sets 'include-in' to 'files' to only copy files, and not create a module group
+  └── Encounter.zip      # The encounter zip file exported from EncounterPlus
 └── Group A              # A group for the module.
-    ├── Page A.md        # A page in Group A of the module.
-    ├── Page A Cover.jpg # An image used in Page A.
-    ├── Page B.md        # A page in Group A of the module.
-    └── Group.yaml       # Optional - can define attributes of the group (e.g., Name, Order, etc.)
+  ├── Page A.md          # A page in Group A of the module.
+  ├── Page A Cover.jpg   # An image used in Page A.
+  ├── Page B.md          # A page in Group A of the module.
+  └── Group.yaml         # Optional - can define attributes of the group (e.g., Name, Order, etc.)
 └── Group B              # A group for the module.
-    ├── Page C.md        # A page in Group B of the module.
-    └── Page D.md        # A page in Group B of the module.
+  ├── Page C.md          # A page in Group B of the module.
+  └── Page D.md          # A page in Group B of the module.
 └── Images               # A folder to store shared images.
-    ├── Group.yaml       # Sets 'include-in' to 'files' to only copy files, and not create a module group
-    ├── Image1.png       # An image used in multiple pages.
-    └── Image2.jpg       # An image used in multiple pages.
+  ├── Group.yaml         # Sets 'include-in' to 'files' to only copy files, and not create a module group
+  ├── Image1.png         # An image used in multiple pages.
+  └── Image2.jpg         # An image used in multiple pages.
 └── Maps                 # The folder for maps
-    ├── Group.yaml       # Sets 'include-in' to 'files' to only copy files, and not create a module group
-    └── Map1.zip         # The map zip file exported from EncounterPlus
+  ├── Group.yaml         # Sets 'include-in' to 'files' to only copy files, and not create a module group
+  └── Map1.zip           # The map zip file exported from EncounterPlus
 ├── Module.yaml          # Optional - can define attributes of the module (e.g., Title, Author, Slug, etc.)
 └── My Module.md         # A page at the root level of the module.
 ```

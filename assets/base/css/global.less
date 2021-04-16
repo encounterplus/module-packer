@@ -213,7 +213,7 @@ blockquote {
   font-family: @body-font-family !important;
   font-size: 1.3rem;
   display: block;
-  background-color: #e0e4c3;
+  background-color: @green-background-secondary;
   padding: 1.0rem 1.5rem;
   margin: 2.0rem 0;
   position: relative;
@@ -251,6 +251,34 @@ blockquote {
     right: 0;
     background-image: linear-gradient(to bottom left, #fff0 0%, #fff0 50%, #000 50%, #000 100%),
       linear-gradient(to top left, #fff0 0%, #fff0 50%, #000 50%, #000 100%);
+  }
+
+  &.green {
+    background: @green-background-secondary;
+  }
+
+  &.red {
+    background: @red-background-secondary;
+  }
+
+  &.blue {
+    background: @blue-background-secondary;
+  }
+
+  &.yellow {
+    background: @yellow-background-secondary;
+  }
+
+  &.gray {
+    background: @gray-background-secondary;
+  }
+
+  &.purple {
+    background: @purple-background-secondary;
+  }
+
+  &.neutral {
+    background: @neutral-background-secondary;
   }
 }
 

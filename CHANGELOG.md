@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Added
+- Added color classes to blockquotes
+
 ### Fixed
 - Fixed the description property of monster stat blocks not making it into the compendium export.
 
