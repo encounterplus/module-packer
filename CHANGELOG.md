@@ -5,6 +5,9 @@
 ### Added
 - Added color classes to blockquotes
 
+### Changed
+- Changed default, unspecified Table Headers to align left
+
 ### Fixed
 - Fixed the description property of monster stat blocks not making it into the compendium export.
 

@@ -555,6 +555,7 @@ table.neutral tbody tr:nth-child(odd) {
 }
 td,
 th {
+  text-align: left;
   padding: 1rem;
 }
 th p,
