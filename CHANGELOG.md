@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.41
 
 ### Added
 - Added color classes to blockquotes

@@ -510,7 +510,8 @@ reactions:
 legendaryActions:
   - description: The Evil McEvilface can take 1 legendary actions, using the Explosion option below.
   - name: Explosion
-    description: "The Evil McEvilface suddenly explodes doing 1d20 damage to all creatures within 10 ft. This kills the Evil McEvilface."    
+    description: "The Evil McEvilface suddenly explodes doing 1d20 damage to all creatures within 10 ft. This kills the Evil McEvilface."
+description: Evil McEvilface lives in the sewer, but not in a cool way like a Ninja Turtle.
 ```
 ~~~
 
