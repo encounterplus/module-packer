@@ -775,10 +775,11 @@ export class Module {
       if (!moduleProjectDirectory) {
         throw Error('The module project directory was empty. Was the module project file deleted?')
       }
-      let imageRelativePath = Path.relative(moduleProjectDirectory, fullPath)
-      let imageClonePath = Path.join(moduleBuildPath, imageRelativePath)
-      if (!scanOnly && (imageExtensions.includes(extension) || sourceExtensions.includes(extension))) {
-        FileSystem.copyFileSync(fullPath, imageClonePath)
+      let itemRelativePath = Path.relative(moduleProjectDirectory, fullPath)
+      let itemClonePath = Path.join(moduleBuildPath, itemRelativePath)
+      let skipCopy = parentGroup !== undefined && !parentGroup.copyFiles
+      if (!scanOnly && !skipCopy && (imageExtensions.includes(extension) || sourceExtensions.includes(extension))) {
+        FileSystem.copyFileSync(fullPath, itemClonePath)
       }
 
       let newPages = this.processFile(fullPath, moduleBuildPath, parentGroup)
@@ -813,6 +814,7 @@ export class Module {
       // Groups in the group.yaml.
       let ignoreFilePath = Path.join(subdirectoryPath, '.ignoreGroup')
       let isFilesOnly = newGroup.includeIn === IncludeMode.Files || FileSystem.existsSync(ignoreFilePath)
+      let skipCopy = !newGroup.copyFiles
 
       var includeGroup: boolean = (newGroup.includeIn === IncludeMode.All ||
         (newGroup.includeIn === IncludeMode.Print && this.exportMode === ModuleMode.PrintToPDF) ||
@@ -834,7 +836,7 @@ export class Module {
         // If not simply scanning - still copy the directory
         // so the resources are part of the module (unless the group is explicitly
         // marked not to)
-        if(!scanOnly) {
+        if(!scanOnly && !skipCopy) {
           let copyPath = Path.join(moduleBuildClonePath, subdirectoryName)
           FileSystem.copySync(subdirectoryPath, copyPath)
         }

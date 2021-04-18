@@ -1,5 +1,10 @@
 # Change Log
 
+## [Unreleased]
+
+### Fixed
+- Fixed `copy-files` property not being utilized.
+
 ## 1.0.41
 
 ### Added

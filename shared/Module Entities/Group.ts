@@ -24,6 +24,7 @@ export class Group extends ModuleEntity {
     let parentSlug: string | undefined = undefined
 
     let includeIn = 'all'
+    let copyFiles = true
     let groupSettingsPath = Path.join(groupPath, Group.groupSettingsFileName)
     if (FileSystem.existsSync(groupSettingsPath)) {
       let groupDataBuffer = FileSystem.readFileSync(groupSettingsPath)
@@ -55,6 +56,11 @@ export class Group extends ModuleEntity {
         includeIn = includeInFromSettings
       }
 
+      let copyFilesFromSettings = groupData['copy-files'] as boolean
+      if(copyFilesFromSettings !== undefined) {
+        copyFiles = copyFilesFromSettings
+      }
+
       order = groupData['order'] as number
     }
 
@@ -63,6 +69,7 @@ export class Group extends ModuleEntity {
     }
     super(effectiveName, moduleUUID, slug)
     this.groupPath = groupPath
+    this.copyFiles = copyFiles
     this.includeIn = ModuleEntity.getIncludeModeFromString(includeIn) 
     if(this.includeIn === IncludeMode.Compendium)
     {
@@ -85,4 +92,7 @@ export class Group extends ModuleEntity {
 
   /** The path of the group */
   groupPath: string
+
+  /** Whether to copy files to module output */
+  copyFiles: boolean
 }
