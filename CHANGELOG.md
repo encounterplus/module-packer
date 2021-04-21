@@ -6,9 +6,10 @@
 - Changed default expanding behavior of Module tree view to only include root project
 
 ### Fixed
-- Fixed `copy-files` property not being utilized.
+- Fixed `copy-files` property not being utilized
 - Fixed an error that could occur when module.yaml was empty
 - Fixed modules without a name not defaulting to folder name
+- Fixed module tree view showing print-only items
 
 ## 1.0.41
 
@@ -19,7 +20,7 @@
 - Changed default, unspecified Table Headers to align left
 
 ### Fixed
-- Fixed the description property of monster stat blocks not making it into the compendium export.
+- Fixed the description property of monster stat blocks not making it into the compendium export
 
 ## 1.0.40
 
@@ -30,7 +31,7 @@
 ## 1.0.39
 
 ### Fixed
-- Fixed Modules showing up twice in the module view because it was including the ModuleBuild folder.
+- Fixed Modules showing up twice in the module view because it was including the ModuleBuild folder
 
 ## 1.0.38
 
@@ -38,7 +39,7 @@
 - `.size-full` and `.size-cover` will no longer automatically get grouped to the next pagebreak. They will, instead, need to be marked with the `.before-next-page-header` class
 
 ### Changes
-- Made module packer copy source text files to ModuleBuild when building.
+- Made module packer copy source text files to ModuleBuild when building
 
 ### Fixed
 - Fixed a module build error that could occur with null item properties
@@ -78,7 +79,7 @@
 ## 1.0.34
 
 ### Changed
-- Changed many sizes to use rem instead of px so EncounterPlus can scale content appropriately.
+- Changed many sizes to use rem instead of px so EncounterPlus can scale content appropriately.=
 
 ## 1.0.33
 
@@ -87,32 +88,32 @@
 - Added "Create Monster Link", "Create Spell Link", and "Create Item Link" commands (no default keybindings)
 
 ### Changed
-- Changed front from Bookinsanity to Bookinsanity remake to handle accented characters.
-- Made most links bold by default in PDF output. Table of content links still remain the same.
+- Changed front from Bookinsanity to Bookinsanity remake to handle accented characters
+- Made most links bold by default in PDF output. Table of content links still remain the same
 
 ## 1.0.32
 
 ### Added
-- Added `print-link-update` option to Module Projects to allow compendium links to link to D&D Beyond instead when outputting to PDF. Valid values are "None", "D&D Beyond Entries", and "D&D Beyond Search".
-- Links now support a `.no-link-update` attribute to ignore PDF output updates.
+- Added `print-link-update` option to Module Projects to allow compendium links to link to D&D Beyond instead when outputting to PDF. Valid values are "None", "D&D Beyond Entries", and "D&D Beyond Search"
+- Links now support a `.no-link-update` attribute to ignore PDF output updates
 - Item links now support a `.magic-item` or `.equipment` attribute to link to proper PDF entries
-- Added additional anchor IDs to make linking more consistent with PDF output and Module Output.
+- Added additional anchor IDs to make linking more consistent with PDF output and Module Output
 
 ## 1.0.31
 
 ### Breaking Changes
-- `.size-cover`, `.print-bottom-left`, `.print-bottom-right`, `.print-top-left`, and `.print-top-right` no long apply margins in PDF output. Added `.with-margin` attribute to augment to get the older spacing.
-- `.print-bottom-left`, `.print-bottom-right`, `.print-top-left`, and `.print-top-right` will now appear on top of footer.
+- `.size-cover`, `.print-bottom-left`, `.print-bottom-right`, `.print-top-left`, and `.print-top-right` no long apply margins in PDF output. Added `.with-margin` attribute to augment to get the older spacing
+- `.print-bottom-left`, `.print-bottom-right`, `.print-top-left`, and `.print-top-right` will now appear on top of footer
 
 ### Fixed
-- Fixed `cover` images for pages only working in root folder.
-- Fixed monsters, spells, and items only allowing same-folder paths for images/tokens.
+- Fixed `cover` images for pages only working in root folder
+- Fixed monsters, spells, and items only allowing same-folder paths for images/tokens
 
 ## 1.0.30
 
 ### Added
 - Added `.print-center` attribute
-- Added `column-after` and `column-after-property` properties to monster stat blocks.
+- Added `column-after` and `column-after-property` properties to monster stat blocks
 
 ### Changed
 - Optimization: Exporting to PDF no longer processes maps or encounters
@@ -157,8 +158,8 @@
 ## 1.0.25
 
 ### Added
-- Added Large Quote blockquote style.
-- Added `print-cover-only` option to pages to make pages only contain cover contents.
+- Added Large Quote blockquote style
+- Added `print-cover-only` option to pages to make pages only contain cover contents
 - Added `.purple` table style
 
 ### Changed
@@ -174,7 +175,7 @@
 - Added purple color to monster stat blocks
 
 ### Breaking Changes
-- Changed `property` to `properties` on item descriptions. It is now an array.
+- Changed `property` to `properties` on item descriptions. It is now an array
 
 ### Changed
 - Changed Sidebar tables to avoid floating if there isn't sufficient width (i.e., less than 400 px)
@@ -188,7 +189,7 @@
 
 ### Added
 - Added Items and Spells YAML compendium entry support
-- Added CLI interface for app. Arguments are "<path> <mode>", where <path> is the path of the module, and <mode> is optional and can be `pdf` (to create a PDF) or `module` (to create a module file). The `module` mode is default.
+- Added CLI interface for app. Arguments are "<path> <mode>", where <path> is the path of the module, and <mode> is optional and can be `pdf` (to create a PDF) or `module` (to create a module file). The `module` mode is default
 
 ### Changed
 - Updated VS Code Engine to 1.51
@@ -200,7 +201,7 @@
 ## 1.0.22
 
 ### Fixed
-- Ignore unix-style hidden folders (e.g., ".folder") to ignore version controlled system hidden files.
+- Ignore unix-style hidden folders (e.g., ".folder") to ignore version controlled system hidden files
 
 ## 1.0.21
 

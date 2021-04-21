@@ -312,7 +312,6 @@ export class Module {
     function getEntitiesToRemove(entities: ModuleEntity[]): ModuleEntity[] {
       return entities.filter((entity) => {
         let keepEntity =
-          scanOnly ||
           entity.includeIn === IncludeMode.All ||
           (entity.includeIn === IncludeMode.Module && forModule) ||
           (entity.includeIn === IncludeMode.Print && forPrint)
