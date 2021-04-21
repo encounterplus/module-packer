@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.42
 
 ### Changed
 - Changed default expanding behavior of Module tree view to only include root project
