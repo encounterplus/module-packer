@@ -2,9 +2,12 @@
 
 ## [Unreleased]
 
+### Changed
+- Changed default expanding behavior of Module tree view to only include root project
+
 ### Fixed
 - Fixed `copy-files` property not being utilized.
-- Fixed an error that could occur when module.yaml was empty.
+- Fixed an error that could occur when module.yaml was empty
 - Fixed modules without a name not defaulting to folder name
 
 ## 1.0.41
