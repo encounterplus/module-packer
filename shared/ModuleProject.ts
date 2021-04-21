@@ -137,6 +137,10 @@ export class ModuleProject {
       throw Error(`Error, the directory "${moduleProject.moduleProjectDirectory}" could not be found.`)
     }
 
+    if (moduleData === undefined || moduleData === null) {
+      moduleData = []
+    }
+
     // If ID is specified in Module project file, ensure it is a UUID and use that
     let id = moduleData['id'] as string
     if (id) {
@@ -156,6 +160,9 @@ export class ModuleProject {
     let name = moduleData['name'] as string
     if (name) {
       moduleProject.name = name
+    } else {
+      let folderName = Path.basename(moduleProject.moduleProjectDirectory)
+      moduleProject.name = folderName
     }
 
     // If name is specified in Module project file, use that, otherwise
