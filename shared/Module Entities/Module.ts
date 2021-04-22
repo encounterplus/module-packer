@@ -776,7 +776,7 @@ export class Module {
       }
       let itemRelativePath = Path.relative(moduleProjectDirectory, fullPath)
       let itemClonePath = Path.join(moduleBuildPath, itemRelativePath)
-      let skipCopy = parentGroup !== undefined && !parentGroup.copyFiles
+      let skipCopy = parentGroup !== undefined && !parentGroup.copyFiles && this.exportMode === ModuleMode.ModuleExport
       if (!scanOnly && !skipCopy && (imageExtensions.includes(extension) || sourceExtensions.includes(extension))) {
         FileSystem.copyFileSync(fullPath, itemClonePath)
       }
@@ -813,7 +813,7 @@ export class Module {
       // Groups in the group.yaml.
       let ignoreFilePath = Path.join(subdirectoryPath, '.ignoreGroup')
       let isFilesOnly = newGroup.includeIn === IncludeMode.Files || FileSystem.existsSync(ignoreFilePath)
-      let skipCopy = !newGroup.copyFiles
+      let skipCopy = !newGroup.copyFiles && this.exportMode == ModuleMode.ModuleExport
 
       var includeGroup: boolean = (newGroup.includeIn === IncludeMode.All ||
         (newGroup.includeIn === IncludeMode.Print && this.exportMode === ModuleMode.PrintToPDF) ||
