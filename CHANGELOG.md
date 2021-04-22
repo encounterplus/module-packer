@@ -1,5 +1,10 @@
 # Change Log
 
+# 1.0.43
+
+### Fixed
+- Fixed `copy-files` flag being applied to print/pdf output
+
 ## 1.0.42
 
 ### Changed
