@@ -1,6 +1,14 @@
 # Change Log
 
-# 1.0.43
+## [Unreleased]
+
+### Changed
+- Chaned monster stat blocks to allow a null/empty alignment
+
+### Fixed
+- Fixed the `showImage` property on monster stat blocks not being respected
+
+## 1.0.43
 
 ### Fixed
 - Fixed `copy-files` flag being applied to print/pdf output

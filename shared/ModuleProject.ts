@@ -207,13 +207,13 @@ export class ModuleProject {
 
     // If autoIncrementVersion is specified in Module project file, use that
     let autoIncrementVersion = (moduleData['autoIncrementVersion'] as boolean || moduleData['auto-increment-version'] as boolean)
-    if (autoIncrementVersion) {
+    if (autoIncrementVersion !== undefined) {
       moduleProject.autoIncrementVersion = autoIncrementVersion
     }
 
     // If compressImages is specified in Module project file, use that
     let compressImages = (moduleData['compressImages'] as boolean || moduleData['compress-images'] as boolean)
-    if (compressImages) {
+    if (compressImages !== undefined) {
       moduleProject.compressImages = compressImages
     }
 

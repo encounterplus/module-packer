@@ -32,7 +32,7 @@ export class Monster extends ModuleEntity {
   type: string = 'humanoid'
 
   /** The monster's alignment */
-  alignment: string = 'neutral'
+  alignment: string | undefined = undefined
 
   /** The monster's Armor Class */
   ac: string = '10'
@@ -367,6 +367,12 @@ export class Monster extends ModuleEntity {
       monster.columnAfterProperty = columnAfterProperty
     }
 
+    // Gets whether monster images should be shown
+    const showImage = monsterData['show-image'] as boolean
+    if (showImage !== undefined) {
+      monster.showImage = showImage
+    }
+
     return monster
   }
 
@@ -627,7 +633,13 @@ export class Monster extends ModuleEntity {
     monsterHTML += '<div class="statblock-section-left">'
     monsterHTML += '<div class="statblock-creature-heading">'
     monsterHTML += `<p class="statblock-title">${this.name}</p>`
-    monsterHTML += `<p class="statblock-subtitle">${this.size} ${this.type}, ${this.alignment}</p>`
+    
+    let subtitle = `${this.size} ${this.type}`
+    if (this.alignment !== undefined) {
+      subtitle += `, ${this.alignment}`
+    }
+    monsterHTML += `<p class="statblock-subtitle">${subtitle}</p>`
+    
     monsterHTML += '</div>' // statblock-creature-heading
     monsterHTML += drawTaperRule()
     monsterHTML += '<div class="statblock-top-stats">'
