@@ -1,6 +1,6 @@
 # Change Log
 
-## [Unreleased]
+## 1.0.44
 
 ### Changed
 - Chaned monster stat blocks to allow a null/empty alignment
