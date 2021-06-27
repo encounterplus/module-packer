@@ -2,7 +2,7 @@
   "name": "module-packer",
   "displayName": "EncounterPlus Module Packer",
   "description": "Tools for creating EncounterPlus modules from markdown.",
-  "version": "1.0.44",
+  "version": "1.0.45",
   "repository": {
     "type": "git",
     "url": "https://github.com/encounterplus/module-packer"
@@ -53,7 +53,7 @@
     "@types/xml2js": "^0.4.5",
     "archiver": "^4.0.1",
     "bufferutil": "^4.0.1",
-    "cheerio": "1.0.0-rc.3",
+    "cheerio": "1.0.0-rc.10",
     "fs-extra": "9.0.1",
     "gray-matter": "^4.0.2",
     "markdown-it": "^11.0.0",

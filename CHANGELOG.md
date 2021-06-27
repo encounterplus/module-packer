@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.0.45
+
+### Added
+- Added link coloring to differentiate monsters, spells, items, and rolls
+
+### Changed
+- Made rolls automatically strip links and replace with bold when doing PDF output
+
 ## 1.0.44
 
 ### Changed
