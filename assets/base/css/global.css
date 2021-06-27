@@ -458,17 +458,34 @@ pre {
 }
 /******** Links ********/
 a {
-  color: #58180d;
+  color: #33CC80;
   text-decoration: none;
+  font-weight: bold;
 }
 a:hover {
   text-decoration: none;
 }
-a[href*='/monster/'],
-a[href*='/player/'],
-a[href*='/item/'],
+a[href*='dndbeyond.com/sources'],
+a[href*='/page/'] {
+  color: #33CC80;
+}
+a[href*='dndbeyond.com/monsters'],
+a[href*='/monster/'] {
+  color: #bc0f0e;
+}
+a[href*='dndbeyond.com/spells'],
 a[href*='/spell/'] {
-  font-weight: bold;
+  color: #532bca;
+  font-style: italic;
+}
+a[href*='dndbeyond.com/equipment'],
+a[href*='dndbeyond.com/magic-items'],
+a[href*='/item/'] {
+  color: #105a92;
+  font-style: italic;
+}
+a[href*='/roll/'] {
+  color: #d77e20;
 }
 /******** Text Alignment ********/
 .text-center {
@@ -526,29 +543,56 @@ table.header-title thead {
   font-family: 'Andada SC', '-apple-system', sans-serif;
   color: #58180d;
 }
+table a {
+  color: #631d07;
+}
 table thead {
   font-weight: bold;
 }
-table.green tbody tr:nth-child(odd) tbody tr:nth-child(odd) {
+table tbody tr:nth-child(odd) {
   background: #e0e4c3;
+}
+table.green a {
+  color: #099d43;
+}
+table.green tbody tr:nth-child(odd) {
+  background: #e0e4c3;
+}
+table.red a {
+  color: #9d0e09;
 }
 table.red tbody tr:nth-child(odd) {
   background: #e4c3c3;
 }
+table.blue a {
+  color: #105a92;
+}
 table.blue tbody tr:nth-child(odd) {
   background: #c3d3e4;
+}
+table.yellow a {
+  color: #d77e20;
 }
 table.yellow tbody tr:nth-child(odd) {
   background: #e4e1c3;
 }
+table.gray a {
+  color: #535353;
+}
 table.gray tbody tr:nth-child(odd) {
   background: #d4d4d4;
+}
+table.purple a {
+  color: #551092;
 }
 table.purple tbody tr:nth-child(odd) {
   background: #cec3e4;
 }
 table.neutral {
   background: #edebe8;
+}
+table.neutral a {
+  color: #631d07;
 }
 table.neutral tbody tr:nth-child(odd) {
   background: #d8d6d2;

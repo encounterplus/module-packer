@@ -8,7 +8,20 @@
 /******** Color Variables ********/
 
 @accent-color: #58180d;
+@link-color-standard: #33CC80;
+@link-color-page: #33CC80;
+@link-color-monster: #bc0f0e;
+@link-color-spell: #532bca;
+@link-color-item: #105a92;
+@link-color-roll: #d77e20;
 @foreground-color: #000000;
+@link-table-blue: #105a92;
+@link-table-green: #099d43;
+@link-table-red: #9d0e09;
+@link-table-yellow: #d77e20;
+@link-table-neutral: #631d07;
+@link-table-gray: #535353;
+@link-table-purple: #551092;
 @green-background-secondary: #e0e4c3;
 @blue-background-secondary: #c3d3e4;
 @purple-background-secondary: #cec3e4;
@@ -17,6 +30,34 @@
 @gray-background-secondary: #d4d4d4;
 @neutral-background-primary: #edebe8;
 @neutral-background-secondary: #d8d6d2;
+@statblock-background-blue: #e5edf4;
+@statblock-title-color-blue: #105a92;
+@statblock-subtitle-color-blue: #0d3e7a;
+@statblock-border-top-bottom-blue: #7c9eba;
+@statblock-background-green: #e4f5eb;
+@statblock-title-color-green: #099d43;
+@statblock-subtitle-color-green: #068347;
+@statblock-border-top-bottom-green: #78bf94;
+@statblock-background-red: #f5e4e4;
+@statblock-title-color-red: #9d0e09;
+@statblock-subtitle-color-red: #831a06;
+@statblock-border-top-bottom-red: #bf7a78;
+@statblock-background-yellow: #f7f1ed;
+@statblock-title-color-yellow: #d77e20;
+@statblock-subtitle-color-yellow: #dd712f;
+@statblock-border-top-bottom-yellow: #cdb4a5;
+@statblock-background-gray: #ededed;
+@statblock-title-color-gray: #535353;
+@statblock-subtitle-color-gray: #454545;
+@statblock-border-top-bottom-gray: #9c9c9c;
+@statblock-background-neutral: #edebe8;
+@statblock-title-color-neutral: #631d07;
+@statblock-subtitle-color-neutral: #75240b;
+@statblock-border-top-bottom-neutral: #bda099;
+@statblock-background-purple: #ede5f4;
+@statblock-title-color-purple: #551092;
+@statblock-subtitle-color-purple: #470d7a;
+@statblock-border-top-bottom-purple: #9b7cba;
 
 @font-face {
   font-family: 'Andada SC';
@@ -572,19 +613,40 @@ pre {
 /******** Links ********/
 
 a {
-  color: @accent-color;
+  color: @link-color-standard;
   text-decoration: none;
+  font-weight: bold;
 }
 
 a:hover {
   text-decoration: none;
 }
 
-a[href*='/monster/'],
-a[href*='/player/'],
-a[href*='/item/'],
+a[href*='dndbeyond.com/sources'],
+a[href*='/page/'] {
+  color: @link-color-page;
+}
+
+a[href*='dndbeyond.com/monsters'],
+a[href*='/monster/'] {
+  color: @link-color-monster;
+}
+
+a[href*='dndbeyond.com/spells'],
 a[href*='/spell/'] {
-  font-weight: bold;
+  color: @link-color-spell;
+  font-style: italic;
+}
+
+a[href*='dndbeyond.com/equipment'],
+a[href*='dndbeyond.com/magic-items'],
+a[href*='/item/'] {
+  color: @link-color-item;
+  font-style: italic;
+}
+
+a[href*='/roll/'] {
+  color: @link-color-roll;
 }
 
 /******** Text Alignment ********/
@@ -659,11 +721,24 @@ table {
     }
   }
 
+  a {
+    color: @link-table-neutral;
+  }
+
   thead {
     font-weight: bold;
   }
 
-  &.green tbody tr:nth-child(odd) {
+  tbody {
+    tr:nth-child(odd) {
+      background: @green-background-secondary;
+    }
+  }
+
+  &.green {
+    a {
+      color: @link-table-green;
+    }
     tbody {
       tr:nth-child(odd) {
         background: @green-background-secondary;
@@ -672,6 +747,9 @@ table {
   }
 
   &.red {
+    a {
+      color: @link-table-red;
+    }
     tbody {
       tr:nth-child(odd) {
         background: @red-background-secondary;
@@ -680,6 +758,9 @@ table {
   }
 
   &.blue {
+    a {
+      color: @link-table-blue;
+    }
     tbody {
       tr:nth-child(odd) {
         background: @blue-background-secondary;
@@ -688,6 +769,9 @@ table {
   }
 
   &.yellow {
+    a {
+      color: @link-table-yellow;
+    }
     tbody {
       tr:nth-child(odd) {
         background: @yellow-background-secondary;
@@ -696,6 +780,9 @@ table {
   }
 
   &.gray {
+    a {
+      color: @link-table-gray;
+    }
     tbody {
       tr:nth-child(odd) {
         background: @gray-background-secondary;
@@ -704,6 +791,9 @@ table {
   }
 
   &.purple {
+    a {
+      color: @link-table-purple;
+    }
     tbody {
       tr:nth-child(odd) {
         background: @purple-background-secondary;
@@ -712,6 +802,9 @@ table {
   }
 
   &.neutral {
+    a {
+      color: @link-table-neutral;
+    }
     background: @neutral-background-primary;
     tbody {
       tr:nth-child(odd) {
@@ -1053,40 +1146,7 @@ table.sidebar {
 
 /* Blue Stat Blocks */
 .statblockColor(@color) {
-  @statblock-background-blue: #e5edf4;
-  @statblock-title-color-blue: #105a92;
-  @statblock-subtitle-color-blue: #0d3e7a;
-  @statblock-border-top-bottom-blue: #7c9eba;
 
-  @statblock-background-green: #e4f5eb;
-  @statblock-title-color-green: #099d43;
-  @statblock-subtitle-color-green: #068347;
-  @statblock-border-top-bottom-green: #78bf94;
-
-  @statblock-background-red: #f5e4e4;
-  @statblock-title-color-red: #9d0e09;
-  @statblock-subtitle-color-red: #831a06;
-  @statblock-border-top-bottom-red: #bf7a78;
-
-  @statblock-background-yellow: #f7f1ed;
-  @statblock-title-color-yellow: #d77e20;
-  @statblock-subtitle-color-yellow: #dd712f;
-  @statblock-border-top-bottom-yellow: #cdb4a5;
-
-  @statblock-background-gray: #ededed;
-  @statblock-title-color-gray: #535353;
-  @statblock-subtitle-color-gray: #454545;
-  @statblock-border-top-bottom-gray: #9c9c9c;
-
-  @statblock-background-neutral: #edebe8;
-  @statblock-title-color-neutral: #631d07;
-  @statblock-subtitle-color-neutral: #75240b;
-  @statblock-border-top-bottom-neutral: #bda099;
-
-  @statblock-background-purple: #ede5f4;
-  @statblock-title-color-purple: #551092;
-  @statblock-subtitle-color-purple: #470d7a;
-  @statblock-border-top-bottom-purple: #9b7cba;
 
   .statblock.@{color} {
     background: ~"@{statblock-background-@{color}}";
