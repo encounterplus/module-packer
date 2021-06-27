@@ -29,6 +29,7 @@ export class PdfExporter {
 
     Logger.info(`Creating HTML for PDF output at ${pageLocation}...`)
     let html = `<!DOCTYPE html><html lang="en"><head>`
+    html += `<meta charset="UTF-8">`
     html += `<link rel="stylesheet" href="${globalStyleLocation}">`
     html += `<link rel="stylesheet" href="${printImageStyleLocation}">`
     html += `<link rel="stylesheet" href="${customStyleLocation}">`

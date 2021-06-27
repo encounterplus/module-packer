@@ -353,7 +353,7 @@
     "@types/xml2js": "^0.4.5",
     "archiver": "^4.0.1",
     "bufferutil": "^4.0.1",
-    "cheerio": "1.0.0-rc.3",
+    "cheerio": "1.0.0-rc.10",
     "fs-extra": "9.0.1",
     "gray-matter": "^4.0.2",
     "markdown-it": "^11.0.0",
