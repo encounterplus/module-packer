@@ -167,6 +167,10 @@ export class PdfExporter {
       }
 
       let newLink = link
+      if(link.startsWith('/roll/')) {
+        let linkText = $(element).text()
+        $(element).replaceWith(`<strong>${linkText}</strong>`)
+      }
       if(link.startsWith('/monster/')) {
         if(printLinkMode === PrintLinkMode.DNDBeyondEntries) {
           newLink = link.replace('/monster/', 'https://www.dndbeyond.com/monsters/')
