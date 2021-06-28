@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.0.46
+
+### Added
+- Added `.color-links` attribute to tables and blockquotes to make links (of all types) match the table color. Colored tables no longer implicitly color the links.
+- Added manual control over link colors with `.blue`, `.green`, `.red`, `.yellow`, `.neutral`, `.gray`, `.purple`, and `.black` attributes
+- Added `.underline` attribute for links to add underline text decoration
+
 ## 1.0.45
 
 ### Added

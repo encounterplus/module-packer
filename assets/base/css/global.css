@@ -196,23 +196,44 @@ blockquote:after {
 blockquote.green {
   background: #e0e4c3;
 }
+blockquote.green.color-links a {
+  color: #099d43;
+}
 blockquote.red {
   background: #e4c3c3;
+}
+blockquote.red.color-links a {
+  color: #9d0e09;
 }
 blockquote.blue {
   background: #c3d3e4;
 }
+blockquote.blue.color-links a {
+  color: #105a92;
+}
 blockquote.yellow {
   background: #e4e1c3;
+}
+blockquote.yellow.color-links a {
+  color: #d77e20;
 }
 blockquote.gray {
   background: #d4d4d4;
 }
+blockquote.gray.color-links a {
+  color: #535353;
+}
 blockquote.purple {
   background: #cec3e4;
 }
+blockquote.purple.color-links a {
+  color: #551092;
+}
 blockquote.neutral {
   background: #d8d6d2;
+}
+blockquote.neutral.color-links a {
+  color: #631d07;
 }
 /******** Read-Aloud Block Quote ********/
 .blockquote-read-wrap {
@@ -462,6 +483,33 @@ a {
   text-decoration: none;
   font-weight: bold;
 }
+a.underline {
+  text-decoration: underline !important;
+}
+a.green {
+  color: #099d43 !important;
+}
+a.red {
+  color: #9d0e09 !important;
+}
+a.blue {
+  color: #105a92 !important;
+}
+a.yellow {
+  color: #d77e20 !important;
+}
+a.gray {
+  color: #535353 !important;
+}
+a.purple {
+  color: #551092 !important;
+}
+a.neutral {
+  color: #631d07 !important;
+}
+a.black {
+  color: #000000 !important;
+}
 a:hover {
   text-decoration: none;
 }
@@ -552,37 +600,37 @@ table thead {
 table tbody tr:nth-child(odd) {
   background: #e0e4c3;
 }
-table.green a {
+table.green.color-links a {
   color: #099d43;
 }
 table.green tbody tr:nth-child(odd) {
   background: #e0e4c3;
 }
-table.red a {
+table.red.color-links a {
   color: #9d0e09;
 }
 table.red tbody tr:nth-child(odd) {
   background: #e4c3c3;
 }
-table.blue a {
+table.blue.color-links a {
   color: #105a92;
 }
 table.blue tbody tr:nth-child(odd) {
   background: #c3d3e4;
 }
-table.yellow a {
+table.yellow.color-links a {
   color: #d77e20;
 }
 table.yellow tbody tr:nth-child(odd) {
   background: #e4e1c3;
 }
-table.gray a {
+table.gray.color-links a {
   color: #535353;
 }
 table.gray tbody tr:nth-child(odd) {
   background: #d4d4d4;
 }
-table.purple a {
+table.purple.color-links a {
   color: #551092;
 }
 table.purple tbody tr:nth-child(odd) {
@@ -591,7 +639,7 @@ table.purple tbody tr:nth-child(odd) {
 table.neutral {
   background: #edebe8;
 }
-table.neutral a {
+table.neutral.color-links a {
   color: #631d07;
 }
 table.neutral tbody tr:nth-child(odd) {

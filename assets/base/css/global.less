@@ -15,13 +15,14 @@
 @link-color-item: #105a92;
 @link-color-roll: #d77e20;
 @foreground-color: #000000;
-@link-table-blue: #105a92;
-@link-table-green: #099d43;
-@link-table-red: #9d0e09;
-@link-table-yellow: #d77e20;
-@link-table-neutral: #631d07;
-@link-table-gray: #535353;
-@link-table-purple: #551092;
+@link-blue: #105a92;
+@link-green: #099d43;
+@link-red: #9d0e09;
+@link-yellow: #d77e20;
+@link-neutral: #631d07;
+@link-gray: #535353;
+@link-purple: #551092;
+@link-black: #000000;
 @green-background-secondary: #e0e4c3;
 @blue-background-secondary: #c3d3e4;
 @purple-background-secondary: #cec3e4;
@@ -296,30 +297,51 @@ blockquote {
 
   &.green {
     background: @green-background-secondary;
+    &.color-links a {
+      color: @link-green;
+    }
   }
 
   &.red {
     background: @red-background-secondary;
+    &.color-links a {
+      color: @link-red;
+    }
   }
 
   &.blue {
     background: @blue-background-secondary;
+    &.color-links a {
+      color: @link-blue;
+    }
   }
 
   &.yellow {
     background: @yellow-background-secondary;
+    &.color-links a {
+      color: @link-yellow;
+    }
   }
 
   &.gray {
     background: @gray-background-secondary;
+    &.color-links a {
+      color: @link-gray;
+    }
   }
 
   &.purple {
     background: @purple-background-secondary;
+    &.color-links a {
+      color: @link-purple;
+    }
   }
 
   &.neutral {
     background: @neutral-background-secondary;
+    &.color-links a {
+      color: @link-neutral;
+    }
   }
 }
 
@@ -616,6 +638,34 @@ a {
   color: @link-color-standard;
   text-decoration: none;
   font-weight: bold;
+
+  &.underline {
+    text-decoration: underline !important;
+  }
+  &.green {
+    color: @link-green !important;
+  }
+  &.red {
+    color: @link-red !important;
+  }
+  &.blue {
+    color: @link-blue !important;
+  }
+  &.yellow {
+    color: @link-yellow !important;
+  }
+  &.gray {
+    color: @link-gray !important;
+  }
+  &.purple {
+    color: @link-purple !important;
+  }
+  &.neutral {
+    color: @link-neutral !important;
+  }
+  &.black {
+    color: @link-black !important;
+  }
 }
 
 a:hover {
@@ -722,7 +772,7 @@ table {
   }
 
   a {
-    color: @link-table-neutral;
+    color: @link-neutral;
   }
 
   thead {
@@ -736,8 +786,8 @@ table {
   }
 
   &.green {
-    a {
-      color: @link-table-green;
+    &.color-links a {
+      color: @link-green;
     }
     tbody {
       tr:nth-child(odd) {
@@ -747,8 +797,8 @@ table {
   }
 
   &.red {
-    a {
-      color: @link-table-red;
+    &.color-links a {
+      color: @link-red;
     }
     tbody {
       tr:nth-child(odd) {
@@ -758,8 +808,8 @@ table {
   }
 
   &.blue {
-    a {
-      color: @link-table-blue;
+    &.color-links a {
+      color: @link-blue;
     }
     tbody {
       tr:nth-child(odd) {
@@ -769,8 +819,8 @@ table {
   }
 
   &.yellow {
-    a {
-      color: @link-table-yellow;
+    &.color-links a {
+      color: @link-yellow;
     }
     tbody {
       tr:nth-child(odd) {
@@ -780,8 +830,8 @@ table {
   }
 
   &.gray {
-    a {
-      color: @link-table-gray;
+    &.color-links a {
+      color: @link-gray;
     }
     tbody {
       tr:nth-child(odd) {
@@ -791,8 +841,8 @@ table {
   }
 
   &.purple {
-    a {
-      color: @link-table-purple;
+    &.color-links a {
+      color: @link-purple;
     }
     tbody {
       tr:nth-child(odd) {
@@ -802,8 +852,8 @@ table {
   }
 
   &.neutral {
-    a {
-      color: @link-table-neutral;
+    &.color-links a {
+      color: @link-neutral;
     }
     background: @neutral-background-primary;
     tbody {
