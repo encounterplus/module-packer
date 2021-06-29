@@ -4,24 +4,25 @@
 <img align="right" src="./documentation/Logo.png" alt="Module Packer Screenshot" width="230">
 
 - [Introduction](#introduction)
+- [Download](#download)
 - [Getting Started](#getting-started)
   - [Example Content](#example-content)
 - [Managing Your Module Project](#managing-your-module-project)
   - [Module Folder Structure](#module-folder-structure)
-  - [Module Properties](#module-properties-modulejson)
+  - [Module Properties](#module-properties-module.yaml)
   - [Groups and Folders](#groups-and-folders)
   - [Markdown File Front-Matter](#markdown-file-front-matter)
 - [Markdown Guide](#markdown-guide)
   - [Headings](#headings)
   - [Text Styles](#text-styles)
   - [Images](#images)
-  - [Text Blocks & Block Quotes](#text-blocks--block-quotes)
+  - [Text Blocks & Block Quotes](#text-blocks-block-quotes)
   - [Links](#links)
   - [Tables](#tables)
   - [Monsters](#monsters)
   - [Items](#items)
   - [Spells](#spells)
-  - [Special Tags for Print/PDF](#special-tags-for-print-pdf)
+  - [Special Tags for Print/PDF](#special-tags-for-printpdf)
 - [Visual Studio Code Extension](#visual-studio-code-extension)
 - [Other Editors](#other-editors)
 - [License](#license)
@@ -34,11 +35,18 @@ The EncounterPlus Module Packer is a simple standalone application for convertin
   <img src="./documentation/ModulePackerWalkthrough.png" alt="Module Packer Screenshot" width="1000">
 </p>
 
+# Download
+
+Click the links below to download the latest versions of the EncounterPlus Module Packer.
+
+- [Download App for macOS or Windows](https://github.com/encounterplus/module-packer/releases/latest)
+- [Get Visual Studio Code Extension](https://marketplace.visualstudio.com/items?itemName=JacobJohnston.encounterplus-markdown)
+
 # Getting Started
 
 It's easy to begin creating a module in markdown. A guide to Markdown syntax can be found further in this document in the [Markdown Guide](#markdown-guide) section.
 
-1. Download the Module Packer for [macOS]((https://github.com/encounterplus/module-packer/releases/latest)), [Windows]((https://github.com/encounterplus/module-packer/releases/latest)), or as a [Visual Studio Code Plug-In](https://marketplace.visualstudio.com/items?itemName=JacobJohnston.encounterplus-markdown)!
+1. Download the Module Packer for [macOS]((https://github.com/encounterplus/module-packer/releases/latest)), [Windows]((https://github.com/encounterplus/module-packer/releases/latest)), or as a [Visual Studio Code Extension](https://marketplace.visualstudio.com/items?itemName=JacobJohnston.encounterplus-markdown)!
 2. Create a [folder](#Module-Structure) where you will write your module's text and images.
 3. Start writing your module content in Markdown.
 4. Pack your module so it can be imported by EncounterPlus.
