@@ -9,7 +9,7 @@
   - [Example Content](#example-content)
 - [Managing Your Module Project](#managing-your-module-project)
   - [Module Folder Structure](#module-folder-structure)
-  - [Module Properties](#module-properties-module.yaml)
+  - [Module Properties](#module-properties-moduleyaml)
   - [Groups and Folders](#groups-and-folders)
   - [Markdown File Front-Matter](#markdown-file-front-matter)
 - [Markdown Guide](#markdown-guide)
@@ -389,13 +389,59 @@ A large quote text block style can be shown by adding custom class `large-quote`
 
 ## Links
 
-Normally, in markdown, links would be used to link to other webpages. However, in EncounterPlus, you can add links to any monster, player, item and spell in the compendium or to other pages or maps. Always link to the item's slug. Slugs are absolute and do not need paths or groups specified when linking. Monster links should be prefaced with `/monster/`. Item links should be prefaced with `/item/`. Spell links should be prefaced with `/spell/`. 
+Normally, in markdown, links would be used to link to other webpages. However, in EncounterPlus, you can also add links to:
+- Items
+- Spells
+- Monsters
+- Players
+- Dice Rolls
+- Pages
+- Maps
+
+Slugs are absolute and do not need paths or groups specified when linking. Monster links should be prefaced with `/monster/`. Item links should be prefaced with `/item/`. Spell links should be prefaced with `/spell/`. 
+
+Links will be colored according to the type of item you are linking to.
+
+<p align="left">
+  <img src="./documentation/Links.jpg" alt="Large quote" width="200">
+</p>
 
 ```Markdown
-[Example page](example-page)
-[Goblin](/monster/goblin)
-[Staff of Power](/item/staff-of-power)
-[Fireball](/spell/fireball)
+[Page](/page/myPage)
+
+[Monster](/monster/myMonster)
+
+[Item](/item/myItem)
+
+[Spell](/spell/mySpell)
+
+[Roll](/roll/1d20)
+```
+
+The default link colors and styles can be overridden by applying color attributes to the links:
+
+<p align="left">
+  <img src="./documentation/LinkColors.jpg" alt="Large quote" width="200">
+</p>
+
+```Markdown
+[Page](/page/myPage){.blue}
+
+[Page](/page/myPage){.green}
+
+[Page](/page/myPage){.red}
+
+[Page](/page/myPage){.yellow}
+
+[Page](/page/myPage){.neutral}
+
+[Page](/page/myPage){.gray}
+
+[Page](/page/myPage){.purple}
+
+[Page](/page/myPage){.black}
+
+[Page](/page/myPage){.black .underline}
 ```
 
 ## Tables
