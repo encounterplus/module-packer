@@ -1,5 +1,14 @@
 # Change Log
 
+## 1.0.47
+
+### Changed
+- Leading slashes on image paths will now automatically be ignored
+- Standalone app upgraded to Electron 13
+
+### Fixed
+- Fixed scrolling in preview window.
+
 ## 1.0.46
 
 ### Added
