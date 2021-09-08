@@ -26,12 +26,13 @@ function createWindow() {
     icon: Path.join(__dirname, '../resources/img/icon.png'),
     webPreferences: {
       nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true,
     },
   })
 
   mainWindow.once('ready-to-show', () => {		
-    mainWindow.show();
-    mainWindow.maximize();		
+    mainWindow.show();	
 	})
 
   // If running in a development environment, customize the window size
@@ -77,8 +78,8 @@ app.on('window-all-closed', () => {
 ipcMain.on('exportToPdf', async (event, path, name) => {
   try {
     createPDFFromPath(path, name)
-  } catch (error) {
-    mainWindow.webContents.send('error', error.message)
+  } catch (error: any) {
+    mainWindow.webContents.send('error', (error as Error).message)
   }
 })
 
@@ -89,8 +90,8 @@ function updateChromiumInstallProgress(progress: number) {
 ipcMain.on('createModule', async (event, path, name) => {
   try {
     createModuleFromPath(path, name)
-  } catch (error) {
-    mainWindow.webContents.send('error', error.message)
+  } catch (error: any) {
+    mainWindow.webContents.send('error', (error as Error).message)
   }
 })
 
@@ -117,7 +118,7 @@ async function createModuleFromPath(path: string, name: string) {
       mainWindow.webContents.send('error', 'There are multiple modules in the specified path.')
     }
   } catch(error) {
-    mainWindow.webContents.send('error', error.message)
+    mainWindow.webContents.send('error', (error as Error).message)
   }
 }
 
@@ -146,13 +147,13 @@ async function createPDFFromPath(path: string, name: string) {
       mainWindow.webContents.send('error', 'There are multiple modules in the specified path.')
     }
   } catch(error) {
-    mainWindow.webContents.send('error', error.message)
+    mainWindow.webContents.send('error', (error as Error).message)
   }  
 }
 
 process.on('uncaughtException', function (error) {
-  console.error(error.message)
-  mainWindow.webContents.send('error', error.message)
+  console.error((error as Error).message)
+  mainWindow.webContents.send('error', (error as Error).message)
 })
 
 /**
