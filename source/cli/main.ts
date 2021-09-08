@@ -45,7 +45,7 @@ async function createModuleFromPath(path: string, name: string) {
       Logger.error('Error: Multiple modules at the specified path')
     }
   } catch(error) {
-    Logger.error(error.message)
+    Logger.error((error as Error).message)
   }
 }
 
@@ -71,7 +71,7 @@ async function createPDFFromPath(path: string, name: string) {
       Logger.error('Error: Multiple modules at the specified path')
     }
   } catch(error) {
-    Logger.error(error.message)
+    Logger.error((error as Error).message)
   }  
 }
 

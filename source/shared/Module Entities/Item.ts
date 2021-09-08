@@ -92,7 +92,7 @@ export class Item extends ModuleEntity {
     let itemData: any = undefined
     try {
       itemData = YAML.parse(itemYamlContent)
-    } catch (error) {
+    } catch (error: any) {
       throw Error(`Failed to parse Item. Error: ${(error as Error).message}`)
     }
 

@@ -123,7 +123,7 @@ export class ModuleProject {
     let moduleData: any = undefined
     try {
       moduleData = YAML.parse(moduleDataBuffer.toString())
-    } catch (error) {
+    } catch (error: any) {
       throw Error(`Failed to parse ${projectFilePath}. Error: ${(error as Error).message}`)
     }
     

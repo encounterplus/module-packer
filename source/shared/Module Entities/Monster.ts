@@ -141,7 +141,7 @@ export class Monster extends ModuleEntity {
     let monsterData: any = undefined
     try {
       monsterData = YAML.parse(monsterYamlContent)
-    } catch (error) {
+    } catch (error: any) {
       throw Error(`Failed to parse Monster. Error: ${(error as Error).message}`)
     }
 

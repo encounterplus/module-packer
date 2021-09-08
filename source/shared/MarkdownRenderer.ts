@@ -223,9 +223,9 @@ export class MarkdownRenderer {
         monster = Monster.fromYAMLContent(token.content, this.module)
         this.monsters.push(monster)
         monsterHTML = monster.getHTML(MarkdownRenderer.getTokenClasses(token))
-      } catch (error) {
+      } catch (error: any) {
         if (this.module !== undefined && this.module.exportMode === ModuleMode.ModuleExport) {
-          throw Error(`Error parsing monster: ${error.message}. The following content likely contains invalid YAML:\n${token.content}`)
+          throw Error(`Error parsing monster: ${(error as Error).message}. The following content likely contains invalid YAML:\n${token.content}`)
         }
         monsterHTML = '<div class="statblock">'
         monsterHTML += '<hr class="statblock-border" />'
@@ -245,9 +245,9 @@ export class MarkdownRenderer {
         item = Item.fromYAMLContent(token.content, this.module)
         this.items.push(item)
         itemHTML = item.getHTML(MarkdownRenderer.getTokenClasses(token))
-      } catch (error) {
+      } catch (error: any) {
         if (this.module !== undefined && this.module.exportMode === ModuleMode.ModuleExport) {
-          throw Error(`Error parsing item: ${error.message}. The following content likely contains invalid YAML:\n${token.content}`)
+          throw Error(`Error parsing item: ${(error as Error).message}. The following content likely contains invalid YAML:\n${token.content}`)
         }
         return itemHTML
       }
@@ -261,9 +261,9 @@ export class MarkdownRenderer {
         spell = Spell.fromYAMLContent(token.content, this.module)
         this.spells.push(spell)
         itemHTML = spell.getHTML(MarkdownRenderer.getTokenClasses(token))
-      } catch (error) {
+      } catch (error: any) {
         if (this.module !== undefined && this.module.exportMode === ModuleMode.ModuleExport) {
-          throw Error(`Error parsing spell: ${error.message}. The following content likely contains invalid YAML:\n${token.content}`)
+          throw Error(`Error parsing spell: ${(error as Error).message}. The following content likely contains invalid YAML:\n${token.content}`)
         }
         return itemHTML
       }

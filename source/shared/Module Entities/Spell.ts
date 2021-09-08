@@ -70,7 +70,7 @@ export class Spell extends ModuleEntity {
     let spellData: any = undefined
     try {
       spellData = YAML.parse(spellYamlContent)
-    } catch (error) {
+    } catch (error: any) {
       throw Error(`Failed to parse Spell. Error: ${(error as Error).message}`)
     }
 

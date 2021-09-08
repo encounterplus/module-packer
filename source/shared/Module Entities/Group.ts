@@ -32,7 +32,7 @@ export class Group extends ModuleEntity {
       let groupData: any = undefined
       try {
         groupData = YAML.parse(groupDataBuffer.toString())
-      } catch (error) {
+      } catch (error: any) {
         throw Error(`Failed to parse ${groupSettingsPath}. Error: ${(error as Error).message}`)
       }
 

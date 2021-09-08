@@ -117,9 +117,9 @@ export class PdfExporter {
       if (FileSystem.existsSync(Puppeteer.executablePath())) {
         return Promise.all(cleanupOldVersions)
       }
-    } catch (error) {
-      Logger.error(error.message)
-      throw Error(`PDF engine installation failed: ${error.Message}`)
+    } catch (error: any) {
+      Logger.error((error as Error).message)
+      throw Error(`PDF engine installation failed: ${(error as Error).message}`)
     }
   }
 

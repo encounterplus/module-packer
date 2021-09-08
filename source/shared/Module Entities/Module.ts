@@ -146,7 +146,7 @@ export class Module {
     let moduleData: any = undefined
     try {
       moduleData = YAML.parse(moduleDataBuffer.toString())
-    } catch (error) {
+    } catch (error: any) {
       throw Error(`Failed to parse ${moduleProjectFilePath}. Error: ${(error as Error).message}`)
     }
 

@@ -225,7 +225,7 @@ export function activate(context: vscode.ExtensionContext) {
         moduleProjectProvider.refresh()
       }
     })
-  } catch (error) {
+  } catch (error: any) {
     let errorMessage = (error as Error).message
     Logger.error(`${errorMessage}\nStack: \n${(error as Error).stack}`)
     throw error
@@ -236,8 +236,8 @@ export function activate(context: vscode.ExtensionContext) {
       try {
         let renderer = new MarkdownRenderer(false)
         return renderer.getRenderer()
-      } catch (error) {
-        Logger.error(error.message)
+      } catch (error: any) {
+        Logger.error((error as Error).message)
         throw error
       }
     },
