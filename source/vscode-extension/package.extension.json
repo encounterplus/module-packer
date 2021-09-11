@@ -284,8 +284,9 @@
     },
     "markdown.markdownItPlugins": true,
     "markdown.previewStyles": [
+      "extension-out/resources/vscode.css",
       "extension-out/assets/base/css/global.css",
-      "extension-out/resources/vscode.css"
+      "extension-out/resources/vscode.resources.css"
     ],
     "grammars": [
       {
