@@ -32,6 +32,10 @@ def copy(source, destination):
     print('Copying from {} to {}'.format(source, destination), flush=True)
     shutil.copy(source, destination)
 
+def copyDir(source, destination):
+    print('Copying from {} to {}'.format(source, destination), flush=True)
+    shutil.copytree(source, destination)
+
 def createFolder(folder):
     if not os.path.exists(folder):
         print('Creating folder {}'.format(folder), flush=True)
@@ -54,6 +58,9 @@ def processTarget(target):
         removeDirIfExists('./dist')
         removeDirIfExists('./app-out')
         removeDirIfExists('./extension-out')
+        removeDirIfExists('./Documentation')
+        removeIfExists('./README.md')
+        removeIfExists('./Advanced.md')
         processTarget('makeFolders')
     elif target == 'build-extension':
         removeIfExists('./package.json')
@@ -88,8 +95,14 @@ def processTarget(target):
         run('node ./cli-out/cli/main.js "{}" "{}"'.format(path or "", output or ""))
     elif target == 'package-extension':
         processTarget('clean')
-        processTarget('build-extension')
+        copyDir('../Documentation', './Documentation')
+        copy('../README.md', './README.md')
+        copy('../Advanced.md', './Advanced.md')
+        processTarget('build-extension')        
         run('vsce package')
+        removeDirIfExists('./Documentation')
+        removeIfExists('./README.md')
+        removeIfExists('./Advanced.md')
     elif target == 'package-app':
         processTarget('clean')
         processTarget('build-app')
