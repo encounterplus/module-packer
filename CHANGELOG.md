@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.48
+
+### Fixed
+- Fixed issues rendering previews in VS Code
+- Fixed lack of documentation in VSIX
+
 ## 1.0.47
 
 ### Changed
