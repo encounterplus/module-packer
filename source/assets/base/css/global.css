@@ -514,25 +514,29 @@ a:hover {
   text-decoration: none;
 }
 a[href*='dndbeyond.com/sources'],
-a[href*='/page/'] {
+a[href*='/page/'],
+a.page {
   color: #33CC80;
 }
 a[href*='dndbeyond.com/monsters'],
-a[href*='/monster/'] {
+a[href*='/monster/'] a.monster {
   color: #bc0f0e;
 }
 a[href*='dndbeyond.com/spells'],
-a[href*='/spell/'] {
+a[href*='/spell/'],
+a.spell {
   color: #532bca;
   font-style: italic;
 }
 a[href*='dndbeyond.com/equipment'],
 a[href*='dndbeyond.com/magic-items'],
-a[href*='/item/'] {
+a[href*='/item/'],
+a.item {
   color: #105a92;
   font-style: italic;
 }
-a[href*='/roll/'] {
+a[href*='/roll/'],
+a.roll {
   color: #d77e20;
 }
 /******** Text Alignment ********/

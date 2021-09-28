@@ -180,6 +180,7 @@ export class PdfExporter {
           newLink = link.replace('/monster/', 'https://www.dndbeyond.com/search?q=')
         }       
         $(element).attr('href', newLink)
+        $(element).addClass('monster')
       }
       if(link.startsWith('/spell/')) {
         if(printLinkMode === PrintLinkMode.DNDBeyondEntries) {
@@ -189,6 +190,7 @@ export class PdfExporter {
           newLink = link.replace('/spell/', 'https://www.dndbeyond.com/search?q=')
         }
         $(element).attr('href', newLink)
+        $(element).addClass('spell')
       }
       if(link.startsWith('/item/')) {
         let isMagicItem = $(element).hasClass('magic-item')
@@ -208,6 +210,7 @@ export class PdfExporter {
           newLink = link.replace('/item/', 'https://www.dndbeyond.com/search?q=')
         }
         $(element).attr('href', newLink)
+        $(element).addClass('item')
       }
     })
 
