@@ -519,7 +519,8 @@ a.page {
   color: #33CC80;
 }
 a[href*='dndbeyond.com/monsters'],
-a[href*='/monster/'] a.monster {
+a[href*='/monster/'],
+a.monster {
   color: #bc0f0e;
 }
 a[href*='dndbeyond.com/spells'],

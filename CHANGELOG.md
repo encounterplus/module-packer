@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.0.50
+
+### Fixed
+- Broken monster link coloring.
+
 ## 1.0.49
 
 ### Changed
