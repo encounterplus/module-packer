@@ -139,6 +139,7 @@ async function createPDFFromPath(path: string, name: string) {
     } else if (moduleProjects.length === 1) {
       let moduleFolderPath = Path.dirname(moduleProjects[0].moduleProjectPath)
       await PdfExporter.installChromiumForRendering(updateChromiumInstallProgress)
+      mainWindow.webContents.send('showStatusMessage', 'Exporting to PDF...')
       let outputPath = await PdfExporter.exportToPdf(moduleFolderPath,  appRootPath)
       mainWindow.webContents.send('successPdf', outputPath)
       Logger.info('Module PDF created successfully')

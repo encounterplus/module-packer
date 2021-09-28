@@ -35,7 +35,7 @@
       "entitlementsInherit": "./app/entitlements.mac.plist",
       "target": ["dmg"]
     },
-    "asar": true
+    "asar": false
   },
   "publish": {
     "provider": "github",

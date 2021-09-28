@@ -59,6 +59,7 @@ def processTarget(target):
         removeDirIfExists('./app-out')
         removeDirIfExists('./extension-out')
         removeDirIfExists('./Documentation')
+        removeDirIfExists('./local-chromium')
         removeIfExists('./README.md')
         removeIfExists('./Advanced.md')
         processTarget('makeFolders')

@@ -109,6 +109,12 @@ Electron.ipcRenderer.on('installProgressUpdate', (event, progress: number) => {
   statusLink.classList.add('invisible')
 })
 
+Electron.ipcRenderer.on('showStatusMessage', (event, message) => {
+  statusInfo.classList.remove('invisible')
+  statusInfo.innerHTML = message
+  statusLink.classList.add('invisible')
+})
+
 Electron.ipcRenderer.on('error', (event, message) => {
   statusInfo.classList.remove('invisible')
   statusInfo.innerHTML =

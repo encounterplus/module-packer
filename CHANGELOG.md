@@ -3,8 +3,9 @@
 ## 1.0.49
 
 ### Changed
-- Added `.item`, `.spell`, `.roll`, `.page`, and `.monster` link styles.
+- Added `.item`, `.spell`, `.roll`, `.page`, and `.monster` link styles
 - Bumped included chromium version
+- Removed ASAR in electron builds because of incompatibility with puppeteer
 
 ## 1.0.48
 
@@ -19,12 +20,12 @@
 - Standalone app upgraded to Electron 13
 
 ### Fixed
-- Fixed scrolling in preview window.
+- Fixed scrolling in preview window
 
 ## 1.0.46
 
 ### Added
-- Added `.color-links` attribute to tables and blockquotes to make links (of all types) match the table color. Colored tables no longer implicitly color the links.
+- Added `.color-links` attribute to tables and blockquotes to make links (of all types) match the table color. Colored tables no longer implicitly color the links
 - Added manual control over link colors with `.blue`, `.green`, `.red`, `.yellow`, `.neutral`, `.gray`, `.purple`, and `.black` attributes
 - Added `.underline` attribute for links to add underline text decoration
 
