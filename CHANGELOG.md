@@ -1,5 +1,11 @@
 # Change Log
 
+## 1.0.49
+
+### Changed
+- Added `.item`, `.spell`, `.roll`, `.page`, and `.monster` link styles.
+- Bumped included chromium version
+
 ## 1.0.48
 
 ### Fixed

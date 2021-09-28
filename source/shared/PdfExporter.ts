@@ -96,7 +96,7 @@ export class PdfExporter {
       }
 
       // Download Chromium
-      const desiredRevision = '756035'
+      const desiredRevision = '818858'
       const browserFetcher = Puppeteer.createBrowserFetcher()
       let revisionInfo = await browserFetcher.download(desiredRevision, (downloadBytes, totalBytes) => {
         const progress = (downloadBytes / totalBytes) * 100.0

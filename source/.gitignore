@@ -5,6 +5,7 @@
 /extension-out
 /example
 /examples
+/.local-chromium
 *.vsix
 .DS_Store
 package.json
