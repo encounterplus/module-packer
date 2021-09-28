@@ -101,9 +101,6 @@ def processTarget(target):
         copy('../Advanced.md', './Advanced.md')
         processTarget('build-extension')        
         run('vsce package')
-        removeDirIfExists('./Documentation')
-        removeIfExists('./README.md')
-        removeIfExists('./Advanced.md')
     elif target == 'package-app':
         processTarget('clean')
         processTarget('build-app')
