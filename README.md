@@ -4,22 +4,25 @@
 <img align="right" src="./documentation/Logo.png" alt="Module Packer Screenshot" width="230">
 
 - [Introduction](#introduction)
+- [Download](#download)
 - [Getting Started](#getting-started)
   - [Example Content](#example-content)
 - [Managing Your Module Project](#managing-your-module-project)
   - [Module Folder Structure](#module-folder-structure)
-  - [Module Properties](#module-properties-modulejson)
+  - [Module Properties](#module-properties-moduleyaml)
   - [Groups and Folders](#groups-and-folders)
   - [Markdown File Front-Matter](#markdown-file-front-matter)
 - [Markdown Guide](#markdown-guide)
   - [Headings](#headings)
   - [Text Styles](#text-styles)
   - [Images](#images)
-  - [Text Blocks & Block Quotes](#text-blocks--block-quotes)
+  - [Text Blocks & Block Quotes](#text-blocks-block-quotes)
   - [Links](#links)
   - [Tables](#tables)
   - [Monsters](#monsters)
-  - [Page Breaks for Print](#page-breaks-for-print)
+  - [Items](#items)
+  - [Spells](#spells)
+  - [Special Tags for Print/PDF](#special-tags-for-printpdf)
 - [Visual Studio Code Extension](#visual-studio-code-extension)
 - [Other Editors](#other-editors)
 - [License](#license)
@@ -32,11 +35,18 @@ The EncounterPlus Module Packer is a simple standalone application for convertin
   <img src="./documentation/ModulePackerWalkthrough.png" alt="Module Packer Screenshot" width="1000">
 </p>
 
+# Download
+
+Click the links below to download the latest versions of the EncounterPlus Module Packer.
+
+- [Download App for macOS or Windows](https://github.com/encounterplus/module-packer/releases/latest)
+- [Get Visual Studio Code Extension](https://marketplace.visualstudio.com/items?itemName=JacobJohnston.encounterplus-markdown)
+
 # Getting Started
 
 It's easy to begin creating a module in markdown. A guide to Markdown syntax can be found further in this document in the [Markdown Guide](#markdown-guide) section.
 
-1. Download the Module Packer for [macOS]((https://github.com/encounterplus/module-packer/releases/latest)), [Windows]((https://github.com/encounterplus/module-packer/releases/latest)), or as a [Visual Studio Code Plug-In](https://marketplace.visualstudio.com/items?itemName=JacobJohnston.encounterplus-markdown)!
+1. Download the Module Packer for [macOS]((https://github.com/encounterplus/module-packer/releases/latest)), [Windows]((https://github.com/encounterplus/module-packer/releases/latest)), or as a [Visual Studio Code Extension](https://marketplace.visualstudio.com/items?itemName=JacobJohnston.encounterplus-markdown)!
 2. Create a [folder](#Module-Structure) where you will write your module's text and images.
 3. Start writing your module content in Markdown.
 4. Pack your module so it can be imported by EncounterPlus.
@@ -50,23 +60,33 @@ The content of the [examples.zip](examples.zip) file can be used to see examples
 
 ## Module Folder Structure
 
-Below is an example of how you might srtucture your Module content.
+Below is an example of how you might structure your Module content.
 
 ```
 .
-└── Assets               # Optional - allows override of the default style
+└── assets               # Optional - allows custom CSS and Javascript styling (note lowercase folderpaths)
+  └── css                # Contains custom CSS files to be included in your module
+    └── custom.css       # Custom CSS to be applied to all of your pages (for advanced use cases)
+  └── js                 # Contains custom Javscript files to be included in your module
+    └── custom.js        # Custom Javascript to be applied to all of your pages (for advanced use cases)
+└── Encounters           # The folder for maps
+  ├── Group.yaml         # Sets 'include-in' to 'files' to only copy files, and not create a module group
+  └── Encounter.zip      # The encounter zip file exported from EncounterPlus
 └── Group A              # A group for the module.
-    ├── Page A.md        # A page in Group A of the module.
-    ├── Page A Cover.jpg # An image used in Page A.
-    ├── Page B.md        # A page in Group A of the module.
-    └── Group.yaml       # Optional - can define attributes of the group (e.g., Name, Order, etc.)
+  ├── Page A.md          # A page in Group A of the module.
+  ├── Page A Cover.jpg   # An image used in Page A.
+  ├── Page B.md          # A page in Group A of the module.
+  └── Group.yaml         # Optional - can define attributes of the group (e.g., Name, Order, etc.)
 └── Group B              # A group for the module.
-    ├── Page C.md        # A page in Group B of the module.
-    └── Page D.md        # A page in Group B of the module.
+  ├── Page C.md          # A page in Group B of the module.
+  └── Page D.md          # A page in Group B of the module.
 └── Images               # A folder to store shared images.
-    ├── .ignoregroup     # An empty file that instructs the Module Packer not to turn this into a Group
-    ├── Image1.png       # An image used in multiple pages.
-    └── Image2.jpg       # An image used in multiple pages.
+  ├── Group.yaml         # Sets 'include-in' to 'files' to only copy files, and not create a module group
+  ├── Image1.png         # An image used in multiple pages.
+  └── Image2.jpg         # An image used in multiple pages.
+└── Maps                 # The folder for maps
+  ├── Group.yaml         # Sets 'include-in' to 'files' to only copy files, and not create a module group
+  └── Map1.zip           # The map zip file exported from EncounterPlus
 ├── Module.yaml          # Optional - can define attributes of the module (e.g., Title, Author, Slug, etc.)
 └── My Module.md         # A page at the root level of the module.
 ```
@@ -84,40 +104,60 @@ category: adventure
 author: Dungeony MasterFace
 code: ABC-123
 cover: cover.jpg
+print-cover: cover.jpg
 version: 4
-autoIncrementVersion: true
+auto-increment-version: true
+maps:
+  - path: Maps/my-first-map.zip
+    order: 2
+    parent: my-adventure-part-1
+    slug: my-first-map
+encounters:
+  - path: Encounters/my-first-encounter.zip
+    order: 1
+    parent: my-first-map
+    slug: my-first-encounter
 ```
 
 **Values:**
 All `Module.yaml` values are optional - and default values will be used for anything not specified.
-- `id`: If specified, will cause a module to be overwritten rather than duplicated when repeatedly imported. *Never* copy another module's UUID, or you will cause that module to be overwritten.
-- `name`: The name of the module.
-- `slug`: The slug for the module. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
-- `description`: The description of the module.
-- `category`: The category of the module. May be `adventure` or `other`.
 - `author`: The author of the module.
+- `auto-increment-version`: May be `true` or `false`. If `true`, it will cause the version number to automatically increment each time the module is packed. This is useful for keeping track 
+- `category`: The category of the module. May be `adventure` or `other`.
 - `code`: A reference code for the module.
 - `cover`: The file name of the cover image for the module (placed in the same directory).
+- `description`: The description of the module.
+- `encounters`: The encounters to include with the module. See more in the [Including Maps & Encounters Tutorial](MapsAndEncounters.md).
+- `id`: If specified, will cause a module to be overwritten rather than duplicated when repeatedly imported. *Never* copy another module's UUID, or you will cause that module to be overwritten.
+- `maps`: The maps to include with the module. See more in the [Including Maps & Encounters Tutorial](MapsAndEncounters.md).
+- `name`: The name of the module.
+- `print-cover`: The cover to use as the cover image in PDF output (this will be, effectively, a page 0).
+- `slug`: The slug for the module. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
 - `version`: The version of the module. Must be an integer.
-- `autoIncrementVersion`: May be `true` or `false`. If `true`, it will cause the version number to automatically increment each time the module is packed. This is useful for keeping track 
 
 ## Groups and Folders
-
-Subdirectories under the main module folder will automatically be turned into Groups in the module. To have a folder *not* be made into a Group, create a file named `.ignoregroup` in the folder. That folder and all subfolders will no longer be turned into groups. They will, however, be included as a resource folder in the module (e.g. for the `images` folder).
 
 Groups can have some properties defined by creating a `Group.yaml` file in the group's folder on the file system. 
 
 ```YAML
 name: Example Group
-slug: example-grup
+slug: example-group
+parent: parent-slug
 order: 5
+include-in: all
+copy-files: true
 ```
 
 All `Group.yaml` values are optional - and default values will be used for anything not specified. 
+- `copy-files`: If set to false, image and other files from the group folder will not be copied to the module. This is useful for reducing file size of module files when there is print-only content. Default value is `true`.
+- `include-in`: Defines whether the group will be included in module output or PDF output. Valid values are `all` (default), `print`, and `module`, and `files`. If `files` is specified, only the group's files will be copied, but no pages will be parsed.
 - `name`: The name of the group.
-- `slug`: The slug for the group. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
 - `order`: An order for the group. Lower numbers will be placed before higher numbers. If two groups share the same order value, their effective order may differ upon each import. Pages and groups placed at the same place in the tree will respect each other's group values.
+- `parent`: The slug of the parent entity (page or group). If not specified, the parent will be based on the folder structure.
+- `slug`: The slug for the group. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
 
+### Folders that aren't groups
+Subdirectories under the main module folder will automatically be turned into Groups in the module. To have a folder *not* be made into a Group, create a Group.yaml file in the folder and set the `include-in` value to `files`. That folder and all subfolders will no longer be turned into groups. They will, however, be included as a resource folder in the module (e.g. for the `images` folder).
 
 ## Markdown File Front-Matter
 
@@ -128,22 +168,33 @@ Each markdown document can contain front matter block for additional configurati
 name: Page name
 slug: page-name
 order: 3
+parent: parent-slug
 module-pagebreaks: h1, h2, h3
+pdf-pagebreaks: h1, h2, h3
 pdf-pagebreaks: h1
 footer: My Custom Footer Text
+hide-footer: false
 hide-footer-text: false
+include-in: all
+cover: pageCover.jpg
+print-cover-only: false
 ---
 ```
 
 **Values:**
 All front-matter values are optional - and default values will be used for anything not specified.
-- `name`: The name of the page.
-- `slug`: The slug for the module. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
-- `order`: An order for the page. Lower numbers will be placed before higher numbers. If two pages share the same order value, their effective order may differ upon each import. Pages and groups placed at the same place in the tree will respect each other's group values.
-- `module-pagebreak`: Element tags that, when specified, will automatically result in the markdown being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to an EncounterPlus module.
-- `pdf-pagebreak`: Element tags that, when specified, will automatically result in the markdown output being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to a PDF.
+- `cover`: The name of a cover image for this page/section when printing.. This cover image will appear on the page before and take up the entire page document.
 - `footer`: If specified, allows custom footer text to be entered. Otherwise the footer text follows the format of `Page Name | Parent Name`.
-- `hide-footer-text`: If true, will hide footer text entirely.
+- `hide-footer`: If true, will hide the footer entirely.
+- `hide-footer-text`: If true, will hide the footer text, but keep the footer background image. This is superseded by `hide-footer` if it is true.
+- `include-in`: Defines whether the page will be included in module output or PDF output. Valid values are `all` (default), `print`, and `module`, and `compendium`. If `compendium` is chosen, the page will be processed for compendium entries, but will not be shown in either print or the module.
+- `module-pagebreak`: Element tags that, when specified, will automatically result in the markdown being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to an EncounterPlus module.
+- `name`: The name of the page.
+- `order`: An order for the page. Lower numbers will be placed before higher numbers. If two pages share the same order value, their effective order may differ upon each import. Pages and groups placed at the same place in the tree will respect each other's group values.
+- `parent`: The slug of the parent entity (page or group). If not specified, the parent will be based on the folder structure.
+- `pdf-pagebreak`: Element tags that, when specified, will automatically result in the markdown output being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to a PDF.
+- `print-cover-only`: If true, and printing to PDF, this will cause the page content not to be output. This is useful for having multiple, consecutive pages that are full-images (like maps). Generally used in combination with `include-in: print`. This value is not used when exporting to a module.
+- `slug`: The slug for the module. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
 
 # Markdown Guide
 
@@ -327,15 +378,70 @@ A flowchart text block style can be shown by adding custom class `flowchart` and
   <img src="./documentation/Flowchart.jpg" alt="Flowchart" width="400">
 </p>
 
-## Links
-
-Normally, in markdown, links would be used to link to other webpages. However, in EncounterPlus, you can add links to any monster, player, item and spell in the compendium or to other pages or maps. Always link to the item's slug. Slugs are absolute and do not need paths or groups specified when linking. Monster links should be prefaced with `/monster/`. Item links should be prefaced with `/item/`. Spell links should be prefaced with `/spell/`. 
+A large quote text block style can be shown by adding custom class `large-quote` to standard block quotes:
 
 ```Markdown
-[Example page](example-page)
-[Goblin](/monster/goblin)
-[Staff of Power](/item/staff-of-power)
-[Fireball](/spell/fireball)
+> "This is my large quote." {.large-quote}
+```
+<p align="left">
+  <img src="./documentation/LargeQuote.jpg" alt="Large quote" width="400">
+</p>
+
+## Links
+
+Normally, in markdown, links would be used to link to other webpages. However, in EncounterPlus, you can also add links to:
+- Items
+- Spells
+- Monsters
+- Players
+- Dice Rolls
+- Pages
+- Maps
+
+Slugs are absolute and do not need paths or groups specified when linking. Monster links should be prefaced with `/monster/`. Item links should be prefaced with `/item/`. Spell links should be prefaced with `/spell/`. 
+
+Links will be colored according to the type of item you are linking to.
+
+<p align="left">
+  <img src="./documentation/Links.jpg" alt="Large quote" width="200">
+</p>
+
+```Markdown
+[Page](/page/myPage)
+
+[Monster](/monster/myMonster)
+
+[Item](/item/myItem)
+
+[Spell](/spell/mySpell)
+
+[Roll](/roll/1d20)
+```
+
+The default link colors and styles can be overridden by applying color attributes to the links:
+
+<p align="left">
+  <img src="./documentation/LinkColors.jpg" alt="Large quote" width="200">
+</p>
+
+```Markdown
+[Page](/page/myPage){.blue}
+
+[Page](/page/myPage){.green}
+
+[Page](/page/myPage){.red}
+
+[Page](/page/myPage){.yellow}
+
+[Page](/page/myPage){.neutral}
+
+[Page](/page/myPage){.gray}
+
+[Page](/page/myPage){.purple}
+
+[Page](/page/myPage){.black}
+
+[Page](/page/myPage){.black .underline}
 ```
 
 ## Tables
@@ -355,7 +461,7 @@ The Module Packer and Visual Studio Code extension support the standard Markdown
 | 00       | Driftglobe                |
 ```
 
-In addition, table colors can be customized with by adding the `{.green}`, `{.red}`, `{.blue}`, `{.yellow}`, `{.gray}`, and `{.neutral}`. Additionally, the `{.headerTitle}` style can be added to change the header text appearance.
+In addition, table colors can be customized with by adding the `{.green}`, `{.red}`, `{.blue}`, `{.yellow}`, `{.purple}`, `{.gray}`, and `{.neutral}`. Additionally, the `{.headerTitle}` style can be added to change the header text appearance.
 
 ```Markdown
 |   d100   | Magic Item                |
@@ -413,7 +519,7 @@ A shop table style also exists with special header values for showing categories
 
 ## Monsters
 
-Monster stat blocks can be created within a Markdown file. The Monster stat blocks are specified using standard [YAML](https://en.wikipedia.org/wiki/YAML) just like the Front-Matter on each page.
+Monster stat blocks can be created within a Markdown file. When exported as a module, these monsters will be added to EncounterPlus's compendium. The Monster stat blocks are specified using standard [YAML](https://en.wikipedia.org/wiki/YAML) just like the Front-Matter on each page.
 
 ~~~Markdown
 ```Monster {.two-column}
@@ -432,7 +538,6 @@ con: 12
 int: 10
 wis: 6
 cha: 8
-role: enemy
 saves: Str + 2
 skills: Stealth +6
 vulnerabilities: radiant
@@ -459,7 +564,8 @@ reactions:
 legendaryActions:
   - description: The Evil McEvilface can take 1 legendary actions, using the Explosion option below.
   - name: Explosion
-    description: "The Evil McEvilface suddenly explodes doing 1d20 damage to all creatures within 10 ft. This kills the Evil McEvilface."    
+    description: "The Evil McEvilface suddenly explodes doing 1d20 damage to all creatures within 10 ft. This kills the Evil McEvilface."
+description: Evil McEvilface lives in the sewer, but not in a cool way like a Ninja Turtle.
 ```
 ~~~
 
@@ -475,11 +581,98 @@ There are two styles of stat blocks available: a standard single-column stat blo
 
 Like images, monster stat blocks may be used with the standard `.float-left` and `.float-right` style attributes.
 
-Monster stat blocks can be rendered in a variety of colors with the `.blue`, `.green`, `.red`, `.yellow`, `.gray`, and `.neutral` tags.
+Monster stat blocks can be rendered in a variety of colors with the `.blue`, `.green`, `.red`, `.yellow`, `.purple`, `.gray`, and `.neutral` tags.
 
 <p align="left">
   <img src="./documentation/StatblockColors.jpg" alt="Monster Stat Block Colors" width="500">
 </p>
+
+## Items
+
+<p align="left">
+  <img src="./documentation/Item.jpg" alt="Item" width="500">
+</p>
+
+Items can created within a Markdown file. When exported as a module, these items will be added to EncounterPlus's compendium. The Item stat blocks are specified using standard [YAML](https://en.wikipedia.org/wiki/YAML) just like the Front-Matter on each page.
+
+~~~Markdown
+```Item
+name: Quarterstaff of Thwacking
+slug: quarterstaff-of-thwacking
+rarity: Uncommon
+type: Weapon
+attunement: Requires attunement by a monk
+primaryDamage: 1d6
+secondaryDamage: 1d8
+properties:
+  - Versatile
+  - Finesse
+damageType: Bludgeoning
+description: This legendary quarterstaff has thwacked many a foe.
+value: 1 gp
+source: Example Module
+```
+~~~
+
+Available item values are:
+- `type`: The item type. Supported values are Wealth, Ammunition, Armor, Adventuring gear, Heavy armor, Light armor, Melee weapon, Medium armor, Potion, Ranged weapon, Rod, Ring, Shield, Scroll, Staff, Wondrous item, Wand, and Weapon
+- `rarity`: The rarity of the item
+- `value`: The item's value
+- `weight`: The item's weight
+- `heading`: A custom heading for the item (this will replace the auto-generated heading)
+- `attunement`: An attunement description for the item 
+- `properties`: The properties of the item. Supported values are Ammunition, Finesse, Heavy, Light, Loading, Range, Reach, Special, Thrown, Two-handed, and Versatile
+- `primaryDamage`: The item's primary damage value (e.g., 1H if versatile)
+- `secondaryDamage`: The item's secondary damage value (e.g., 2H if versatile)
+- `damageType`: The damage type. Supported values are Bludgeoning, Piercing, and Slashing
+- `range`: The item's range
+- `ac`: The item's AC
+- `source`: The item's source (e.g., the name/page of a publication)
+- `image`: The filename of an image of the item
+- `description`: The item's description
+
+Item blocks can be rendered in a variety of colors with the `.blue`, `.green`, `.red`, `.yellow`, `.orange`, `.purple`, `.gray`, and `.neutral` tags.
+
+## Spells
+
+<p align="left">
+  <img src="./documentation/Spell.jpg" alt="Spell" width="500">
+</p>
+
+Spells can created within a Markdown file. When exported as a module, these spells will be added to EncounterPlus's compendium. The Spell stat blocks are specified using standard [YAML](https://en.wikipedia.org/wiki/YAML) just like the Front-Matter on each page.
+
+~~~Markdown
+```Spell
+name: Dumpster Fire
+slug: dumpster-fire
+level: 0
+school: Evocation
+ritual: false
+time: 1 action
+range: Self (30-foot radius)
+components: V
+duration: Concentration, up to 1 minute
+description: Ignites all nearby dumpsters.
+classes: Sorcerer, Warlock, Wizard
+image: DumpsterFire.jpg
+source: Example Module
+```
+~~~
+
+Available spell values are:
+- `level`: A number value of the level, a level of zero is a cantrip
+- `school`: The spell's school. Allowed values are Abjuration, Conjuration, Divination, Enchantment, Evocation, Illusion, Necromancy, and Transmutation
+- `ritual`: `true` if the spell is a ritual, otherwise `false`
+- `time`: The spell's time to cast
+- `range`: The spell's range or area
+- `components`: The spell's components
+- `duration`: The spell's duration
+- `classes`: The spell's classes
+- `source`: The spell's source 
+- `image`: The filename of an image of the spell
+- `description`: The spell's description
+
+Spell blocks can be rendered in a variety of colors with the `.blue`, `.green`, `.red`, `.yellow`, `.orange`, `.purple`, `.gray`, and `.neutral` tags.
 
 ## Special Tags for Print/PDF
 
@@ -541,6 +734,20 @@ The EncounterPlus Markdown Extension also provides access to the same module pac
 7. Use the standard Visual Studio Code file view to create markdown files..
 8. Use the standard Visual Studio Code preview to preview markdown (they will now be styled as if they were in EncounterPlus).
 9. Use the EncounterPlus Module View to build and export your module!
+
+## EncounterPlus Markdown Extension Keyboard Shortcuts
+
+| Mac | Windows | Description |
+|:---:|:---:|:---|
+|`Cmd+B`|`Ctrl+B`|Toggle Bold|
+|`Cmd+I`|`Ctrl+I`|Toggle Italics|
+|`Cmd+U`|`Ctrl+U`|Toggle Underline|
+|`Cmd+M`|`Ctrl+M`|Toggle Mark|
+|`Cmd+K`|`Ctrl+K`|Create Link|
+|`Cmd+Shift+=`|`Ctrl+Shift+=`|Toggle Superscript|
+|`Cmd+Shift+-`|`Ctrl+Shift+-`|Toggle Subscript|
+|`Cmd+Shift+X`|`Ctrl+Shift+X`|Toggle Strikethrough|
+|`Alt+Shift+Q`|`Alt+Shift+Q`|Toggle Blockquote|
 
 # Other Editors
 

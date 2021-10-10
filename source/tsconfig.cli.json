@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+      "module": "commonjs",
+  "target": "es2019",
+  "lib": ["ES2019", "DOM"],
+      "noImplicitAny": true,
+      "sourceMap": true,
+      "outDir": "./cli-out",
+      "baseUrl": ".",
+      "paths": {
+          "*": ["node_modules/*"]
+      }
+  },
+  "include": [
+      "cli/**/*",
+      "shared/**/*"
+  ]
+}

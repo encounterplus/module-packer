@@ -1,0 +1,380 @@
+{
+  "name": "encounterplus-markdown",
+  "displayName": "EncounterPlus Markdown",
+  "description": "Renders markdown as it would appear in EncounterPlus",
+  "icon": "Logo.png",
+  "version": "1.0.51",
+  "publisher": "jacobjohnston",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/encounterplus/module-packer"
+  },
+  "engines": {
+    "vscode": "^1.51.0"
+  },
+  "author": "QBIT, s.r.o",
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/encounterplus/module-packer/issues"
+  },
+  "homepage": "https://github.com/encounterplus/module-packer",
+  "categories": ["Other"],
+  "keywords": ["EncounterPlus", "iOS", "module", "packer"],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./extension-out/vscode-extension/extension-packed.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "encounter-plus-view-container",
+          "title": "EncounterPlus",
+          "icon": "./extension-out/resources/encounterplus-markdown-viewcontainer.svg"
+        }
+      ]
+    },
+    "views": {
+      "encounter-plus-view-container": [
+        {
+          "id": "encounter-plus-modules",
+          "name": "Modules",
+          "icon": "./extension-out/resources/encounterplus-markdown-viewcontainer.svg",
+          "contextualTitle": "EncounterPlus Modules"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "encounter-plus-modules",
+        "contents": "No modules found. You may need to create a Module.yaml file.\n[Create Module Project File](command:encounterPlusMarkdown.createModuleProjectFile)"
+      }
+    ],
+    "commands": [
+      {
+        "command": "encounterPlusMarkdown.buildModule",
+        "title": "Build Module",
+        "category": "EncounterPlus Markdown",
+        "icon": { 
+          "light": "./extension-out/resources/light/build-module.svg",
+          "dark": "./extension-out/resources/dark/build-module.svg"
+        },
+        "when": "view == encounter-plus-modules && viewItem == moduleProject"
+      },
+      {
+        "command": "encounterPlusMarkdown.refreshModules",
+        "title": "Refresh Module List",
+        "category": "EncounterPlus Markdown",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "encounterPlusMarkdown.createModuleProjectFile",
+        "title": "Create Module Project File",
+        "category": "EncounterPlus Markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.exportModuleToPDF",
+        "title": "Export Module to PDF",
+        "category": "EncounterPlus Markdown",
+        "icon": { 
+          "light": "./extension-out/resources/light/export-to-pdf.svg",
+          "dark": "./extension-out/resources/dark/export-to-pdf.svg"
+        },
+        "when": "view == encounter-plus-modules && viewItem == moduleProject"
+      },
+      {
+        "command": "encounterPlusMarkdown.createPageStub",
+        "title": "Create Page Stub",
+        "category": "EncounterPlus Markdown",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.createGroupStub",
+        "title": "Create Group Stub",
+        "category": "EncounterPlus Markdown",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == yaml"
+      },
+      {
+        "command": "encounterPlusMarkdown.createMonsterStub",
+        "title": "Create Monster Stub",
+        "category": "EncounterPlus Markdown",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.createItemStub",
+        "title": "Create Item Stub",
+        "category": "EncounterPlus Markdown",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.createSpellStub",
+        "title": "Create Spell Stub",
+        "category": "EncounterPlus Markdown",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Bold",
+        "command": "encounterPlusMarkdown.toggleBold",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Italics",
+        "command": "encounterPlusMarkdown.toggleItalics",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Underline",
+        "command": "encounterPlusMarkdown.toggleUnderLine",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Mark",
+        "command": "encounterPlusMarkdown.toggleMark",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Superscript",
+        "command": "encounterPlusMarkdown.toggleSuperscript",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Subscript",
+        "command": "encounterPlusMarkdown.toggleSubscript",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Strikethrough",
+        "command": "encounterPlusMarkdown.toggleStrikethrough",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Inline Code",
+        "command": "encounterPlusMarkdown.toggleCodeInline",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Code Block",
+        "command": "encounterPlusMarkdown.toggleCodeBlock",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Unordered List",
+        "command": "encounterPlusMarkdown.toggleUList",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Ordered List",
+        "command": "encounterPlusMarkdown.toggleOList",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Toggle Block Quote",
+        "command": "encounterPlusMarkdown.toggleBlockQuote",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Create Link",
+        "command": "encounterPlusMarkdown.createLink",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Create Monster Link",
+        "command": "encounterPlusMarkdown.createMonsterLink",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Create Item Link",
+        "command": "encounterPlusMarkdown.createItemLink",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "title": "Markdown: Create Spell Link",
+        "command": "encounterPlusMarkdown.createSpellLink",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "encounterPlusMarkdown.toggleBold",
+        "key": "ctrl+b",
+        "mac": "cmd+b",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.toggleItalics",
+        "key": "ctrl+i",
+        "mac": "cmd+i",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.toggleUnderLine",
+        "key": "ctrl+u",
+        "mac": "cmd+u",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.toggleMark",
+        "key": "ctrl+m",
+        "mac": "cmd+m",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.toggleSuperscript",
+        "key": "ctrl+shift+=",
+        "mac": "cmd+shift+=",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.toggleSubscript",
+        "key": "ctrl+shift+-",
+        "mac": "cmd+shift+-",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.toggleStrikethrough",
+        "key": "alt+shift+x",
+        "mac": "cmd+shift+x",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.toggleCodeInline",
+        "key": "alt+shift+`",
+        "mac": "alt+shift+`",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.toggleCodeBlock",
+        "key": "ctrl+alt+shift+`",
+        "mac": "ctrl+alt+shift+`",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.toggleBlockQuote",
+        "key": "alt+shift+q",
+        "mac": "alt+shift+q",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      },
+      {
+        "command": "encounterPlusMarkdown.createLink",
+        "key": "ctrl+k",
+        "mac": "cmd+k",
+        "when": "editorTextFocus && !editorReadonly && editorLangId == markdown"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+            "command": "encounterPlusMarkdown.refreshModules",
+            "when": "view == encounter-plus-modules",
+            "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "encounterPlusMarkdown.buildModule",
+          "when": "view == encounter-plus-modules && viewItem == moduleProject",
+          "group": "inline"
+        },
+        {
+          "command": "encounterPlusMarkdown.exportModuleToPDF",
+          "when": "view == encounter-plus-modules && viewItem == moduleProject",
+          "group": "inline"
+        }
+      ]
+    },
+    "markdown.markdownItPlugins": true,
+    "markdown.previewStyles": [
+      "extension-out/resources/vscode.css",
+      "extension-out/assets/base/css/global.css"
+    ],
+    "grammars": [
+      {
+        "scopeName": "markdown.monster.codeblock",
+        "path": "extension-out/resources/monster-codeblock.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.monster": "yaml"
+        }
+      },
+      {
+        "scopeName": "markdown.item.codeblock",
+        "path": "extension-out/resources/item-codeblock.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.item": "yaml"
+        }
+      },
+      {
+        "scopeName": "markdown.spell.codeblock",
+        "path": "extension-out/resources/spell-codeblock.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.item": "yaml"
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "eslint . --ext .ts,.tsx",
+    "vscode:prepublish": "webpack --config webpack.extension.config.js --mode production",
+    "webpack": "webpack --config webpack.extension.config.js --mode development && ncp ./vscode-extension/resources ./extension-out/resources && ncp ./assets ./extension-out/assets",
+    "webpack-dev": "webpack ---config webpack.extension.config.js -mode development --watch",
+    "compile-css": "lessc ./assets/base/css/global.less ./assets/base/css/global.css && lessc ./assets/print/css/print.less ./assets/print/css/print.css",
+    "compile-extension": "webpack --config webpack.extension.config.js --mode development && ncp ./vscode-extension/resources ./extension-out/resources && ncp ./assets ./extension-out/assets",
+    "watch-extension": "webpack --config webpack.extension.config.js --mode development && ncp ./vscode-extension/resources ./extension-out/resources && ncp ./assets ./extension-out/assets"
+  },
+  "devDependencies": {
+    "@types/node": "^14.17.0",
+    "@types/vscode": "^1.51.0",
+    "@typescript-eslint/eslint-plugin": "^3.8.0",
+    "@typescript-eslint/parser": "^3.8.0",
+    "eslint": "^7.6.0",
+    "less": "^3.12.2",
+    "ncp": "^2.0.0",
+    "ts-loader": "^8.0.14",
+    "typescript": "^4.1.2",
+    "webpack": "^5.40.0",
+    "webpack-cli": "^4.7.2"
+  },
+  "dependencies": {
+    "@types/archiver": "^3.1.0",
+    "@types/cheerio": "0.22.22",
+    "@types/fs-extra": "9.0.1",
+    "@types/markdown-it": "^10.0.1",
+    "@types/puppeteer-core": "^5.4.0",
+    "@types/unzipper": "^0.10.3",
+    "@types/uuid": "^8.0.0",
+    "@types/xml2js": "^0.4.5",
+    "archiver": "^4.0.1",
+    "bufferutil": "^4.0.1",
+    "cheerio": "1.0.0-rc.10",
+    "fs-extra": "9.0.1",
+    "gray-matter": "^4.0.2",
+    "markdown-it": "^11.0.0",
+    "markdown-it-anchor": "^5.3.0",
+    "markdown-it-attrs": "^3.0.3",
+    "markdown-it-decorate": "^1.2.2",
+    "markdown-it-imsize": "^2.0.1",
+    "markdown-it-mark": "^3.0.0",
+    "markdown-it-multimd-table": "^4.0.3",
+    "markdown-it-sub": "^1.0.0",
+    "markdown-it-sup": "^1.0.0",
+    "markdown-it-underline": "^1.0.1",
+    "minimist": ">=0.2.1",
+    "path": "^0.12.7",
+    "puppeteer-core": "5.5.0",
+    "slugify": "^1.4.0",
+    "unzipper": "^0.10.11",
+    "utf-8-validate": "^5.0.2",
+    "uuid": "^8.1.0",
+    "winston": "^3.3.3",
+    "xml2js": "^0.4.23",
+    "yaml": "^1.10.0"
+  }
+}

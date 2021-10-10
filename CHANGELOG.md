@@ -1,5 +1,329 @@
 # Change Log
 
+## 1.0.51
+
+### Changed
+- Added support for more image formats (e.g., `.svg` and `.webp`)
+
+### Fixed
+- Fixed relative linking of script `src` elements.
+
+## 1.0.50
+
+### Fixed
+- Broken monster link coloring.
+
+## 1.0.49
+
+### Changed
+- Added `.item`, `.spell`, `.roll`, `.page`, and `.monster` link styles
+- Bumped included chromium version
+- Removed ASAR in electron builds because of incompatibility with puppeteer
+
+## 1.0.48
+
+### Fixed
+- Fixed issues rendering previews in VS Code
+- Fixed lack of documentation in VSIX
+
+## 1.0.47
+
+### Changed
+- Leading slashes on image paths will now automatically be ignored
+- Standalone app upgraded to Electron 13
+
+### Fixed
+- Fixed scrolling in preview window
+
+## 1.0.46
+
+### Added
+- Added `.color-links` attribute to tables and blockquotes to make links (of all types) match the table color. Colored tables no longer implicitly color the links
+- Added manual control over link colors with `.blue`, `.green`, `.red`, `.yellow`, `.neutral`, `.gray`, `.purple`, and `.black` attributes
+- Added `.underline` attribute for links to add underline text decoration
+
+## 1.0.45
+
+### Added
+- Added link coloring to differentiate monsters, spells, items, and rolls
+
+### Changed
+- Made rolls automatically strip links and replace with bold when doing PDF output
+
+## 1.0.44
+
+### Changed
+- Chaned monster stat blocks to allow a null/empty alignment
+
+### Fixed
+- Fixed the `showImage` property on monster stat blocks not being respected
+
+## 1.0.43
+
+### Fixed
+- Fixed `copy-files` flag being applied to print/pdf output
+
+## 1.0.42
+
+### Changed
+- Changed default expanding behavior of Module tree view to only include root project
+
+### Fixed
+- Fixed `copy-files` property not being utilized
+- Fixed an error that could occur when module.yaml was empty
+- Fixed modules without a name not defaulting to folder name
+- Fixed module tree view showing print-only items
+
+## 1.0.41
+
+### Added
+- Added color classes to blockquotes
+
+### Changed
+- Changed default, unspecified Table Headers to align left
+
+### Fixed
+- Fixed the description property of monster stat blocks not making it into the compendium export
+
+## 1.0.40
+
+### Fixed
+- Added rarity to items stub
+- Fixed double periods in compendium image filenames
+
+## 1.0.39
+
+### Fixed
+- Fixed Modules showing up twice in the module view because it was including the ModuleBuild folder
+
+## 1.0.38
+
+### Breaking Changes
+- `.size-full` and `.size-cover` will no longer automatically get grouped to the next pagebreak. They will, instead, need to be marked with the `.before-next-page-header` class
+
+### Changes
+- Made module packer copy source text files to ModuleBuild when building
+
+### Fixed
+- Fixed a module build error that could occur with null item properties
+
+## 1.0.37
+
+### Fixed
+- Fixed catalyst-specific font sizes
+
+## 1.0.36
+
+### Added
+- Added page and group stubs creation commands
+- Added column-after and column-after-property to monster stubs
+- Added images and proficiency bonus to monster stat blocks
+
+### Fixed
+- Fixed typo in monster link creation
+- Fixed .size-full and .size-content images sometimes disappearing in modules
+
+### Changed
+- Made the Build Module command build the default module if no module selected in tree view
+
+## 1.0.35
+
+### Added
+- Added support for .catalyst class font size
+- Added commands to create stubs
+- Added navigation from Extension menu items to headers
+
+### Changed
+- Changed page view for VS Code extension to be expanded by default
+
+### Fixed
+- Fixed broken font spacing on statblock titles
+
+## 1.0.34
+
+### Changed
+- Changed many sizes to use rem instead of px so EncounterPlus can scale content appropriately.=
+
+## 1.0.33
+
+### Added
+- Added `Cmd-K` shortcut for creating links (`Ctrl-K` on Windows)
+- Added "Create Monster Link", "Create Spell Link", and "Create Item Link" commands (no default keybindings)
+
+### Changed
+- Changed front from Bookinsanity to Bookinsanity remake to handle accented characters
+- Made most links bold by default in PDF output. Table of content links still remain the same
+
+## 1.0.32
+
+### Added
+- Added `print-link-update` option to Module Projects to allow compendium links to link to D&D Beyond instead when outputting to PDF. Valid values are "None", "D&D Beyond Entries", and "D&D Beyond Search"
+- Links now support a `.no-link-update` attribute to ignore PDF output updates
+- Item links now support a `.magic-item` or `.equipment` attribute to link to proper PDF entries
+- Added additional anchor IDs to make linking more consistent with PDF output and Module Output
+
+## 1.0.31
+
+### Breaking Changes
+- `.size-cover`, `.print-bottom-left`, `.print-bottom-right`, `.print-top-left`, and `.print-top-right` no long apply margins in PDF output. Added `.with-margin` attribute to augment to get the older spacing
+- `.print-bottom-left`, `.print-bottom-right`, `.print-top-left`, and `.print-top-right` will now appear on top of footer
+
+### Fixed
+- Fixed `cover` images for pages only working in root folder
+- Fixed monsters, spells, and items only allowing same-folder paths for images/tokens
+
+## 1.0.30
+
+### Added
+- Added `.print-center` attribute
+- Added `column-after` and `column-after-property` properties to monster stat blocks
+
+### Changed
+- Optimization: Exporting to PDF no longer processes maps or encounters
+
+### Fixed
+- Fixed module view in VS Code showing ignored groups/folders
+
+## 1.0.29
+
+### Fixed
+- Fixed preview and lack of readme in Webpacked extension
+
+## 1.0.28
+
+### Added
+- Added CLI build option. Use it by invoking `python launcher.py run --path <module path>` and `python launcher.py run --path <module path> --output pdf`
+
+### Changed
+- Removed CLI from electron app (it wasn't working well)
+
+## 1.0.27
+
+### Breaking Changes
+- Removed `compress-images` functionality temporarily (hopefully)
+
+### Added
+- `compendium` option now allowed for `include-in` page property. This will allow pages to be used for compendium entries in E+, but will not show up as pages in PDF or E+ output.
+- Added linux build
+
+### Changed
+- Webpacked VS Code extension to improve load time and performance
+- Changed property naming to be more consistent in style:
+  - `autoIncrementVersion` module.yaml property may now be `auto-increment-version`
+  - `compressImages` module.yaml property may now be `compress-images`
+  - `printCover` module.yaml property may now be `print-cover`
+
+## 1.0.26
+
+### Fixed
+- Fixed standalone apps not showing their UI
+
+## 1.0.25
+
+### Added
+- Added Large Quote blockquote style
+- Added `print-cover-only` option to pages to make pages only contain cover contents
+- Added `.purple` table style
+
+### Changed
+- Made YAML parse errors more descriptive to help identify location of issues
+
+### Fixed
+- Fixed an issue where the Module projects could not be scanned on Windows
+
+## 1.0.24
+
+### Added
+- Added support for custom colors and classes on items and spells. Colors supported are green, blue, red, yellow, orange, gray, neutral, and purple
+- Added purple color to monster stat blocks
+
+### Breaking Changes
+- Changed `property` to `properties` on item descriptions. It is now an array
+
+### Changed
+- Changed Sidebar tables to avoid floating if there isn't sufficient width (i.e., less than 400 px)
+
+### Fixed
+- Fixed two-column monster statblocks as not spanning across columns when exporting to PDF
+- Fixed items not supporting multiple properties
+- Fixed spells and items not supporting line breaks in their descriptions.
+
+## 1.0.23
+
+### Added
+- Added Items and Spells YAML compendium entry support
+- Added CLI interface for app. Arguments are "<path> <mode>", where <path> is the path of the module, and <mode> is optional and can be `pdf` (to create a PDF) or `module` (to create a module file). The `module` mode is default
+
+### Changed
+- Updated VS Code Engine to 1.51
+
+### Fixed
+- Fixed Create Module.yaml button not working
+- Fixed manually-chosen slugs on monsters not being respected
+
+## 1.0.22
+
+### Fixed
+- Ignore unix-style hidden folders (e.g., ".folder") to ignore version controlled system hidden files
+
+## 1.0.21
+
+### Changed
+- `parent` value now supported generically on pages and groups
+- Removed deprecated `role` field from Monsters
+
+## 1.0.20
+
+### Fixed
+- Fixed module packer creating a compendium.xml when there was no compendium data
+
+## 1.0.19
+
+### Added
+- Added ability to export compendium items (monsters) with module
+- Added the ability to include maps
+- Added the ability to include encounters
+- Added the ability to have nested pages under other nested pages
+
+### Changed
+- `.size-full` attribute now groups ahead of module pagebreaks like `.size-full` does
+
+## 1.0.18
+
+### Fixed
+- Fixed sidebar tables not having proper width by default
+- Fixed page contents being inappropriately wrapped in HTML/Body tags when exporting to module
+- Fixed nested pages generated from pagebreaks not maintaining sort order
+- Fixed pages duplicating on PDF output when placed at root level
+
+## 1.0.17
+
+### Added
+- Generic `.center` attribute
+- Added `compressImages` option to Module project to compress images upon output.
+- Added additional logging messages
+
+### Changed
+- Made `.float-left` and `.float-right` apply to more elements
+
+## 1.0.16
+
+### Breaking Changes
+- Changed `.headerTitle` to `.header-title` to be consistent with others
+
+### Added
+- Console log messages when building with the VS Code extension
+- `.print-float-right`, `.print-float-left`, and `.print-two-column` attributes to float only in print layouts
+- VS Code E+ View now accurately shows order of pages and groups
+
+### Changed
+- Swapped page footer orientation between odd and even pages 
+- Decreased font size of figure captions
+
+### Fixed
+- Newline handling in Trait/Action descriptions for monsters
+- Z-index on print-bottom-left and bottom-right now allow content to overlap
+
 ## 1.0.15
 
 ### Breaking Changes

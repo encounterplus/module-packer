@@ -1,0 +1,55 @@
+// See https://go.microsoft.com/fwlink/?LinkId=733558
+// for the documentation about the tasks.json format
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "watch-extension",
+			"problemMatcher": "$tsc-watch",
+			"isBackground": true,
+			"presentation": {
+				"reveal": "never"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"dependsOn": ["build extension"]
+		},
+		{
+			"type": "npm",
+			"script": "watch-app",
+			"problemMatcher": "$tsc-watch",
+			"isBackground": true,
+			"presentation": {
+				"reveal": "never"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"dependsOn": ["build app"]
+		},
+		{
+			"label": "build extension",
+			"type": "process",
+			"problemMatcher": "$tsc-watch",
+			"command": "${config:python.pythonPath}",
+			"args": ["${workspaceFolder}/launcher.py", "build-extension"],
+			"options": {
+        "cwd": "${workspaceFolder}"
+      }
+		},
+		{
+			"label": "build app",
+			"type": "process",
+			"problemMatcher": "$tsc-watch",
+			"command": "${config:python.pythonPath}",
+			"args": ["${workspaceFolder}/launcher.py", "build-app"],
+			"options": {
+        "cwd": "${workspaceFolder}"
+      }
+		}
+	]
+}

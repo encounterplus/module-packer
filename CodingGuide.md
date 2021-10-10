@@ -9,7 +9,7 @@ To run Module Packer or its Visual Studio Code extension from code, you will nee
 
 To build and start the standalone module-packer, navigate to the code folder, issue the following command:
 ```
-python launcher.py start-app
+python3 launcher.py start-app
 ```
 
 ## Working with Code
@@ -38,12 +38,12 @@ In addition, the following folders may exist after various build processes are r
 
 To compile the standalone application from typescript, run the following command:
 ```
-python launcher.py build-app
+python3 launcher.py build-app
 ```
 
 To compile the Visual Studio Code extension from typescript, run the following command:
 ```
-python launcher.py build-extension
+python3 launcher.py build-extension
 ```
 
 ### Packaging the Application
@@ -51,13 +51,13 @@ python launcher.py build-extension
 The standalone module packer application can be packaged with the following command. Do note, however, that the project is currently configured to look for certificates that will not exist on your system. These will need to be changed. For more information, consule the [Electron-Builder documentation](https://www.electron.build):
 
 ```
-python launcher.py package-app
+python3 launcher.py package-app
 ```
 
 ### Packaging the Visual Studio Code Extension
 The Visual Studio Code extension can be packaged as a VSIX with the following command.
 ```
-python launcher.py package-extension
+python3 launcher.py package-extension
 ```
 
 This script will require the Visual Studio Code Extensions node module to be installed on your system:

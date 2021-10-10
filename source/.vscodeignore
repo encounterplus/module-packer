@@ -1,0 +1,16 @@
+*
+**
+!Logo.png
+!README.md
+!package.json
+!documentation
+!extension-out/
+!node_modules/markdown-it-anchor
+!node_modules/markdown-it-attrs
+!node_modules/markdown-it-decorate
+!node_modules/markdown-it-imsize
+!node_modules/markdown-it-mark
+!node_modules/markdown-it-multimd-table
+!node_modules/markdown-it-sub
+!node_modules/markdown-it-sup
+!node_modules/markdown-it-underline
