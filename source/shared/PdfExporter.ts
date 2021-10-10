@@ -19,6 +19,7 @@ export class PdfExporter {
    * @param transformPageLocation An optional function to transform the page's location (needed for tools like VSCode)
    */
   public static async exportToPdf(projectDirectory: string, appRootPath: string, transformPageLocation?: (path: string) => string): Promise<string> {
+    let PuppeteerBridge = ((Puppeteer as unknown) as Puppeteer.PuppeteerNode) // Workaround for poor typescript mapping
     let module = await Module.createModuleFromPath(projectDirectory, appRootPath, Path.basename(projectDirectory), ModuleMode.PrintToPDF)
     let moduleOutputPath = Path.join(projectDirectory, 'ModuleBuild')
     let customStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'custom.css')
@@ -36,7 +37,7 @@ export class PdfExporter {
 
     let options = {
       headless: true,
-      executablePath: Puppeteer.executablePath(),
+      executablePath: PuppeteerBridge.executablePath(),
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     }
     const browser = await Puppeteer.launch(options)
@@ -70,7 +71,7 @@ export class PdfExporter {
 
     Logger.info(`Creating PDF file.`)
     const pdf = await page.pdf({
-      format: 'Letter',
+      format: 'letter',
       printBackground: true,
     })
 
@@ -86,7 +87,8 @@ export class PdfExporter {
    */
   public static async installChromiumForRendering(downloadProgressChanged?: (progress: number) => void) {
     try {
-      if (FileSystem.existsSync(Puppeteer.executablePath())) {
+      let PuppeteerBridge = ((Puppeteer as unknown) as Puppeteer.PuppeteerNode)
+      if (FileSystem.existsSync(PuppeteerBridge.executablePath())) {
         return
       }
 
@@ -96,8 +98,8 @@ export class PdfExporter {
       }
 
       // Download Chromium
-      const desiredRevision = '818858'
-      const browserFetcher = Puppeteer.createBrowserFetcher()
+      const desiredRevision = '901912'
+      const browserFetcher = PuppeteerBridge.createBrowserFetcher({})
       let revisionInfo = await browserFetcher.download(desiredRevision, (downloadBytes, totalBytes) => {
         const progress = (downloadBytes / totalBytes) * 100.0
         if (downloadProgressChanged) {
@@ -114,7 +116,7 @@ export class PdfExporter {
         }
       })
 
-      if (FileSystem.existsSync(Puppeteer.executablePath())) {
+      if (FileSystem.existsSync(PuppeteerBridge.executablePath())) {
         return Promise.all(cleanupOldVersions)
       }
     } catch (error: any) {
