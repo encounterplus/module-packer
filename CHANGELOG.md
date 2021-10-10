@@ -1,5 +1,13 @@
 # Change Log
 
+## 1.0.51
+
+### Changed
+- Added support for more image formats (e.g., `.svg` and `.webp`)
+
+### Fixed
+- Fixed relative linking of script `src` elements.
+
 ## 1.0.50
 
 ### Fixed

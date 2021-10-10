@@ -57,6 +57,9 @@ export class Module {
    * are not duplicated.  */
   static existingSlugs: string[] = []
 
+  /** A list of image extensions */
+  static imageExtensions: string[] = ['.gif', '.jpeg', '.jpg', '.png', '.svg', '.webp', '.bmp', '.tif', '.tiff', '.apng', '.avif', '.jfif', '.pjpeg', '.pjp', '.ico', '.cur', '.heif']
+
   /** The module project information */
   moduleProjectInfo: ModuleProject = new ModuleProject()
 
@@ -765,7 +768,6 @@ export class Module {
       }
 
       // Copy images to their clone path in the module build folder
-      const imageExtensions = ['.gif', '.jpeg', '.jpg', '.png']
       let extension = Path.extname(fullPath)
 
       // Copy source files to the output so they are stored with the module
@@ -777,7 +779,7 @@ export class Module {
       let itemRelativePath = Path.relative(moduleProjectDirectory, fullPath)
       let itemClonePath = Path.join(moduleBuildPath, itemRelativePath)
       let skipCopy = parentGroup !== undefined && !parentGroup.copyFiles && this.exportMode === ModuleMode.ModuleExport
-      if (!scanOnly && !skipCopy && (imageExtensions.includes(extension) || sourceExtensions.includes(extension))) {
+      if (!scanOnly && !skipCopy && (Module.imageExtensions.includes(extension) || sourceExtensions.includes(extension))) {
         FileSystem.copyFileSync(fullPath, itemClonePath)
       }
 
@@ -1178,6 +1180,9 @@ export class Module {
     // Process image links to handle relative paths
     page.content = this.postProcessImageLinks(page.content, filePath)
 
+    // Process script links to handle relative paths
+    page.content = this.postProcessScriptLinks(page.content, filePath)
+
     // Process elements for print layouts
     page.content = this.postProcessForPrint(page.content, printMultiColumn)
 
@@ -1234,6 +1239,58 @@ export class Module {
       let anchorID = `${slug}-${headerSlug}`
       $(element).prepend(`<a id="${anchorID}"></a>`)
       Logger.info(`Anchor created: ${anchorID}`)
+    })
+
+    return $('body').html() ?? pageContent
+  }
+
+  /**
+   * Converts all script sources into the relative links they need to be
+   * after conversion to a module (which places all pages in the root folder
+   * effectively)
+   * @param pageContent The page content
+   * @param markdownFilePath The path of the markdown file being processed
+   */
+   private postProcessScriptLinks = (pageContent: string, markdownFilePath: string): string => {
+    const scanOnly = this.exportMode === ModuleMode.ScanModule
+
+    if (scanOnly) {
+      return pageContent
+    }
+
+    let moduleProjectDirectory = this.moduleProjectInfo.moduleProjectDirectory
+    if (!moduleProjectDirectory) {
+      throw Error('The module project directory was empty. Was the module project file deleted?')
+    }
+
+    let fileFolder = Path.dirname(markdownFilePath)
+    let relativeFolderPath = Path.relative(moduleProjectDirectory, fileFolder)
+
+    let $ = Cheerio.load(pageContent)
+    $('script').each((i, element) => {
+      let oldSrc = $(element).attr('src')
+      if (!oldSrc) {
+        return
+      }
+
+      // This is a workaround for a common user error.
+      // One of the most common mistakes users make with
+      // Module Packer is starting their image links with
+      // a front-slash, not understanding how linux-based
+      // file systems work. Since there is almost no reason
+      // someone would truly use an absolute system path like
+      // this, we just strip the front-slash
+      if (oldSrc.startsWith('/')) {
+        let newSrc = oldSrc.substring(1);
+        $(element).attr('src', newSrc)
+        oldSrc = newSrc
+      }
+
+      let srcIsAbsolute = /^https?:\/\//i.test(oldSrc)
+      if (!srcIsAbsolute) {
+        let newSrc = Path.join(relativeFolderPath, oldSrc)
+        $(element).attr('src', newSrc)
+      }
     })
 
     return $('body').html() ?? pageContent
@@ -1338,8 +1395,6 @@ export class Module {
    * @param directoryPath The directory path
    */
   private getAllDirectoryImages = (directoryPath: string): string[] => {
-    const imageExtensions = ['.jpeg', '.jpg', '.png']
-
     let items: string[] = FileSystem.readdirSync(directoryPath)
     let images: string[] = []
 
@@ -1352,7 +1407,7 @@ export class Module {
         })
       } else {
         let extension = Path.extname(fullPath)
-        if (imageExtensions.includes(extension)) {
+        if (Module.imageExtensions.includes(extension)) {
           images.push(fullPath)
         }
       }
