@@ -1,17 +1,22 @@
 # Change Log
 
+## 1.0.52
+
+### Changed
+- Updated many package dependencies
+
 ## 1.0.51
 
 ### Changed
 - Added support for more image formats (e.g., `.svg` and `.webp`)
 
 ### Fixed
-- Fixed relative linking of script `src` elements.
+- Fixed relative linking of script `src` elements
 
 ## 1.0.50
 
 ### Fixed
-- Broken monster link coloring.
+- Broken monster link coloring
 
 ## 1.0.49
 
