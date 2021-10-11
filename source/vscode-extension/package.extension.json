@@ -3,7 +3,7 @@
   "displayName": "EncounterPlus Markdown",
   "description": "Renders markdown as it would appear in EncounterPlus",
   "icon": "Logo.png",
-  "version": "1.0.51",
+  "version": "1.0.52",
   "publisher": "jacobjohnston",
   "repository": {
     "type": "git",
