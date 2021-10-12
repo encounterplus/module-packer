@@ -460,7 +460,6 @@ export class Module {
       zlib: { level: 9 },
     })
 
-    // Good practice - catch warnings (ie stat failures and other non-blocking errors)
     archive.on('warning', function (error) {
       let errorMessage = (error as Error).message
       if (error.code === 'ENOENT') {
@@ -470,13 +469,12 @@ export class Module {
       }
     })
 
-    // Good practice - catch this error explicitly
     archive.on('error', function (error) {
       throw error
     })
 
     archive.pipe(archiveStream)
-    archive.glob('./**/*', { cwd: moduleBuildPath }) // Ignore compendium.xml for now
+    archive.directory(moduleBuildPath, false)
     await archive.finalize()
   }
 
