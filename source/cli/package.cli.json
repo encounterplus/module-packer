@@ -2,7 +2,7 @@
   "name": "module-packer",
   "displayName": "EncounterPlus Module Packer",
   "description": "Tools for creating EncounterPlus modules from markdown.",
-  "version": "1.0.52",
+  "version": "1.0.53",
   "repository": {
     "type": "git",
     "url": "https://github.com/encounterplus/module-packer"
@@ -66,7 +66,7 @@
     "markdown-it-underline": "^1.0.1",
     "path": "^0.12.7",
     "puppeteer-core": "10.4.0",
-    "slugify": "^1.4.0",
+    "slugify": "^1.6.1",
     "unzipper": "^0.10.11",
     "uuid": "^8.3.2",
     "winston": "^3.3.3",

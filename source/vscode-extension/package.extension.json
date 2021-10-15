@@ -3,7 +3,7 @@
   "displayName": "EncounterPlus Markdown",
   "description": "Renders markdown as it would appear in EncounterPlus",
   "icon": "Logo.png",
-  "version": "1.0.52",
+  "version": "1.0.53",
   "publisher": "jacobjohnston",
   "repository": {
     "type": "git",
@@ -368,7 +368,7 @@
     "markdown-it-underline": "^1.0.1",
     "path": "^0.12.7",
     "puppeteer-core": "10.4.0",
-    "slugify": "^1.4.0",
+    "slugify": "^1.6.1",
     "unzipper": "^0.10.11",
     "uuid": "^8.3.2",
     "winston": "^3.3.3",
