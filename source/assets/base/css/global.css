@@ -1367,7 +1367,6 @@ table.sidebar td:first-child {
     box-shadow: 0 0 0.5em #616161;
     margin: 0.5em;
   }
-  figure.size-cover,
   img.size-cover {
     max-width: none;
     width: calc(100% + 4rem);
@@ -1422,6 +1421,8 @@ table.sidebar td:first-child {
   }
   p.size-cover,
   p.size-full,
+  figure.size-cover,
+  figure.size-full,
   div.size-full {
     column-span: all;
   }
@@ -1435,7 +1436,6 @@ table.sidebar td:first-child {
     margin-bottom: 0;
     height: auto;
   }
-  figure.size-cover.with-margin,
   img.size-cover.with-margin {
     margin-left: -0.25in;
     margin-right: -0.25in;

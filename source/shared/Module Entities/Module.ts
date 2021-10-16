@@ -1373,6 +1373,10 @@ export class Module {
       $(element).parents('p').attr('class', 'size-full')
     })
 
+    $('figure.size-full').each((i, element) => {
+      $(element).parents('p').attr('class', 'size-full')
+    })
+
     $('div.statblock.two-column').each((i, element) => {
       let oldClasses = $(element).attr('class')
       $(element).attr('class', oldClasses + ' size-full')
