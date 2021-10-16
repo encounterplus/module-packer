@@ -43,6 +43,8 @@ def createFolder(folder):
     # Mark this folder to be ignored on Dropbox on macOS
     if sys.platform == 'darwin':
         run('xattr -w com.dropbox.ignored 1 {}'.format(folder), False, False) 
+    elif sys.platform == 'win32':
+        run('powershell.exe Set-Content -Path "{}" -Stream com.dropbox.ignored -Value 1'.format(folder), False, False)
 
 def processTarget(target):
     if target == 'makeFolders':
@@ -51,6 +53,7 @@ def processTarget(target):
         createFolder('./app-out')
         createFolder('./cli-out')
         createFolder('./extension-out')
+        createFolder('./.local-chromium')
     elif target == 'clean':
         removeIfExists('./package.json')
         removeIfExists('./package-lock.json')
@@ -59,7 +62,7 @@ def processTarget(target):
         removeDirIfExists('./app-out')
         removeDirIfExists('./extension-out')
         removeDirIfExists('./Documentation')
-        removeDirIfExists('./local-chromium')
+        removeDirIfExists('./.local-chromium')
         removeIfExists('./README.md')
         removeIfExists('./Advanced.md')
         processTarget('makeFolders')
