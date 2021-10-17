@@ -1,6 +1,14 @@
 # Change Log
 
-## 1.0.52
+# 1.0.54
+
+### Added
+- Added experimental ability to check for broken links when building Modules/PDFs
+
+### Fixed
+- Fixed the way `.size-cover` attributes worked for figures
+
+## 1.0.52 & #1.0.53
 
 ### Changed
 - Updated many package dependencies
