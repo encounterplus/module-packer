@@ -318,7 +318,17 @@
           "meta.embedded.block.item": "yaml"
         }
       }
-    ]
+    ],
+    "configuration": {
+      "title": "EncounterPlus Markdown",
+      "properties": {
+        "encounterPlusMarkdown.scanForBrokenLinks": {
+          "type": "boolean",
+          "default": false,
+          "description": "Scan for broken links when building modules and PDFs."
+        }
+      }
+    }
   },
   "scripts": {
     "lint": "eslint . --ext .ts,.tsx",

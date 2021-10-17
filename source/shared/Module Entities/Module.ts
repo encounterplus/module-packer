@@ -60,11 +60,11 @@ export class Module {
   /** A list of image extensions */
   static imageExtensions: string[] = ['.gif', '.jpeg', '.jpg', '.png', '.svg', '.webp', '.bmp', '.tif', '.tiff', '.apng', '.avif', '.jfif', '.pjpeg', '.pjp', '.ico', '.cur', '.heif']
 
-  /** A temporary flag while the link checking code is in development */
-  static previewCheckLinks = false
+  /** A temporary flag while the broken link checking code is in development */
+  static scanForBrokenLinks = false
 
-  /** A list of all the module's links, by page */
-  moduleLinks: { [pageID: string]: string[] } = {}
+  /** The module's slug */
+  slug: string = ''
 
   /** The module project information */
   moduleProjectInfo: ModuleProject = new ModuleProject()
@@ -276,6 +276,10 @@ export class Module {
     allEntities.forEach((entity) => {
       let parentSlug = entity.parentSlug
       if (parentSlug !== undefined) {
+        if (parentSlug == module.slug) {
+          entity.parent = undefined
+        }
+        
         entity.parent = allEntities.filter((entity) => {
           return entity.slug === parentSlug
         })[0]
@@ -362,8 +366,8 @@ export class Module {
 
     // Checks for unresolved links in the module and
     // issues a warning if the links can't be resolved
-    if (Module.previewCheckLinks) {
-      module.checkUnresolvedLinks()
+    if (Module.scanForBrokenLinks) {
+      module.checkForBrokenLinks()
     }    
 
     // Export module.xml file
@@ -460,17 +464,44 @@ export class Module {
     })
   }
 
-  /** Checks the module for unresolved links and issues a warning for
-   * any that it finds */
-  private checkUnresolvedLinks = () => {
+  /** Issues a warning for any detected broken links */
+  private checkForBrokenLinks = () => {
+    const forPrint = this.exportMode === ModuleMode.PrintToPDF
+    const forModuleExport = this.exportMode === ModuleMode.ModuleExport
     const scanOnly = this.exportMode === ModuleMode.ScanModule
+
+    if (scanOnly) {
+      return
+    }
+
+    // Index all the links on pages in the module
+    let moduleLinks: { [pageID: string]: string[] } = {}
+    this.pages.forEach((page) => {
+      let pageWillBeInOutput = page.includeIn === IncludeMode.All ||
+        (page.includeIn === IncludeMode.Module && forModuleExport) ||
+        (page.includeIn === IncludeMode.Print && forPrint)
+
+      if (!pageWillBeInOutput) {
+        return
+      }
+
+      moduleLinks[page.slug] = []
+      let $ = Cheerio.load(page.content);
+      let links = $('a');
+      $(links).each((i, link) => {
+        let linkDestination = $(link).attr('href')
+        if (linkDestination !== undefined) {
+          moduleLinks[page.slug].push(linkDestination)
+        }
+      })      
+    })
 
     // Check for unresolvable links
     if (!scanOnly) {
       let entitySlugList: { [slug: string]: boolean } = {}
       let allEntities = this.getAllEntities()
       allEntities.forEach((entity) => entitySlugList[entity.slug] = true)
-      Object.entries(this.moduleLinks).forEach(([pageSlug, links]) => {
+      Object.entries(moduleLinks).forEach(([pageSlug, links]) => {
         links.forEach((link) => {
           let srcIsAbsolute = /^https?:\/\//i.test(link)
           if (srcIsAbsolute) {
@@ -482,14 +513,9 @@ export class Module {
             return
           }
 
-          let containsAnchor = /^#/i.test(link)
-          if (containsAnchor) {
-            return
-          }
-
           let linkResolves = entitySlugList[link]
           if (!linkResolves) {
-            Logger.warn(`Could not resolve link "${link}" in page "${pageSlug}"`)
+            Logger.warn(`Possible broken link: "${link}" in page "${pageSlug}"`)
           }
         })
       })
@@ -963,6 +989,7 @@ export class Module {
     let printMultiColumn = (frontMatter['pdf-page-style'] as string) !== 'single-column'
     let pagebreaks = forPrint ? (frontMatter['pdf-pagebreaks'] as string) : (frontMatter['module-pagebreaks'] as string)
     let printCoverOnly = (frontMatter['print-cover-only'] as boolean) === true
+    this.slug = slug
 
     // "parent-page" is the legacy way of defining the parent for a page
     let parentSlug = frontMatter['parent-page'] as string
@@ -1159,7 +1186,7 @@ export class Module {
           throw Error(`The 'include-in' value for groups cannot be 'files'`)
         }
 
-        this.postProcessPage(page, filePath, printMultiColumn, coverImagePath)
+        this.postProcessPage(page, filePath, printMultiColumn, coverImagePath)  
 
         // Finally, add the page to the module
         pages.push(page)
@@ -1234,9 +1261,6 @@ export class Module {
 
     // Process anchors
     page.content = this.postProcessAnchors(page.content, page.slug)
-
-    // Add all links to the module's list of links
-    this.getAllLinks(page.content, page.slug)
 
     // Prepend a cover page if this section has one
     if (coverImagePath && printToPDF) {
@@ -1401,31 +1425,6 @@ export class Module {
     })
 
     return $('body').html() ?? pageContent
-  }
-
-  /**
-   * Extracts all the page's links and appends them to the
-   * modules list of links
-   * @param pageContent The page content
-   * @param pageSlug The page slug
-   */
-  private getAllLinks = (pageContent: string, pageSlug: string) => { 
-    const scanOnly = this.exportMode === ModuleMode.ScanModule
-    let module = this
-
-    if (scanOnly) {
-      return
-    }
-
-    module.moduleLinks[pageSlug] = []
-    let $ = Cheerio.load(pageContent);
-    let links = $('a');
-    $(links).each(function(i, link){
-      let linkDestination = $(link).attr('href')
-      if (linkDestination !== undefined) {
-        module.moduleLinks[pageSlug].push(linkDestination)
-      }      
-    })
   }
 
   /**

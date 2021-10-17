@@ -10,6 +10,7 @@ import { ExportToPdfCommand } from './Commands/ExportToPdfCommand'
 import { MarkdownToggler } from './Commands/MarkdownToggler'
 import { ModuleProjectProvider, ModuleTreeItem } from './TreeViewProviders/ModuleProjectProvider'
 import { MarkdownRenderer } from '../shared/MarkdownRenderer'
+import { Module } from '../shared/Module Entities/Module'
 
 const buildModuleCommand = new BuildModuleCommand()
 const createModuleProjectFileCommand = new CreateModuleProjectFileCommand()
@@ -96,6 +97,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Build Module
     context.subscriptions.push(
       vscode.commands.registerCommand('encounterPlusMarkdown.buildModule', async (moduleTreeItem) => {
+        Module.scanForBrokenLinks = vscode.workspace.getConfiguration().get('encounterPlusMarkdown.scanForBrokenLinks') ?? false
         if (moduleTreeItem !== undefined) {
           buildModuleCommand.startModuleBuild(moduleTreeItem.module.moduleProjectInfo)
         } else { // If no module selected, build the first module
@@ -119,6 +121,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Export Module to PDF
     context.subscriptions.push(
       vscode.commands.registerCommand('encounterPlusMarkdown.exportModuleToPDF', async (moduleTreeItem) => {
+        Module.scanForBrokenLinks = vscode.workspace.getConfiguration().get('encounterPlusMarkdown.scanForBrokenLinks') ?? false
         if (moduleTreeItem !== undefined) {
           exportToPdfCommand.startModuleExport(moduleTreeItem.module.moduleProjectInfo)
         } else { // If no module selected, build the first module
