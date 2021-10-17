@@ -60,6 +60,12 @@ export class Module {
   /** A list of image extensions */
   static imageExtensions: string[] = ['.gif', '.jpeg', '.jpg', '.png', '.svg', '.webp', '.bmp', '.tif', '.tiff', '.apng', '.avif', '.jfif', '.pjpeg', '.pjp', '.ico', '.cur', '.heif']
 
+  /** A temporary flag while the link checking code is in development */
+  static previewCheckLinks = false
+
+  /** A list of all the module's links, by page */
+  moduleLinks: { [pageID: string]: string[] } = {}
+
   /** The module project information */
   moduleProjectInfo: ModuleProject = new ModuleProject()
 
@@ -354,6 +360,12 @@ export class Module {
     // Sort module children
     module.children = module.sortChildren(module.children)
 
+    // Checks for unresolved links in the module and
+    // issues a warning if the links can't be resolved
+    if (Module.previewCheckLinks) {
+      module.checkUnresolvedLinks()
+    }    
+
     // Export module.xml file
     if (mode == ModuleMode.ModuleExport) {
       module.exportXML(moduleBuildPath)
@@ -446,6 +458,42 @@ export class Module {
 
       return aVal < bVal ? -1 : 1
     })
+  }
+
+  /** Checks the module for unresolved links and issues a warning for
+   * any that it finds */
+  private checkUnresolvedLinks = () => {
+    const scanOnly = this.exportMode === ModuleMode.ScanModule
+
+    // Check for unresolvable links
+    if (!scanOnly) {
+      let entitySlugList: { [slug: string]: boolean } = {}
+      let allEntities = this.getAllEntities()
+      allEntities.forEach((entity) => entitySlugList[entity.slug] = true)
+      Object.entries(this.moduleLinks).forEach(([pageSlug, links]) => {
+        links.forEach((link) => {
+          let srcIsAbsolute = /^https?:\/\//i.test(link)
+          if (srcIsAbsolute) {
+            return
+          }
+
+          let srcIsCompendium = /^(\/monster\/.+)|(\/item\/.+)|(\/spell\/.+)|(\/page\/.+)|(\/roll\/.+)/i.test(link)
+          if (srcIsCompendium) {
+            return
+          }
+
+          let containsAnchor = /^#/i.test(link)
+          if (containsAnchor) {
+            return
+          }
+
+          let linkResolves = entitySlugList[link]
+          if (!linkResolves) {
+            Logger.warn(`Could not resolve link "${link}" in page "${pageSlug}"`)
+          }
+        })
+      })
+    }
   }
 
   /**
@@ -1187,6 +1235,9 @@ export class Module {
     // Process anchors
     page.content = this.postProcessAnchors(page.content, page.slug)
 
+    // Add all links to the module's list of links
+    this.getAllLinks(page.content, page.slug)
+
     // Prepend a cover page if this section has one
     if (coverImagePath && printToPDF) {
       let coverImageData = FileSystem.readFileSync(coverImagePath).toString('base64')
@@ -1207,6 +1258,12 @@ export class Module {
     }
   }
 
+  /**
+   * Adds slugified anchors for all of the header content
+   * @param pageContent The page conent
+   * @param slug The slug of the parent page
+   * @returns The page content modified with anchors
+   */
   private postProcessAnchors = (pageContent: string, slug: string): string => {
     const scanOnly = this.exportMode === ModuleMode.ScanModule
 
@@ -1250,9 +1307,9 @@ export class Module {
    * @param markdownFilePath The path of the markdown file being processed
    */
    private postProcessScriptLinks = (pageContent: string, markdownFilePath: string): string => {
-    const scanOnly = this.exportMode === ModuleMode.ScanModule
+    const isModuleExport = this.exportMode === ModuleMode.ModuleExport
 
-    if (scanOnly) {
+    if (!isModuleExport) {
       return pageContent
     }
 
@@ -1344,6 +1401,31 @@ export class Module {
     })
 
     return $('body').html() ?? pageContent
+  }
+
+  /**
+   * Extracts all the page's links and appends them to the
+   * modules list of links
+   * @param pageContent The page content
+   * @param pageSlug The page slug
+   */
+  private getAllLinks = (pageContent: string, pageSlug: string) => { 
+    const scanOnly = this.exportMode === ModuleMode.ScanModule
+    let module = this
+
+    if (scanOnly) {
+      return
+    }
+
+    module.moduleLinks[pageSlug] = []
+    let $ = Cheerio.load(pageContent);
+    let links = $('a');
+    $(links).each(function(i, link){
+      let linkDestination = $(link).attr('href')
+      if (linkDestination !== undefined) {
+        module.moduleLinks[pageSlug].push(linkDestination)
+      }      
+    })
   }
 
   /**
