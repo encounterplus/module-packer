@@ -1,5 +1,10 @@
 # Change Log
 
+# 1.0.55
+
+### Fixed
+- Fixed maps and encounters exported from campaigns not being supported
+
 # 1.0.54
 
 ### Added

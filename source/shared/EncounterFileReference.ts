@@ -64,13 +64,22 @@ export class EncounterFileReference {
     await FileSystem.createReadStream(fullEncounterPath).pipe(Unzipper.Extract({path: encounterExtractTempPath})).promise()
 
     let encounterModuleXmlFile = Path.join(encounterExtractTempPath, 'module.xml')
-    if (!FileSystem.existsSync(encounterModuleXmlFile)) {
-      throw Error('Encounter file has an invalid format. Could not locate module.xml for encounter file.')
+    let encounterCampaignXmlFile = Path.join(encounterExtractTempPath, 'campaign.xml')
+
+    let encounterXmlFile = undefined
+    if (FileSystem.existsSync(encounterModuleXmlFile)) {
+      encounterXmlFile = encounterModuleXmlFile
+    } else if (FileSystem.existsSync(encounterCampaignXmlFile)) {
+      encounterXmlFile = encounterCampaignXmlFile
     }
 
-    // Copy all files that aren't module.XML to the moduleBuildPath
+    if (encounterXmlFile === undefined) {
+      throw Error('Encounter file has an invalid format. Could not locate module.xml or campaign.xml for encounter file.')
+    }
+
+    // Copy all files that aren't module.xml or campaign.xml to the moduleBuildPath
     let encounterFiles: string[] = FileSystem.readdirSync(encounterExtractTempPath).filter(function (file) {
-      return Path.basename(file) !== 'module.xml'
+      return Path.basename(file) !== 'module.xml' && Path.basename(file) !== 'campaign.xml'
     })
 
     encounterFiles.forEach(fileName => {
@@ -80,17 +89,17 @@ export class EncounterFileReference {
     })
 
     let xmlParser = new XML2JS.Parser()
-    let encounterModuleBuffer = FileSystem.readFileSync(encounterModuleXmlFile)
+    let encounterModuleBuffer = FileSystem.readFileSync(encounterXmlFile)
     let parseResult = await xmlParser.parseStringPromise(encounterModuleBuffer.toString())
 
-    let module = parseResult['module'] as any
-    if (module === undefined) {
-      throw Error('Encounter file has an invalid format. Could not locate module element in module.xml.')
+    let rootElement = parseResult['module'] as any || parseResult['campaign'] as any
+    if (rootElement === undefined) {
+      throw Error('Encounter file has an invalid format. Could not locate module or campaign element.')
     }
 
-    let encounters = module['encounter'] as any[]
+    let encounters = rootElement['encounter'] as any[]
     if (encounters === undefined || encounters.length < 1) {
-      throw Error('Encounter file has an invalid format. Could not locate encounter element in module.xml.')
+      throw Error('Encounter file has an invalid format. Could not locate encounter element.')
     }
 
     let encounterObject = encounters[0]

@@ -64,13 +64,22 @@ export class MapFileReference {
     await FileSystem.createReadStream(fullMapPath).pipe(Unzipper.Extract({path: mapExtractTempPath})).promise()
 
     let mapModuleXmlFile = Path.join(mapExtractTempPath, 'module.xml')
-    if (!FileSystem.existsSync(mapModuleXmlFile)) {
-      throw Error('Map file has an invalid format. Could not locate module.xml for map file.')
+    let mapCampagnXmlFile = Path.join(mapExtractTempPath, 'campaign.xml')
+
+    let mapXmlFile = undefined
+    if (FileSystem.existsSync(mapModuleXmlFile)) {
+      mapXmlFile = mapModuleXmlFile
+    } else if (FileSystem.existsSync(mapCampagnXmlFile)) {
+      mapXmlFile = mapCampagnXmlFile
     }
 
-    // Copy all files that aren't module.XML to the moduleBuildPath
+    if (mapXmlFile === undefined) {
+      throw Error('Map file has an invalid format. Could not locate module.xml or campaign.xml for map file.')
+    }
+
+    // Copy all files that aren't module.xml or campaign.xml to the moduleBuildPath
     let mapFiles: string[] = FileSystem.readdirSync(mapExtractTempPath).filter(function (file) {
-      return Path.basename(file) !== 'module.xml'
+      return Path.basename(file) !== 'module.xml' && Path.basename(file) !== 'campaign.xml'
     })
 
     mapFiles.forEach(fileName => {
@@ -80,17 +89,17 @@ export class MapFileReference {
     })
 
     let xmlParser = new XML2JS.Parser()
-    let mapModuleBuffer = FileSystem.readFileSync(mapModuleXmlFile)
+    let mapModuleBuffer = FileSystem.readFileSync(mapXmlFile)
     let parseResult = await xmlParser.parseStringPromise(mapModuleBuffer.toString())
 
-    let module = parseResult['module'] as any
-    if (module === undefined) {
-      throw Error('Map file has an invalid format. Could not locate module element in module.xml.')
+    let rootElement = parseResult['module'] as any || parseResult['campaign'] as any
+    if (rootElement === undefined) {
+      throw Error('Map file has an invalid format. Could not locate module or campaign element.')
     }
 
-    let maps = module['map'] as any[]
+    let maps = rootElement['map'] as any[]
     if (maps === undefined || maps.length < 1) {
-      throw Error('Map file has an invalid format. Could not locate map element in module.xml.')
+      throw Error('Map file has an invalid format. Could not locate map element.')
     }
 
     let mapObject = maps[0]
