@@ -1446,6 +1446,11 @@ export class Module {
       })
     }
 
+    // Remove images meant for screen only on print output
+    $('img.screen-only').each((i, element) => {
+      $(element).remove()
+    })
+
     $('img.size-cover').each((i, element) => {
       $(element).parents('p').attr('class', 'size-cover')
     })
