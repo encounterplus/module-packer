@@ -67,6 +67,7 @@ export class PdfExporter {
 
     await page.goto(pageLocation, {
       waitUntil: 'networkidle0',
+      timeout: 0
     })
 
     Logger.info(`Creating PDF file.`)
