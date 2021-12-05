@@ -91,6 +91,22 @@ export class MarkdownRenderer {
           return true
         }
 
+        if (lineString.startsWith('(print-page-single-column)')) {
+          state.line = startLine + 1
+          let token = state.push('print_page_single_column_break', '', 0)
+          token.markup = '(print-page-single-column)'
+          token.map = [startLine, state.line]
+          return true
+        }
+
+        if (lineString.startsWith('(print-page-multi-column)')) {
+          state.line = startLine + 1
+          let token = state.push('print_page_multi_column_break', '', 0)
+          token.markup = '(print-page-multi-column)'
+          token.map = [startLine, state.line]
+          return true
+        }
+
         if (lineString.startsWith('(print-column)')) {
           state.line = startLine + 1
           let token = state.push('print_column_break', '', 0)
@@ -178,6 +194,8 @@ export class MarkdownRenderer {
       MarkdownRenderer.defaultImageRenderer = this.markdown.renderer.rules.image
       this.markdown.renderer.rules.image = this.renderImage
       this.markdown.renderer.rules.print_page_break = this.forPrint ? this.printPageBreak : this.renderEmpty
+      this.markdown.renderer.rules.print_page_single_column_break = this.forPrint ? this.printPageSingleColumnBreak : this.renderEmpty
+      this.markdown.renderer.rules.print_page_multi_column_break = this.forPrint ? this.printPageMultiColumnBreak : this.renderEmpty      
       this.markdown.renderer.rules.print_column_break = this.forPrint ? this.printColumnBreak : this.renderEmpty
       MarkdownRenderer.defaultFence = this.markdown.renderer.rules.fence
       this.markdown.renderer.rules.fence = this.renderFence
@@ -321,8 +339,38 @@ export class MarkdownRenderer {
     return this.module.getPageCloseHTML() + this.module.getPageOpenHTML()
   }
 
+   /**
+   * Renders a print page break when rendering for print layout
+   * @param tokens The Markdown tokens collection
+   * @param idx The index of the token being rendered
+   * @param options The markdown-it options
+   * @param env The environment
+   * @param self The HTML renderer
+   */
+    private printPageMultiColumnBreak = (tokens: Token[], idx: number, options: MarkdownIt.Options, env: any, self: Renderer) => {
+      if (this.module === undefined) {
+        return ''
+      }
+      return this.module.getPageCloseHTML() + this.module.getColumnSpecificPageOpenHTML(true)
+    }
+
+     /**
+   * Renders a print page break as single-column when rendering for print layout
+   * @param tokens The Markdown tokens collection
+   * @param idx The index of the token being rendered
+   * @param options The markdown-it options
+   * @param env The environment
+   * @param self The HTML renderer
+   */
+  private printPageSingleColumnBreak = (tokens: Token[], idx: number, options: MarkdownIt.Options, env: any, self: Renderer) => {
+    if (this.module === undefined) {
+      return ''
+    }
+    return this.module.getPageCloseHTML() + this.module.getColumnSpecificPageOpenHTML(false)
+  }
+
   /**
-   * Renders a print column break when rendering for print layout
+   * Renders a print column break as multi-column when rendering for print layout
    * @param tokens The Markdown tokens collection
    * @param idx The index of the token being rendered
    * @param options The markdown-it options

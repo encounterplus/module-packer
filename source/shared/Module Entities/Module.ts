@@ -397,6 +397,20 @@ export class Module {
     return html
   }
 
+  /**
+   * Gets the HTML elements that start a page when printing
+   * @param multiColumn If true, the page is multicolumn. If false, the page is single ViewColumn.
+   */
+  getColumnSpecificPageOpenHTML = (multiColumn: Boolean): string => {
+    if (this.exportMode !== ModuleMode.PrintToPDF) {
+      return ''
+    }
+
+    let html = '<div class="print-page">'
+    html += multiColumn ? '<div class="page-content force-two-column">' : '<div class="page-content">'
+    return html
+  }
+
   /** Gets the HTML elements that end a page when printing */
   getPageCloseHTML = (): string => {
     if (this.exportMode !== ModuleMode.PrintToPDF) {
@@ -1453,6 +1467,10 @@ export class Module {
 
     $('img.size-cover').each((i, element) => {
       $(element).parents('p').attr('class', 'size-cover')
+    })
+
+    $('img.size-side-right').each((i, element) => {
+      $(element).parents('p').attr('class', 'size-side-right')
     })
 
     $('img.size-full').each((i, element) => {

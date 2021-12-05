@@ -221,6 +221,7 @@ p {
   display: none;
 }
 /******** Multi-column Div ********/
+div.force-two-column:not(.statblock),
 div.two-column:not(.statblock) {
   width: 7.5in;
   position: relative;
@@ -1706,12 +1707,14 @@ table.sidebar td:first-child {
     text-align: center;
     z-index: -10;
   }
+  .force-two-column table.sidebar,
   .two-column table.sidebar {
     float: none;
     margin-left: 0.1in;
     margin-right: 0.1in;
     width: calc(100% - 0.2in);
   }
+  .force-two-column div.statblock.two-column,
   .two-column div.statblock.two-column {
     display: block;
   }
