@@ -64,6 +64,7 @@ def processTarget(target):
         removeDirIfExists('./Documentation')
         removeDirIfExists('./.local-chromium')
         removeIfExists('./README.md')
+        removeIfExists('./LICENSE.md')
         removeIfExists('./Advanced.md')
         processTarget('makeFolders')
     elif target == 'build-extension':
@@ -101,6 +102,7 @@ def processTarget(target):
         processTarget('clean')
         copyDir('../Documentation', './Documentation')
         copy('../README.md', './README.md')
+        copy('../LICENSE.md', './LICENSE.md')
         copy('../Advanced.md', './Advanced.md')
         processTarget('build-extension')        
         run('vsce package')
