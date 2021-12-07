@@ -33,7 +33,12 @@
       "hardenedRuntime": true,
       "entitlements": "./app/entitlements.mac.plist",
       "entitlementsInherit": "./app/entitlements.mac.plist",
-      "target": ["dmg"]
+      "target": [
+        {
+          "target": "default",
+          "arch": "universal"
+        }
+      ]
     },
     "asar": false
   },
