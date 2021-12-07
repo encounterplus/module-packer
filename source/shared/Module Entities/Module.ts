@@ -276,6 +276,12 @@ export class Module {
     allEntities.forEach((entity) => {
       let parentSlug = entity.parentSlug
       if (parentSlug !== undefined) {
+        if (entity.parent !== undefined) {
+          entity.parent.children = entity.parent.children.filter((childEntity) => {
+            return childEntity !== entity
+          })
+        }
+
         if (parentSlug == module.slug) {
           entity.parent = undefined
         }
@@ -340,6 +346,26 @@ export class Module {
     entitiesToRemove.forEach((entity) => {
       removeEntityAndChildren(entity)
     })
+
+    // Delete empty groups
+    if (module.moduleProjectInfo.deleteEmptyGroups) {
+      var deletedEmptyGroup = true
+      // Delete empty groups in a while loop until empty groups are no longer deleted
+      // This covers the case of multiple levels of empty groups being nested
+      while (deletedEmptyGroup) { 
+        deletedEmptyGroup = false
+        let groupsToRemove: Group[] = []
+        module.groups.forEach((group) => {
+          if(group.children.length == 0) {
+            groupsToRemove.push(group)
+            deletedEmptyGroup = true
+          }
+        })
+        groupsToRemove.forEach((group) => {
+          removeEntityAndChildren(group)
+        })
+      }
+    }
 
     // Check for cyclic dependencies
     allEntities.forEach((entity) => {

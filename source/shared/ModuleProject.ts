@@ -60,6 +60,9 @@ export class ModuleProject {
   /** Whether the module will automatically compress images when building */
   compressImages: boolean | undefined = undefined
 
+  /** Whether the module will automatically delete empty groups */
+  deleteEmptyGroups: boolean | undefined = undefined
+
   /** The print link mode */
   printLinkMode: PrintLinkMode | undefined = undefined
 
@@ -217,6 +220,12 @@ export class ModuleProject {
       moduleProject.compressImages = compressImages
     }
 
+    // If deleteEmptyGroups is specified in Module project file, use that
+    let deleteEmptyGroups = (moduleData['deleteEmptyGroups'] as boolean || moduleData['delete-empty-groups'] as boolean)
+    if (deleteEmptyGroups !== undefined) {
+      moduleProject.deleteEmptyGroups = deleteEmptyGroups
+    }
+
     // If printLinkMode is specified in Module project file, use that
     let printLinkModeString = (moduleData['printLinkUpdate'] as string || moduleData['print-link-update'] as string)
     if (printLinkModeString) {
@@ -364,6 +373,9 @@ export class ModuleProject {
     }
     if (this.compressImages !== undefined) {
       newModuleProject['compress-images'] = this.compressImages
+    }
+    if (this.deleteEmptyGroups !== undefined) {
+      newModuleProject['delete-empty-groups'] = this.deleteEmptyGroups
     }
     if (this.printLinkMode !== undefined) {
       newModuleProject['print-link-update'] = ModuleProject.getPrintLinkModeString(this.printLinkMode)
