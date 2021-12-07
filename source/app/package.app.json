@@ -35,7 +35,7 @@
       "entitlementsInherit": "./app/entitlements.mac.plist",
       "target": [
         {
-          "target": "default",
+          "target": "dmg",
           "arch": "universal"
         }
       ]
