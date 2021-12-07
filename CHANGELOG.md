@@ -2,8 +2,17 @@
 
 # 1.0.55
 
+### Added
+- Added more of the Solbera fonts to the global.css
+- Added ability to remove empty groups with `remove-empty-groups: true` in Module.yaml file
+- Added ability to force a single page break as two-column or single-column with `(print-page-multi-column)` and `(print-page-single-column)`
+
+### Changed
+- Removed timeout from PDF page generation
+
 ### Fixed
 - Fixed maps and encounters exported from campaigns not being supported
+- Errors in Print output with Screen-only images
 
 # 1.0.54
 

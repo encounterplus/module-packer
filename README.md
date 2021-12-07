@@ -107,6 +107,7 @@ cover: cover.jpg
 print-cover: cover.jpg
 version: 4
 auto-increment-version: true
+delete-empty-groups: true
 maps:
   - path: Maps/my-first-map.zip
     order: 2
@@ -126,6 +127,7 @@ All `Module.yaml` values are optional - and default values will be used for anyt
 - `category`: The category of the module. May be `adventure` or `other`.
 - `code`: A reference code for the module.
 - `cover`: The file name of the cover image for the module (placed in the same directory).
+- `delete-empty-groups`: May be `true` or `false`. If `true`, empty groups will be removed from the module when built.
 - `description`: The description of the module.
 - `encounters`: The encounters to include with the module. See more in the [Including Maps & Encounters Tutorial](MapsAndEncounters.md).
 - `id`: If specified, will cause a module to be overwritten rather than duplicated when repeatedly imported. *Never* copy another module's UUID, or you will cause that module to be overwritten.
@@ -678,7 +680,7 @@ Spell blocks can be rendered in a variety of colors with the `.blue`, `.green`, 
 
 ### Page Breaks
 
-When designing content for print, content will be clipped at a single page unless you manually specify a page break with the `(print-page)` tag in your markdown. The `(print-page)` tag will be hidden in the preview and in EncounterPlus.
+When designing content for print, content will be clipped at a single page unless you manually specify a page break with the `(print-page)` tag in your markdown. The `(print-page)` tag will be hidden in the preview and in EncounterPlus. You can force the next page to be single-column with `(print-page-single-column)` or multi-column with `(print-page-multi-column)`
 
 ```Markdown
 This is some text.
