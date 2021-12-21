@@ -1392,23 +1392,16 @@ export class Module {
         return
       }
 
-      // This is a workaround for a common user error.
-      // One of the most common mistakes users make with
-      // Module Packer is starting their image links with
-      // a front-slash, not understanding how linux-based
-      // file systems work. Since there is almost no reason
-      // someone would truly use an absolute system path like
-      // this, we just strip the front-slash
       if (oldSrc.startsWith('/')) {
+        // Make absolute paths relative to the module's root by stripping the /
         let newSrc = oldSrc.substring(1);
         $(element).attr('src', newSrc)
-        oldSrc = newSrc
-      }
-
-      let srcIsAbsolute = /^https?:\/\//i.test(oldSrc)
-      if (!srcIsAbsolute) {
-        let newSrc = Path.join(relativeFolderPath, oldSrc)
-        $(element).attr('src', newSrc)
+      } else {
+        let srcIsAbsolute = /^https?:\/\//i.test(oldSrc)
+        if (!srcIsAbsolute) {
+          let newSrc = Path.join(relativeFolderPath, oldSrc)
+          $(element).attr('src', newSrc)
+        }
       }
     })
 
