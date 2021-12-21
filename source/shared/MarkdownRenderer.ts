@@ -65,6 +65,7 @@ export class MarkdownRenderer {
         .use(require('markdown-it-anchor'))
         .use(require('markdown-it-attrs'))
         .use(require('markdown-it-decorate'))
+        .use(require('markdown-it-fontawesome'))
         .use(require('markdown-it-imsize'), { autofill: true })
         .use(require('markdown-it-mark'))
         .use(require('markdown-it-multimd-table'))

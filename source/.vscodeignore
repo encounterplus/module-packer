@@ -10,6 +10,7 @@
 !node_modules/markdown-it-anchor
 !node_modules/markdown-it-attrs
 !node_modules/markdown-it-decorate
+!node_modules/markdown-it-fontawesome
 !node_modules/markdown-it-imsize
 !node_modules/markdown-it-mark
 !node_modules/markdown-it-multimd-table

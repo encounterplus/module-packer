@@ -1,9 +1,4 @@
-/*
- Encounter+ iOS
- version 1.0
- ----------------
- global styles & theme
- */
+@import url('fontawesome/css/all.min.css');
 /******** Color Variables ********/
 @font-face {
   font-family: 'Andada SC';

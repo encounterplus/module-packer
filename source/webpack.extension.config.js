@@ -26,6 +26,7 @@ const config = {
     'markdown-it-anchor': 'markdown-it-anchor',
     'markdown-it-attrs': 'markdown-it-attrs',
     'markdown-it-decorate': 'markdown-it-decorate',
+    'markdown-it-fontawesome': 'markdown-it-fontawesome',
     'markdown-it-imsize': 'markdown-it-imsize',
     'markdown-it-mark': 'markdown-it-mark',
     'markdown-it-multimd-table': 'markdown-it-multimd-table',
