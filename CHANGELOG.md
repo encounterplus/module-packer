@@ -4,7 +4,7 @@
 
 ### Added
 - Added more of the Solbera fonts to the global.css
-- Added ability to remove empty groups with `remove-empty-groups: true` in Module.yaml file
+- Added ability to remove empty groups with `delete-empty-groups: true` in Module.yaml file
 - Added ability to force a single page break as two-column or single-column with `(print-page-multi-column)` and `(print-page-single-column)`
 
 ### Changed
