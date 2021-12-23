@@ -975,11 +975,20 @@ export class Module {
     const scanOnly = this.exportMode === ModuleMode.ScanModule
     const forPrint = this.exportMode === ModuleMode.PrintToPDF
     const forModuleExport = this.exportMode === ModuleMode.ModuleExport
+    
     let markdownRenderer = new MarkdownRenderer(forPrint, this)
     let markdown = markdownRenderer.getRenderer()
 
     let pages: Page[] = []
     let extension = Path.extname(filePath)
+
+    let isIgnored = false
+    this.moduleProjectInfo.ignoredFiles.forEach(ignoredFile => {
+      isIgnored = isIgnored || (ignoredFile == filePath)
+    })
+    if (isIgnored) {
+      return pages
+    }
 
     let monsterModulePath = Path.join(moduleBuildPath, 'monsters')
     if (forModuleExport && !FileSystem.existsSync(monsterModulePath)) {

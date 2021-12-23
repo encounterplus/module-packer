@@ -1,5 +1,6 @@
 import * as FileSystem from 'fs-extra'
 import * as Path from 'path'
+import * as Glob from 'glob'
 import { v4 as UUIDV4 } from 'uuid'
 import * as YAML from 'yaml'
 import { Module } from './Module Entities/Module'
@@ -71,6 +72,12 @@ export class ModuleProject {
 
   /** The module encounter references for the project */
   encounterFiles: EncounterFileReference[] = []
+
+  /** The list of paths that are ignored from being processed */
+  ignoredPaths: string[] | undefined = undefined
+
+  /** The list of ignored files */
+  ignoredFiles: string[] = []
 
   // ---------------------------------------------------------------
   // Public Methods
@@ -256,6 +263,18 @@ export class ModuleProject {
       moduleProject.printCoverPath = printCoverPath
     }
 
+    // If the module has ignored paths
+    let ignoredPaths = moduleData['ignore'] as string[]
+    if (ignoredPaths) {
+      moduleProject.ignoredPaths = ignoredPaths
+      ignoredPaths.forEach(globPath => {
+        let moduleDirectory = Path.dirname(projectFilePath)
+        let ignorePath = Path.join(moduleDirectory, globPath)
+        let ignoredFiles = Glob.glob.sync(ignorePath)
+        moduleProject.ignoredFiles = moduleProject.ignoredFiles.concat(ignoredFiles)
+      })
+    }
+
     // If map references exist, add them to project
     let maps = moduleData['maps'] as []
     moduleProject.mapFiles = []
@@ -382,6 +401,10 @@ export class ModuleProject {
     }
     newModuleProject['version'] = this.version    
     newModuleProject['auto-increment-version'] = true
+    
+    if (this.ignoredPaths !== undefined) {
+      newModuleProject['ignore'] = this.ignoredPaths
+    }
     
     if (this.mapFiles.length > 0)
     {
