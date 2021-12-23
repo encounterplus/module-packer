@@ -1290,11 +1290,8 @@ export class Module {
     // Wrap page content in a page DIV when printing
     page.content = this.wrapPageInPrintDivs(page.content)
 
-    // Process image links to handle relative paths
-    page.content = this.postProcessImageLinks(page.content, filePath)
-
-    // Process script links to handle relative paths
-    page.content = this.postProcessScriptLinks(page.content, filePath)
+    // Process image and script links to handle relative paths
+    page.content = this.postProcessLinks(page.content, filePath)
 
     // Process elements for print layouts
     page.content = this.postProcessForPrint(page.content, printMultiColumn)
@@ -1364,65 +1361,13 @@ export class Module {
   }
 
   /**
-   * Converts all script sources into the relative links they need to be
+   * Converts all image and script sources into the relative links they need to be
    * after conversion to a module (which places all pages in the root folder
    * effectively)
    * @param pageContent The page content
    * @param markdownFilePath The path of the markdown file being processed
    */
-   private postProcessScriptLinks = (pageContent: string, markdownFilePath: string): string => {
-    const isModuleExport = this.exportMode === ModuleMode.ModuleExport
-
-    if (!isModuleExport) {
-      return pageContent
-    }
-
-    let moduleProjectDirectory = this.moduleProjectInfo.moduleProjectDirectory
-    if (!moduleProjectDirectory) {
-      throw Error('The module project directory was empty. Was the module project file deleted?')
-    }
-
-    let fileFolder = Path.dirname(markdownFilePath)
-    let relativeFolderPath = Path.relative(moduleProjectDirectory, fileFolder)
-
-    let $ = Cheerio.load(pageContent)
-    $('script').each((i, element) => {
-      let oldSrc = $(element).attr('src')
-      if (!oldSrc) {
-        return
-      }
-
-      // This is a workaround for a common user error.
-      // One of the most common mistakes users make with
-      // Module Packer is starting their image links with
-      // a front-slash, not understanding how linux-based
-      // file systems work. Since there is almost no reason
-      // someone would truly use an absolute system path like
-      // this, we just strip the front-slash
-      if (oldSrc.startsWith('/')) {
-        let newSrc = oldSrc.substring(1);
-        $(element).attr('src', newSrc)
-        oldSrc = newSrc
-      }
-
-      let srcIsAbsolute = /^https?:\/\//i.test(oldSrc)
-      if (!srcIsAbsolute) {
-        let newSrc = Path.join(relativeFolderPath, oldSrc)
-        $(element).attr('src', newSrc)
-      }
-    })
-
-    return $('body').html() ?? pageContent
-  }
-
-  /**
-   * Converts all image sources into the relative links they need to be
-   * after conversion to a module (which places all pages in the root folder
-   * effectively)
-   * @param pageContent The page content
-   * @param markdownFilePath The path of the markdown file being processed
-   */
-  private postProcessImageLinks = (pageContent: string, markdownFilePath: string): string => {
+  private postProcessLinks = (pageContent: string, markdownFilePath: string): string => {
     const scanOnly = this.exportMode === ModuleMode.ScanModule
 
     if (scanOnly) {
@@ -1438,29 +1383,22 @@ export class Module {
     let relativeFolderPath = Path.relative(moduleProjectDirectory, fileFolder)
 
     let $ = Cheerio.load(pageContent)
-    $('img').each((i, element) => {
+    $('img, script').each((i, element) => {
       let oldSrc = $(element).attr('src')
       if (!oldSrc) {
         return
       }
 
-      // This is a workaround for a common user error.
-      // One of the most common mistakes users make with
-      // Module Packer is starting their image links with
-      // a front-slash, not understanding how linux-based
-      // file systems work. Since there is almost no reason
-      // someone would truly use an absolute system path like
-      // this, we just strip the front-slash
       if (oldSrc.startsWith('/')) {
+        // Make absolute paths relative to the module's root by stripping the /
         let newSrc = oldSrc.substring(1);
         $(element).attr('src', newSrc)
-        oldSrc = newSrc
-      }
-
-      let srcIsAbsolute = /^https?:\/\//i.test(oldSrc)
-      if (!srcIsAbsolute) {
-        let newSrc = Path.join(relativeFolderPath, oldSrc)
-        $(element).attr('src', newSrc)
+      } else {
+        let srcIsAbsolute = /^https?:\/\//i.test(oldSrc)
+        if (!srcIsAbsolute) {
+          let newSrc = Path.join(relativeFolderPath, oldSrc)
+          $(element).attr('src', newSrc)
+        }
       }
     })
 
