@@ -1,5 +1,10 @@
 # Change Log
 
+# 1.0.57
+
+### Fixed
+- Fixed missing dependency
+
 # 1.0.56
 
 ### Added

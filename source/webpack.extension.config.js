@@ -30,6 +30,7 @@ const config = {
     'markdown-it-imsize': 'markdown-it-imsize',
     'markdown-it-mark': 'markdown-it-mark',
     'markdown-it-multimd-table': 'markdown-it-multimd-table',
+    'markdown-it-regexp': 'markdown-it-regexp',
     'markdown-it-sub': 'markdown-it-sub',
     'markdown-it-sup': 'markdown-it-sup',
     'markdown-it-underline': 'markdown-it-underline',

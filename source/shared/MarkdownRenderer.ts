@@ -62,6 +62,7 @@ export class MarkdownRenderer {
       })
 
       this.markdown
+        .use(require('markdown-it-regexp'))
         .use(require('markdown-it-anchor'))
         .use(require('markdown-it-attrs'))
         .use(require('markdown-it-decorate'))

@@ -3,7 +3,7 @@
   "displayName": "EncounterPlus Markdown",
   "description": "Renders markdown as it would appear in EncounterPlus",
   "icon": "Logo.png",
-  "version": "1.0.56",
+  "version": "1.0.57",
   "publisher": "jacobjohnston",
   "repository": {
     "type": "git",
@@ -21,7 +21,7 @@
   "categories": ["Other"],
   "keywords": ["EncounterPlus", "iOS", "module", "packer"],
   "activationEvents": [
-    "*"
+    "onStartupFinished"
   ],
   "main": "./extension-out/vscode-extension/extension-packed.js",
   "contributes": {
@@ -375,6 +375,7 @@
     "markdown-it-imsize": "^2.0.1",
     "markdown-it-mark": "^3.0.1",
     "markdown-it-multimd-table": "^4.1.1",
+    "markdown-it-regexp": "^0.4.0",
     "markdown-it-sub": "^1.0.0",
     "markdown-it-sup": "^1.0.0",
     "markdown-it-underline": "^1.0.1",
