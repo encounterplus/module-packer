@@ -1,5 +1,14 @@
 # Change Log
 
+# 1.0.56
+
+### Added
+- Added the `ignore` option to Module.yaml to ignore specific markdown files.
+- Added FontAwesome support.
+
+### Changed
+- Changed the way image/script paths are parsed to allow absolute paths
+
 # 1.0.55
 
 ### Added

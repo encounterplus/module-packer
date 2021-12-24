@@ -108,6 +108,9 @@ print-cover: cover.jpg
 version: 4
 auto-increment-version: true
 delete-empty-groups: true
+ignore:
+  - README.md
+  - CHANGELOG.md
 maps:
   - path: Maps/my-first-map.zip
     order: 2
@@ -131,6 +134,7 @@ All `Module.yaml` values are optional - and default values will be used for anyt
 - `description`: The description of the module.
 - `encounters`: The encounters to include with the module. See more in the [Including Maps & Encounters Tutorial](MapsAndEncounters.md).
 - `id`: If specified, will cause a module to be overwritten rather than duplicated when repeatedly imported. *Never* copy another module's UUID, or you will cause that module to be overwritten.
+- `ignore`: A list of files or folders to ignore when adding pages. This list allows [glob patterns](https://en.wikipedia.org/wiki/Glob_(programming)).
 - `maps`: The maps to include with the module. See more in the [Including Maps & Encounters Tutorial](MapsAndEncounters.md).
 - `name`: The name of the module.
 - `print-cover`: The cover to use as the cover image in PDF output (this will be, effectively, a page 0).

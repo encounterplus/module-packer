@@ -2,7 +2,7 @@
   "name": "module-packer",
   "displayName": "EncounterPlus Module Packer",
   "description": "Tools for creating EncounterPlus modules from markdown.",
-  "version": "1.0.55",
+  "version": "1.0.56",
   "repository": {
     "type": "git",
     "url": "https://github.com/encounterplus/module-packer"
