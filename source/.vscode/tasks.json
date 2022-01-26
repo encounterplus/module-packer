@@ -15,7 +15,7 @@
 				"kind": "build",
 				"isDefault": true
 			},
-			"dependsOn": ["build extension"]
+			"dependsOn": ["Build Extension"]
 		},
 		{
 			"type": "npm",
@@ -29,10 +29,10 @@
 				"kind": "build",
 				"isDefault": true
 			},
-			"dependsOn": ["build app"]
+			"dependsOn": ["Build App"]
 		},
 		{
-			"label": "build extension",
+			"label": "Build Extension",
 			"type": "process",
 			"problemMatcher": "$tsc-watch",
 			"command": "${config:python.pythonPath}",
@@ -42,11 +42,31 @@
       }
 		},
 		{
-			"label": "build app",
+			"label": "Build App",
 			"type": "process",
 			"problemMatcher": "$tsc-watch",
 			"command": "${config:python.pythonPath}",
 			"args": ["${workspaceFolder}/launcher.py", "build-app"],
+			"options": {
+        "cwd": "${workspaceFolder}"
+      }
+		},
+		{
+			"label": "Package App",
+			"type": "process",
+			"problemMatcher": "$tsc-watch",
+			"command": "${config:python.pythonPath}",
+			"args": ["${workspaceFolder}/launcher.py", "package-app"],
+			"options": {
+        "cwd": "${workspaceFolder}"
+      }
+		},
+		{
+			"label": "Package Extension",
+			"type": "process",
+			"problemMatcher": "$tsc-watch",
+			"command": "${config:python.pythonPath}",
+			"args": ["${workspaceFolder}/launcher.py", "package-extension"],
 			"options": {
         "cwd": "${workspaceFolder}"
       }

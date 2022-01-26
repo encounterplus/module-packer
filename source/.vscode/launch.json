@@ -15,7 +15,7 @@
 			"outFiles": [
 				"${workspaceFolder}/extension-out/**/*.js"
 			],
-			"preLaunchTask": "build extension",
+			"preLaunchTask": "Build Extension",
 			"resolveSourceMapLocations": null,
 			"sourceMaps": true
 		},
@@ -29,7 +29,7 @@
 				"runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
 			},
 			"args" : ["./app-out/app/main.js"],
-			"preLaunchTask": "build app",
+			"preLaunchTask": "Build App",
 			"outputCapture": "std",
 			"resolveSourceMapLocations": null
 		}

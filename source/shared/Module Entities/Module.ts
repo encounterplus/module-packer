@@ -543,6 +543,10 @@ export class Module {
       allEntities.forEach((entity) => entitySlugList[entity.slug] = true)
       Object.entries(moduleLinks).forEach(([pageSlug, links]) => {
         links.forEach((link) => {
+          if (forPrint && link.startsWith('#')) {
+            link = link.replace('#', '')
+          }
+
           let srcIsAbsolute = /^https?:\/\//i.test(link)
           if (srcIsAbsolute) {
             return
