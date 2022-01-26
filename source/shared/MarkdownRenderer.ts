@@ -6,6 +6,18 @@ import { Module, ModuleMode } from './Module Entities/Module'
 import { Monster } from './Module Entities/Monster'
 import { Spell } from './Module Entities/Spell'
 
+const MarkdownItRegExp = require('markdown-it-regexp')
+const MarkdownItAnchor = require('markdown-it-anchor')
+const MarkdownItAttrs = require('markdown-it-attrs')
+const MarkdownItDecorate = require('markdown-it-decorate')
+const MarkdownItFontAwesome = require('markdown-it-fontawesome')
+const MarkdownItImSize = require('markdown-it-imsize')
+const MarkdownItMark = require('markdown-it-mark')
+const MarkdownItMultiMdTable = require('markdown-it-multimd-table')
+const MarkdownItSub = require('markdown-it-sub')
+const MarkdownItSup = require('markdown-it-sup')
+const MarkdownItUnderline = require('markdown-it-underline')
+
 export class MarkdownRenderer {
   // ---------------------------------------------------------------
   // Private Fields
@@ -62,17 +74,17 @@ export class MarkdownRenderer {
       })
 
       this.markdown
-        .use(require('markdown-it-regexp'))
-        .use(require('markdown-it-anchor'))
-        .use(require('markdown-it-attrs'))
-        .use(require('markdown-it-decorate'))
-        .use(require('markdown-it-fontawesome'))
-        .use(require('markdown-it-imsize'), { autofill: true })
-        .use(require('markdown-it-mark'))
-        .use(require('markdown-it-multimd-table'))
-        .use(require('markdown-it-sub'))
-        .use(require('markdown-it-sup'))
-        .use(require('markdown-it-underline'))
+        .use(MarkdownItRegExp)
+        .use(MarkdownItAnchor.default)
+        .use(MarkdownItAttrs)
+        .use(MarkdownItDecorate)
+        .use(MarkdownItFontAwesome)
+        .use(MarkdownItImSize)
+        .use(MarkdownItMark)
+        .use(MarkdownItMultiMdTable)
+        .use(MarkdownItSub)
+        .use(MarkdownItSup)
+        .use(MarkdownItUnderline)
 
       this.markdown.block.ruler.after('blockquote', 'printbreaks', (state, startLine, endLine) => {
         let startPos = state.bMarks[startLine] + state.tShift[startLine]
