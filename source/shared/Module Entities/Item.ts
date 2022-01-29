@@ -78,6 +78,9 @@ export class Item extends ModuleEntity {
   /** The item's description */
   description: string | undefined = undefined
 
+  /** Whether the item block should show the image of the item */
+  showImage: boolean = false
+
   // ---------------------------------------------------------------
   // Public Methods
   // ---------------------------------------------------------------
@@ -192,6 +195,11 @@ export class Item extends ModuleEntity {
     const image = itemData['image'] as string
     if (image) {
       item.image = image
+    }
+
+    const showImage = itemData['show-image'] as boolean
+    if (showImage !== undefined) {
+      item.showImage = showImage
     }
 
     return item
@@ -380,6 +388,13 @@ export class Item extends ModuleEntity {
       itemHTML += `<strong>Value: </strong>${this.value}<br />`
     }
     itemHTML += '</p>'
+
+    if (this.showImage && this.image !== undefined) {
+      itemHTML += '<div class="item-image-block">'
+      itemHTML += `<img src=${this.image} class="item-image">`
+      itemHTML += '</div>' // item-image-block
+    }
+
     itemHTML += `<div class="item-block-bottom-border"></div>`
     itemHTML += `</div>` // item-block-body
     itemHTML += `</div>` // item-block

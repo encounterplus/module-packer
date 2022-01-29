@@ -1,5 +1,13 @@
 # Change Log
 
+# 1.0.58
+
+### Added
+- Added the ability to show images in items and spells on a page with the `show-image` property.
+
+### Changed
+- Updated dependencies and webpack options for security and performance improvements.
+
 # 1.0.57
 
 ### Fixed

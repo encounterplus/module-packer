@@ -56,6 +56,9 @@ export class Spell extends ModuleEntity {
   /** The spell's description */
   description: string | undefined = undefined
 
+  /** Whether the spell block should show the image of the spell */
+  showImage: boolean = false
+  
   // ---------------------------------------------------------------
   // Public Methods
   // ---------------------------------------------------------------
@@ -149,6 +152,11 @@ export class Spell extends ModuleEntity {
     const image = spellData['image'] as string
     if (image) {
       spell.image = image
+    }
+
+    const showImage = spellData['show-image'] as boolean
+    if (showImage !== undefined) {
+      spell.showImage = showImage
     }
 
     return spell
@@ -270,6 +278,13 @@ export class Spell extends ModuleEntity {
     }  
     spellHTML += `<strong>Ritual: </strong>${this.ritual ? 'Yes' : 'No'}<br />`    
     spellHTML += '</p>'
+
+    if (this.showImage && this.image !== undefined) {
+      spellHTML += '<div class="spell-image-block">'
+      spellHTML += `<img src=${this.image} class="spell-image">`
+      spellHTML += '</div>' // spell-image-block
+    }
+
     spellHTML += `<div class="spell-block-bottom-border"></div>`
     spellHTML += `</div>` // spell-block-body
     spellHTML += `</div>` // spell-block

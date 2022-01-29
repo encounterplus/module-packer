@@ -617,6 +617,8 @@ damageType: Bludgeoning
 description: This legendary quarterstaff has thwacked many a foe.
 value: 1 gp
 source: Example Module
+image: QuaterstaffOfThwacking.jpg
+show-image: false
 ```
 ~~~
 
@@ -635,6 +637,7 @@ Available item values are:
 - `ac`: The item's AC
 - `source`: The item's source (e.g., the name/page of a publication)
 - `image`: The filename of an image of the item
+- `show-image`: If `true`, will show the image in the item block on the page. If `false` (default), the image will be included in EncounterPlus's compendium, but not shown in the block on the page.
 - `description`: The item's description
 
 Item blocks can be rendered in a variety of colors with the `.blue`, `.green`, `.red`, `.yellow`, `.orange`, `.purple`, `.gray`, and `.neutral` tags.
@@ -661,6 +664,7 @@ duration: Concentration, up to 1 minute
 description: Ignites all nearby dumpsters.
 classes: Sorcerer, Warlock, Wizard
 image: DumpsterFire.jpg
+show-image: false
 source: Example Module
 ```
 ~~~
@@ -676,6 +680,7 @@ Available spell values are:
 - `classes`: The spell's classes
 - `source`: The spell's source 
 - `image`: The filename of an image of the spell
+- `show-image`: If `true`, will show the image in the spell block on the page. If `false` (default), the image will be included in EncounterPlus's compendium, but not shown in the block on the page.
 - `description`: The spell's description
 
 Spell blocks can be rendered in a variety of colors with the `.blue`, `.green`, `.red`, `.yellow`, `.orange`, `.purple`, `.gray`, and `.neutral` tags.
