@@ -18,6 +18,8 @@ import { Page } from './Page'
 import { Map } from './Map'
 import { Encounter } from './Encounter'
 import { Spell } from './Spell'
+import { RollTable } from './RollTable'
+import { RollTableColumn, RollTableColumnAlignment } from './RollTableColumn'
 
 /**
  * Represents an EncounterPlus module. Contains
@@ -92,6 +94,9 @@ export class Module {
 
   /** The spells associated with the module */
   spells: Spell[] = []
+
+  /** The roll tables associated with the module */
+  rollTables: RollTable[] = []
 
   /** The path for the module archive (after it is created) */
   moduleArchivePath: string | undefined = undefined
@@ -399,6 +404,7 @@ export class Module {
     // Export module.xml file
     if (mode == ModuleMode.ModuleExport) {
       module.exportXML(moduleBuildPath)
+      module.exportTables(moduleBuildPath)
       let moduleArchivePath = Path.join(projectDirectory, `${module.moduleProjectInfo.slug}.module`)
       await module.createArchive(moduleArchivePath, moduleBuildPath)
       module.moduleArchivePath = moduleArchivePath
@@ -594,6 +600,21 @@ export class Module {
     archive.pipe(archiveStream)
     archive.directory(moduleBuildPath, false)
     await archive.finalize()
+  }
+
+  /**
+   * Exports the module tables
+   * @param outputPath The path where the JSON file will be created
+   */
+  private exportTables = (outputPath: string) => {
+    let tablesPath = Path.join(outputPath, 'tables.json')
+    let hasTablesData = this.rollTables.length > 0
+
+    if (hasTablesData) {
+      Logger.info(`Exporting ${this.rollTables.length} Tables to JSON: ${outputPath}`)
+      let tablesJson = JSON.stringify(this.rollTables)
+      FileSystem.writeFileSync(tablesPath, tablesJson)
+    }
   }
 
   /**
@@ -1312,6 +1333,9 @@ export class Module {
     // Process anchors
     page.content = this.postProcessAnchors(page.content, page.slug)
 
+    // Process roll tables
+    page.content = this.postProcessRollTables(page.content, page.name, page.slug)
+
     // Prepend a cover page if this section has one
     if (coverImagePath && printToPDF) {
       let coverImageData = FileSystem.readFileSync(coverImagePath).toString('base64')
@@ -1333,8 +1357,83 @@ export class Module {
   }
 
   /**
+   * Converts HTML roll tables into E+ roll tables
+   * @param pageContent The page content
+   * @param pageName The page name
+   * @param pageSlug The page slug
+   * @returns The page content modified with anchors
+   */
+   private postProcessRollTables = (pageContent: string, pageName: string, pageSlug: string): string => {
+    const moduleBuild = this.exportMode === ModuleMode.ModuleExport
+    const createRollTables = this.moduleProjectInfo.createRollTables === true
+
+    if (!moduleBuild || !createRollTables) {
+      return pageContent
+    }
+
+    let $ = Cheerio.load(pageContent)
+    let rollTables: RollTable[] = []
+    $('table').each((i, element) => {
+      let isFirstHeader = true
+      let isRollTable = false
+      let rollHeaderLink: cheerio.Element | undefined = undefined
+      let columns: RollTableColumn[] = []
+      let rows: string[][] = []
+      $(element).find('thead > tr > th').each((i, header) => {
+        let headerText = $(header).text()
+        if (isFirstHeader) {
+          isFirstHeader = false          
+          $(header).find('a').each((i, headerLink) => {
+            rollHeaderLink = headerLink
+            let headerLinkDestination = $(headerLink).attr('href')
+            isRollTable = headerLinkDestination !== undefined && headerLinkDestination.startsWith('/roll/')
+          })
+        }
+
+        if (!isRollTable) {
+          return
+        }
+
+        let headerStyle = $(header).attr('style')
+        let columnAlignment: RollTableColumnAlignment = RollTableColumnAlignment.Left
+        if (headerStyle !== undefined && headerStyle.includes('text-align:center')) {
+          columnAlignment = RollTableColumnAlignment.Center
+        } else if (headerStyle !== undefined && headerStyle.includes('text-align:right')) {
+          columnAlignment = RollTableColumnAlignment.Right
+        }
+        
+        columns.push(new RollTableColumn(headerText, columnAlignment))
+      })
+
+      if (!isRollTable) {
+        return
+      }
+
+      $(element).find('tbody > tr').each((i, row) => {
+        let rowTexts: string[] = []
+        $(row).find('td').each((i, cell) => {
+          rowTexts.push($(cell).text())
+        })
+        rows.push(rowTexts)
+      })
+      let rollTableSlug = Module.getSlugFromValue(`${this.slug}-${pageSlug}-roll-table`)
+      let rollTable = new RollTable(`${this.moduleProjectInfo.name} - ${pageName}`, this.moduleProjectInfo.id, rollTableSlug)
+      rollTable.source = this.moduleProjectInfo.name
+      rollTable.columns = columns
+      rollTable.rows = rows
+      rollTables.push(rollTable)
+      $(rollHeaderLink).attr('href', `/table-roll/${rollTableSlug}`)
+    })
+
+    rollTables.forEach((rollTable) => {
+      this.rollTables.push(rollTable)
+    })
+    return $('body').html() ?? pageContent
+  }
+
+  /**
    * Adds slugified anchors for all of the header content
-   * @param pageContent The page conent
+   * @param pageContent The page content
    * @param slug The slug of the parent page
    * @returns The page content modified with anchors
    */

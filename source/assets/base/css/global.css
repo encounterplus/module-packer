@@ -667,6 +667,7 @@ a.item {
   color: #105a92;
   font-style: italic;
 }
+a[href*='/table-roll/'],
 a[href*='/roll/'],
 a.roll {
   color: #d77e20;

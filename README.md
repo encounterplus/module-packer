@@ -130,6 +130,7 @@ All `Module.yaml` values are optional - and default values will be used for anyt
 - `category`: The category of the module. May be `adventure` or `other`.
 - `code`: A reference code for the module.
 - `cover`: The file name of the cover image for the module (placed in the same directory).
+- `create-roll-tables`: May be `true` or `false`. If `true`, will attempt to automatically create roll tables when the module is packed.
 - `delete-empty-groups`: May be `true` or `false`. If `true`, empty groups will be removed from the module when built.
 - `description`: The description of the module.
 - `encounters`: The encounters to include with the module. See more in the [Including Maps & Encounters Tutorial](MapsAndEncounters.md).

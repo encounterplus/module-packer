@@ -79,6 +79,9 @@ export class ModuleProject {
   /** The list of ignored files */
   ignoredFiles: string[] = []
 
+  /** Whether to automatically create roll tables */
+  createRollTables: boolean | undefined = undefined
+
   // ---------------------------------------------------------------
   // Public Methods
   // ---------------------------------------------------------------
@@ -323,6 +326,12 @@ export class ModuleProject {
       });
     }
 
+    // If createRollTables is specified in Module project file, use that
+    let createRollTables = (moduleData['createRollTables'] as boolean || moduleData['create-roll-tables'] as boolean)
+    if (createRollTables !== undefined) {
+      moduleProject.createRollTables = createRollTables
+    }
+
     return moduleProject
   }
 
@@ -395,6 +404,9 @@ export class ModuleProject {
     }
     if (this.deleteEmptyGroups !== undefined) {
       newModuleProject['delete-empty-groups'] = this.deleteEmptyGroups
+    }
+    if (this.createRollTables !== undefined) {
+      newModuleProject['create-roll-tables'] = this.createRollTables
     }
     if (this.printLinkMode !== undefined) {
       newModuleProject['print-link-update'] = ModuleProject.getPrintLinkModeString(this.printLinkMode)
