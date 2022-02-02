@@ -115,6 +115,9 @@ export class Monster extends ModuleEntity {
   /** The monster's legendary actions */
   legendaryActions: LegendaryAction[] = []
 
+  /** The monster's mythic actions */
+  mythicActions: MythicAction[] = []
+
   /** The filename of an image of the monster */
   image: string | undefined = undefined
 
@@ -193,7 +196,7 @@ export class Monster extends ModuleEntity {
     // Get monster Armor Class
     const ac = monsterData['ac'] as string
     if (ac) {
-      monster.ac = ac
+      monster.ac = ac.toString()
     }
 
     // Get monster Hit Points
@@ -346,6 +349,12 @@ export class Monster extends ModuleEntity {
       monster.legendaryActions = legendaryActions
     }
 
+    // Get monster's mythic actions
+    const mythicActions = (monsterData['mythic-actions'] as MythicAction[] || monsterData['mythicActions'] as MythicAction[])
+    if (mythicActions) {
+      monster.mythicActions = mythicActions
+    }
+
     // Get monster image - copy image file to root
     // if we're parsing this as an individual monster YAML file.
     // If parsing in the context of markdown, this will already
@@ -393,12 +402,16 @@ export class Monster extends ModuleEntity {
         return ColumnAfter.Traits
       case 'actions':
         return ColumnAfter.Actions
-        case 'bonus-actions':
+      case 'bonus-actions':
           return ColumnAfter.BonusActions
       case 'bonusActions':
         return ColumnAfter.BonusActions
       case 'reactions':
         return ColumnAfter.Reactions
+      case 'legendary-actions':
+        return ColumnAfter.LegendaryActions
+      case 'legendaryActions':
+        return ColumnAfter.LegendaryActions
     }
     return ColumnAfter.Traits
   }
@@ -731,6 +744,8 @@ export class Monster extends ModuleEntity {
       monsterHTML += '<div class="statblock-section-right">'
       hasHadColumnBreak = true
     }
+
+    // Actions
     if (this.actions.length > 0) {
       monsterHTML += '<div class="statblock-actions">'
       monsterHTML += '<p class="statblock-section-title">Actions</p>'
@@ -751,11 +766,15 @@ export class Monster extends ModuleEntity {
       })
       monsterHTML += '</div>' // statblock-actions
     }
+
+    // Break Column After Actions
     if (this.columnAfter === ColumnAfter.Actions && !hasHadColumnBreak) {
       monsterHTML += '</div>' // statblock-section-left
       monsterHTML += '<div class="statblock-section-right">'
       hasHadColumnBreak = true
     }
+
+    // Bonus Actions
     if (this.bonusActions.length > 0) {
       monsterHTML += '<div class="statblock-bonus-actions">'
       monsterHTML += '<p class="statblock-section-title">Bonus Actions</p>'
@@ -776,11 +795,15 @@ export class Monster extends ModuleEntity {
       })
       monsterHTML += '</div>' // statblock-bonus-actions
     }
+
+    // Break Column After Bonus Actions
     if (this.columnAfter === ColumnAfter.BonusActions && !hasHadColumnBreak) {
       monsterHTML += '</div>' // statblock-section-left
       monsterHTML += '<div class="statblock-section-right">'
       hasHadColumnBreak = true
     }
+
+    // Reactions
     if (this.reactions.length > 0) {
       monsterHTML += '<div class="statblock-reactions">'
       monsterHTML += '<p class="statblock-section-title">Reactions</p>'
@@ -801,12 +824,16 @@ export class Monster extends ModuleEntity {
       })
       monsterHTML += '</div>' // statblock-reactions
     }
-    if (!hasHadColumnBreak) {
+
+    // Break Column After Reactions
+    if (this.columnAfter === ColumnAfter.Reactions && !hasHadColumnBreak) {
       monsterHTML += '</div>' // statblock-section-left
       monsterHTML += '<div class="statblock-section-right">'
       hasHadColumnBreak = true
     }
-    if (this.legendaryActions.length > 0) {
+
+    // Legendary Actions
+    if (this.reactions.length > 0) {
       monsterHTML += '<div class="statblock-legendary-actions">'
       monsterHTML += '<p class="statblock-section-title">Legendary Actions</p>'
       this.legendaryActions.forEach((legendaryAction, index) => {
@@ -816,9 +843,47 @@ export class Monster extends ModuleEntity {
         }
         monsterHTML += `<p class="statblock-legendary-action-description">${formatDescription(legendaryAction.description)}</p>`
         monsterHTML += '</div>' // statblock-property-block
+        if (this.columnAfter === ColumnAfter.LegendaryActions && !hasHadColumnBreak && this.columnAfterProperty !== undefined && this.columnAfterProperty.toLowerCase() === legendaryAction.name.toLowerCase()) {
+          monsterHTML += '</div>' // statblock-reactions
+          monsterHTML += '</div>' // statblock-section-left
+          monsterHTML += '<div class="statblock-section-right">'
+          monsterHTML += '<div class="statblock-reactions">'
+          hasHadColumnBreak = true
+        }
       })
-      monsterHTML += '</div>' // statblock-legendaryActions
+      monsterHTML += '</div>' // statblock-reactions
     }
+
+    // Break Column After Legendary Actions
+    if (this.columnAfter === ColumnAfter.LegendaryActions && !hasHadColumnBreak) {
+      monsterHTML += '</div>' // statblock-section-left
+      monsterHTML += '<div class="statblock-section-right">'
+      hasHadColumnBreak = true
+    }
+
+    // Mythic Actions
+    if (this.mythicActions.length > 0) {
+      monsterHTML += '<div class="statblock-mythic-actions">'
+      monsterHTML += '<p class="statblock-section-title">Mythic Actions</p>'
+      this.mythicActions.forEach((mythicAction, index) => {
+        monsterHTML += '<div class="statblock-property-block">'
+        if (mythicAction.name) {
+          monsterHTML += `<p class="statblock-mythic-action-name">${mythicAction.name}.</p> `
+        }
+        monsterHTML += `<p class="statblock-mythic-action-description">${formatDescription(mythicAction.description)}</p>`
+        monsterHTML += '</div>' // statblock-property-block
+      })
+      monsterHTML += '</div>' // statblock-mythicActions
+    }
+
+    // Break Column After Mythic Actions
+    if (!hasHadColumnBreak) {
+      monsterHTML += '</div>' // statblock-section-left
+      monsterHTML += '<div class="statblock-section-right">'
+      hasHadColumnBreak = true
+    }
+
+    // Monster Image
     if (this.showImage && this.image !== undefined) {
       monsterHTML += '<div class="statblock-image-block">'
       monsterHTML += `<img src=${this.image} class="statblock-image">`
@@ -848,6 +913,9 @@ enum ColumnAfter {
 
   /** In a two-column statblock, place the column split after the Reactions */
   Reactions,
+
+  /** In a two-column statblock, place the column split after the Legendary ACtions */
+  LegendaryActions
 }
 
 
@@ -902,5 +970,14 @@ interface LegendaryAction {
   name: string
 
   /** The legendary action's description */
+  description: string
+}
+
+/** Describes a Mythic Action */
+interface MythicAction {
+  /** The mythic action's name */
+  name: string
+
+  /** The mythic action's description */
   description: string
 }
