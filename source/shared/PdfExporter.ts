@@ -80,6 +80,7 @@ export class PdfExporter {
     const pdf = await page.pdf({
       format: pageFormat,
       printBackground: true,
+      timeout: 0
     })
 
     Logger.info(`Saving PDF file at ${saveLocation}...`)
