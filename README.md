@@ -108,6 +108,7 @@ print-cover: cover.jpg
 version: 4
 auto-increment-version: true
 delete-empty-groups: true
+print-document-size: letter
 ignore:
   - README.md
   - CHANGELOG.md
@@ -139,6 +140,7 @@ All `Module.yaml` values are optional - and default values will be used for anyt
 - `maps`: The maps to include with the module. See more in the [Including Maps & Encounters Tutorial](MapsAndEncounters.md).
 - `name`: The name of the module.
 - `print-cover`: The cover to use as the cover image in PDF output (this will be, effectively, a page 0).
+- `print-document-size`: Sets the output page size when exporting to PDF. May be `letter` (default) or `a4`.
 - `slug`: The slug for the module. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
 - `version`: The version of the module. Must be an integer.
 

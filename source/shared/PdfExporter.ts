@@ -8,7 +8,7 @@ import { Module, ModuleMode } from './Module Entities/Module'
 import { ModuleEntity } from './Module Entities/ModuleEntity'
 import { Page } from './Module Entities/Page'
 import { Group } from './Module Entities/Group'
-import { PrintLinkMode } from './ModuleProject'
+import { PrintDocumentSize, PrintLinkMode } from './ModuleProject'
 
 
 export class PdfExporter {
@@ -25,6 +25,12 @@ export class PdfExporter {
     let customStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'custom.css')
     let globalStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'global.css')
     let printImageStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'print.css')
+    let pageFormat: Puppeteer.PaperFormat = 'letter'
+    if (module.moduleProjectInfo.printDocumentSize !== undefined && module.moduleProjectInfo.printDocumentSize == PrintDocumentSize.A4)
+    {
+      pageFormat = 'a4'
+      printImageStyleLocation = Path.join(moduleOutputPath, 'assets', 'css', 'print_a4.css')
+    }    
     let pageLocation = Path.join(moduleOutputPath, 'printPage.html')
     let saveLocation = Path.join(projectDirectory, `${module.moduleProjectInfo.slug}.pdf`)
 
@@ -72,7 +78,7 @@ export class PdfExporter {
 
     Logger.info(`Creating PDF file.`)
     const pdf = await page.pdf({
-      format: 'letter',
+      format: pageFormat,
       printBackground: true,
     })
 

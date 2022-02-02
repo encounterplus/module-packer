@@ -49,7 +49,7 @@
   },  
   "scripts": {
     "lint": "eslint . --ext .ts,.tsx",
-    "compile-css": "lessc ./assets/base/css/global.less ./assets/base/css/global.css && lessc ./assets/print/css/print.less ./assets/print/css/print.css",
+    "compile-css": "lessc ./assets/base/css/global.less ./assets/base/css/global.css && lessc ./assets/print/css/print.less ./assets/print/css/print.css && lessc ./assets/print/css/print_a4.less ./assets/print/css/print_a4.css",
 		"compile-app": "tsc -p tsconfig.app.json && ncp ./app/resources ./app-out/resources && ncp ./assets ./app-out/assets",
     "watch-app": "tsc -watch -p tsconfig.app.json",
     "start": "npm run compile-app && electron ./app-out/app/main.js",

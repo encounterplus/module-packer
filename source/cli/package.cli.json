@@ -30,7 +30,7 @@
   },  
   "scripts": {
     "lint": "eslint . --ext .ts,.tsx",
-    "compile-css": "lessc ./assets/base/css/global.less ./assets/base/css/global.css && lessc ./assets/print/css/print.less ./assets/print/css/print.css",
+    "compile-css": "lessc ./assets/base/css/global.less ./assets/base/css/global.css && lessc ./assets/print/css/print.less ./assets/print/css/print.css && lessc ./assets/print/css/print_a4.less ./assets/print/css/print_a4.css",
 		"compile-cli": "tsc -p tsconfig.cli.json && ncp ./assets ./cli-out/assets"
   },
   "devDependencies": {

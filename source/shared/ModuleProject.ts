@@ -67,6 +67,9 @@ export class ModuleProject {
   /** The print link mode */
   printLinkMode: PrintLinkMode | undefined = undefined
 
+  /** The document size */
+  printDocumentSize: PrintDocumentSize | undefined = undefined
+
   /** The module map references for the project */
   mapFiles: MapFileReference[] = []
 
@@ -242,6 +245,12 @@ export class ModuleProject {
       moduleProject.printLinkMode = ModuleProject.getPrintLinkMode(printLinkModeString)
     }
 
+    // If printDocumentSize is specified in Module project file, use that
+    let printDocumentSize = (moduleData['printDocumentSize'] as string || moduleData['print-document-size'] as string)
+    if (printDocumentSize) {
+      moduleProject.printDocumentSize = ModuleProject.getPrintDocumentSize(printDocumentSize)
+    }
+
     // If cover image is specified in Module project file, use that.
     // Ensure cover image actually exists
     let moduleCoverPath = moduleData['cover'] as string
@@ -411,6 +420,9 @@ export class ModuleProject {
     if (this.printLinkMode !== undefined) {
       newModuleProject['print-link-update'] = ModuleProject.getPrintLinkModeString(this.printLinkMode)
     }
+    if (this.printDocumentSize !== undefined) {
+      newModuleProject['print-document-size'] = ModuleProject.getPrintDocumentSizeString(this.printDocumentSize)
+    }
     newModuleProject['version'] = this.version    
     newModuleProject['auto-increment-version'] = true
     
@@ -463,7 +475,7 @@ export class ModuleProject {
   }
 
   /**
-   * Converts the print link mode string to a 
+   * Converts the print link mode string to an enum value 
    * @param printLinkModeString print link mode string
    */
   static getPrintLinkMode(printLinkModeString: string): PrintLinkMode {
@@ -478,6 +490,21 @@ export class ModuleProject {
         return PrintLinkMode.DNDBeyondSearch
       default:
           return PrintLinkMode.None
+    }
+  }
+
+   /**
+   * Converts the print document size string to an enum value 
+   * @param printDocumentSizeString print document size string
+   */
+   static getPrintDocumentSize(printDocumentSizeString: string): PrintDocumentSize {
+    switch (printDocumentSizeString.toLowerCase()) {
+      case 'a4':
+        return PrintDocumentSize.A4
+      case 'letter':
+        return PrintDocumentSize.Letter
+      default:
+        return PrintDocumentSize.Letter
     }
   }
 
@@ -496,6 +523,19 @@ export class ModuleProject {
     }
   }
 
+   /**
+   * Converts the print document size value to a string
+   * @param printDocumentSize Print document size
+   */
+    static getPrintDocumentSizeString(printDocumentSize: PrintDocumentSize): string {
+      switch (printDocumentSize) {
+        case PrintDocumentSize.A4:
+          return 'A4'
+        default:
+          return 'Letter'
+      }
+    }
+
 }
 
 /** The link mode when exporting to PDF */
@@ -508,4 +548,13 @@ export enum PrintLinkMode {
 
   /** Change compendium entry links to D&D Beyond search links */
   DNDBeyondSearch,
+}
+
+/** The document size when exporting to PDF */
+export enum PrintDocumentSize {
+  /** Letter Paper Size  */
+  Letter = 1,
+
+  /** A4 Paper Size */
+  A4,
 }

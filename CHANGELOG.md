@@ -6,6 +6,7 @@
 - Added the ability to show images in items and spells on a page with the `show-image` property.
 - Added support for automatically creating Encounter+'s new Roll Tables when exporting to module.
 - Added support for Bonus Actions in Monster Stat Blocks
+- Added support for A4 Paper sizes with `print-document-size` property
 
 ### Changed
 - Updated dependencies and webpack options for security and performance improvements.

@@ -1,0 +1,46 @@
+/** Bugs in chromium prevent print-only fonts and images from being rendered. Embedding the images
+ ** and fonts as base64 encoded resources serves as a workaround. See here:
+ ** https://bugs.chromium.org/p/chromium/issues/detail?id=284840
+ **/
+
+ body,
+ blockquote.flavortext {
+   font-family: 'Bookinsanity Remake', '-apple-system', sans-serif !important; 
+ }
+ 
+ @media print {
+  div.print-two-column {
+    &:not(.statblock) {
+      width: 210mm - 1in;
+    }
+  }
+
+  .print-cover-page,
+  .print-section-cover-page {
+    height: 297mm;
+    width: 210mm;
+  }
+
+  .print-page {
+    background-image: data-uri('../img/print-background-a4.jpg');
+    height: 297mm;
+    width: 210mm;
+
+    .footer-background {
+      background-image: data-uri('../img/footer-a4.svg');
+      height: 0.5in;
+      width: 210mm;
+      background-size: 210mm 0.5in;
+    }
+
+    .page-content {
+      height: 275mm - 1.1in;
+      width: 210mm - 1in;
+    }
+
+    .footer-content {
+      width: 210mm;
+    }
+  }  
+}
+ 
