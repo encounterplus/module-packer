@@ -40,11 +40,82 @@ This example would apply the `two-column` class to the preceding div and apply a
 
 ## Manually Nesting Pages or Groups
 
-TODO
+Pages, Groups, Maps, and Encounters defined in the Module have their parent automatically defined by what folder they are placed in. However, this can be manually overridden on any page by specifying the `parent` property for that item.
+
+In the case of a Page or Markdown file, this would be specified by setting the `parent` property in the YAML front-matter at the top of the Page. Example:
+```yaml
+---
+name: Page name
+parent: parent-slug
+---
+```
+
+In the case of a Group, this would be specified by setting the `parent` property in the Group.YAML file created in the Group's folder:
+```YAML
+name: Example Group
+parent: parent-slug
+copy-files: true
+```
+
+Any entity can be the parent to another entity. For example, Pages can be parents to Maps, Maps can be parents to Encounter, etc. Care should be taken not to create a circular chain of relationships between parents and children, or the Module will be unable to be packed.
 
 ## Linking Pages
 
-TODO
+### Linking to a Page in the Same Module
+
+Pages within a module can be linked to one-another by simply linking their slug. Example:
+
+```Markdown
+This is a [link to another page](another-page-slug).
+```
+
+### Linking to a Page in a Different Module
+
+Pages in another module can be linked to by creating a link with both the module slug and the page slug. The format is `/module/{module-slug}/page/{another-page-slug}` where `{module-slug}` is the slug of the other module and `{another-page-slug}` is the slug of the page in that module. Example:
+
+```Markdown
+This is a [link to another page in another module](/module/another-module-slug/page/another-page-slug).
+```
+
+### Linking to a Header on the Same Page
+
+A link to another section of the same page can be accomplished. A linkable anchor for each header on a page is automatically created when the module is built to either a `.module` file or a PDF. The name of the header is "slugified" when an anchor is being created. For example, the header "My Cool Header" would become "my-cool-header". To link within the same page, simply place a `#` symbol in front of the link destination. Example:
+
+```Markdown
+This is a [link to another section in the same page](#my-other-section).
+```
+
+## Roll Tables in EncounterPlus
+
+A roll table is generally a table where the top left column header specifies one or more dice to be rolled, and the rest of the table contains a list of outcomes for the various rolls. Now that EncounterPlus has native support for roll tables, Module-Packer can automatically detect the presence of such tables and create the necessary data for EncounterPlus when exporting as a `.module` file. This functionality is still a bit experimental and is likely to be improved or expanded upon in the future.
+
+The following is an example of a typical encounter roll table:
+```Markdown
+|[2d6](/roll/2d6)|Encounter|
+|:---:|:---|
+|2-3|3 Kobolds|
+|4-5|2 Owlbears|
+|6-8|10 Giant Rats|
+|9-10|1 Vampire|
+|11-12|1 Tarrasque|
+```
+
+To enable this functionality, simple add the following line to your `Module.yaml` file:
+```YAML
+create-roll-tables: true
+```
+
+There are currently two special types of roll tables that can be enabled with special attributes on the roll link. The first is "No Repeat" roll tables - where the rolls will automatically exclude any result that would repeat the row being used. The second is an "Each Row" roll table - where a roll will be executed for each row in the table. To use these features, add either the `{.no-repeat}` or `{.each-row}` attribute to the roll link. For example:
+
+```Markdown
+|[2d6](/roll/2d6){.no-repeat}|Encounter|
+|:---:|:---|
+|2-3|3 Kobolds|
+|4-5|2 Owlbears|
+|6-8|10 Giant Rats|
+|9-10|1 Vampire|
+|11-12|1 Tarrasque|
+```
 
 ## Advanced Layouts
 
@@ -113,3 +184,15 @@ If you want to output PDF, add `--output pdf` to your command:
 ## Splitting Monster Block Columns on Specific Properties
 
 TODO
+
+## Customizing Styles
+
+If you have knowledge of how to work with Cascading Style Sheets, modifications can be made to the way Markdown is rendered by adding a `custom.css` file in the `assets/css` folder of your module. This `custom.css` will be evaluated AFTER the default stylesheet. If you want to completely override or replace the main stylesheet, it may be done by replacing the `global.css` file in the same `assets/css` folder. Do note, however, replacing the `global.css` will prevent updates to the default style sheet from taking effect and is generally not recommended for most use cases.
+
+### Previewing Custom Styles in Visual Studio
+
+To preview your custom style in Visual Studio Code, you must add your `custom.css` file to the list of VS Code's Markdown Preview stylesheets. Do so by going to Visual Studio Code's Settings, searching for "Markdown: Styles" and adding your `custom.css` file there. It is generally recommended that you set this Setting for the Workspace rather than for the User.
+
+<p align="left">
+  <img src="./documentation/CustomCSS.jpg" alt="Custom CSS in VS Code" width="400">
+</p>

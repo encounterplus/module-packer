@@ -107,6 +107,7 @@ cover: cover.jpg
 print-cover: cover.jpg
 version: 4
 auto-increment-version: true
+create-roll-tables: true
 delete-empty-groups: true
 print-document-size: letter
 ignore:
