@@ -34,4 +34,19 @@ export class RollTable extends ModuleEntity {
 
   /** The roll table's columns */
   columns: RollTableColumn[] = []
+
+  /** The roll table's roll mode */
+  rollMode: RollMode = RollMode.Normal
+}
+
+/** The module include mode */
+export enum RollMode {
+  /** Normal Roll Mode */
+  Normal = 'normal',
+
+  /** No Repeat Roll Mode */
+  NoRepeat = 'noRepeat',
+
+  /** Each Row Roll Mode */
+  EachRow = 'eachRow',
 }

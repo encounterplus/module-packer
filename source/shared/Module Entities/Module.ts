@@ -18,7 +18,7 @@ import { Page } from './Page'
 import { Map } from './Map'
 import { Encounter } from './Encounter'
 import { Spell } from './Spell'
-import { RollTable } from './RollTable'
+import { RollMode, RollTable } from './RollTable'
 import { RollTableColumn, RollTableColumnAlignment } from './RollTableColumn'
 
 /**
@@ -1383,6 +1383,8 @@ export class Module {
       let rollHeaderLink: cheerio.Element | undefined = undefined
       let columns: RollTableColumn[] = []
       let rows: string[][] = []
+      let hasNoRepeat = false
+      let hasEachRow = false
       $(element).find('thead > tr > th').each((i, header) => {
         let headerText = $(header).text()
         if (isFirstHeader) {
@@ -1390,6 +1392,8 @@ export class Module {
           $(header).find('a').each((i, headerLink) => {
             rollHeaderLink = headerLink
             let headerLinkDestination = $(headerLink).attr('href')
+            hasNoRepeat = $(headerLink).hasClass('no-repeat')
+            hasEachRow = $(headerLink).hasClass('each-row')
             isRollTable = headerLinkDestination !== undefined && headerLinkDestination.startsWith('/roll/')
           })
         }
@@ -1425,6 +1429,11 @@ export class Module {
       rollTable.source = this.moduleProjectInfo.name
       rollTable.columns = columns
       rollTable.rows = rows
+      if (hasNoRepeat) {
+        rollTable.rollMode = RollMode.NoRepeat
+      } else if (hasEachRow) {
+        rollTable.rollMode = RollMode.EachRow
+      }
       rollTables.push(rollTable)
       $(rollHeaderLink).attr('href', `/table-roll/${rollTableSlug}`)
     })
