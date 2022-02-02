@@ -565,10 +565,13 @@ actions:
     description: "Melee Weapon Attack: +5 to hit, reach 5 ft., one target. Hit: 7 (1d6 + 4) suction damage."  
   - name: Open-carry Trebuchet
     description: "Ranged Weapon Attack: +5 to hit, range 80/320 ft., one target. Hit: 7 (1d6 + 4) bludgeon damage."
+bonus-actions:
+  - name: Silly Sidestep
+    description: "The Evil McEvilface does a silly walk, sidesteps your blow, and takes half damage."
 reactions:
   - name: Indignant Glare
     description: If the Evil McEvilface makes a successful spell saving throw, the Evil McEvilface glares at you disapprovingly and you feel shame. Your next ability check must be rolled with disadvantage.
-legendaryActions:
+legendary-actions:
   - description: The Evil McEvilface can take 1 legendary actions, using the Explosion option below.
   - name: Explosion
     description: "The Evil McEvilface suddenly explodes doing 1d20 damage to all creatures within 10 ft. This kills the Evil McEvilface."

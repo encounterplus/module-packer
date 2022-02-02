@@ -5,9 +5,11 @@
 ### Added
 - Added the ability to show images in items and spells on a page with the `show-image` property.
 - Added support for automatically creating Encounter+'s new Roll Tables when exporting to module.
+- Added support for Bonus Actions in Monster Stat Blocks
 
 ### Changed
 - Updated dependencies and webpack options for security and performance improvements.
+- Changed "legendaryActions" field name to "legendary-actions" to match variable naming style (the old name will still work for backwards compatibility)
 
 # 1.0.57
 

@@ -106,6 +106,9 @@ export class Monster extends ModuleEntity {
   /** The monster's actions */
   actions: Action[] = []
 
+  /** The monster's bonus actions */
+  bonusActions: BonusAction[] = []
+
   /** The monster's reactions */
   reactions: Reaction[] = []
 
@@ -325,6 +328,12 @@ export class Monster extends ModuleEntity {
       monster.actions = actions
     }
 
+    // Get monster's bonus actions
+    const bonusActions = (monsterData['bonus-actions'] as BonusAction[] || monsterData['bonusActions'] as BonusAction[])
+    if (bonusActions) {
+      monster.bonusActions = bonusActions
+    }
+
     // Get monster's reactions
     const reactions = monsterData['reactions'] as Reaction[]
     if (reactions) {
@@ -332,7 +341,7 @@ export class Monster extends ModuleEntity {
     }
 
     // Get monster's legendary actions
-    const legendaryActions = monsterData['legendaryActions'] as LegendaryAction[]
+    const legendaryActions = (monsterData['legendary-actions'] as LegendaryAction[] || monsterData['legendaryActions'] as LegendaryAction[])
     if (legendaryActions) {
       monster.legendaryActions = legendaryActions
     }
@@ -384,6 +393,10 @@ export class Monster extends ModuleEntity {
         return ColumnAfter.Traits
       case 'actions':
         return ColumnAfter.Actions
+        case 'bonus-actions':
+          return ColumnAfter.BonusActions
+      case 'bonusActions':
+        return ColumnAfter.BonusActions
       case 'reactions':
         return ColumnAfter.Reactions
     }
@@ -425,6 +438,12 @@ export class Monster extends ModuleEntity {
     function getAbilityMod(ability: number): string {
       let abilityMod = Math.floor((ability - 10) / 2)
       return abilityMod >= 0 ? `+${abilityMod}` : `${abilityMod}`
+    }
+
+    function formatACDescription(acDescription: string): string {
+      let newDescription = acDescription
+      newDescription = newDescription.replace(/with mage armor/i, 'with <i>mage armor</i>')
+      return newDescription
     }
 
     function formatDescription(description: string): string {
@@ -643,7 +662,7 @@ export class Monster extends ModuleEntity {
     monsterHTML += '</div>' // statblock-creature-heading
     monsterHTML += drawTaperRule()
     monsterHTML += '<div class="statblock-top-stats">'
-    monsterHTML += `<div class="statblock-property-line first"><p class="statblock-topstat-name">Armor Class</p> <p class="statblock-topstat-value">${this.ac}</p></div>`
+    monsterHTML += `<div class="statblock-property-line first"><p class="statblock-topstat-name">Armor Class</p> <p class="statblock-topstat-value">${formatACDescription(this.ac)}</p></div>`
     monsterHTML += `<div class="statblock-property-line"><p class="statblock-topstat-name">Hit Points</p> <p class="statblock-topstat-value">${this.hp}</p></div>`
     monsterHTML += `<div class="statblock-property-line last"><p class="statblock-topstat-name">Speed</p> <p class="statblock-topstat-value">${this.speed}</p></div>`
     monsterHTML += '</div>' // statblock-top-stats
@@ -737,15 +756,40 @@ export class Monster extends ModuleEntity {
       monsterHTML += '<div class="statblock-section-right">'
       hasHadColumnBreak = true
     }
+    if (this.bonusActions.length > 0) {
+      monsterHTML += '<div class="statblock-bonus-actions">'
+      monsterHTML += '<p class="statblock-section-title">Bonus Actions</p>'
+      this.bonusActions.forEach((bonusAction, index) => {
+        monsterHTML += '<div class="statblock-property-block">'
+        if (bonusAction.name) {
+          monsterHTML += `<p class="statblock-bonus-action-name">${bonusAction.name}.</p> `
+        }
+        monsterHTML += `<p class="statblock-bonus-action-description">${formatDescription(bonusAction.description)}</p>`
+        monsterHTML += '</div>' // statblock-property-block
+        if (this.columnAfter === ColumnAfter.BonusActions && !hasHadColumnBreak && this.columnAfterProperty !== undefined && this.columnAfterProperty.toLowerCase() === bonusAction.name.toLowerCase()) {
+          monsterHTML += '</div>' // statblock-bonus-actions
+          monsterHTML += '</div>' // statblock-section-left
+          monsterHTML += '<div class="statblock-section-right">'
+          monsterHTML += '<div class="statblock-bonus-actions">'
+          hasHadColumnBreak = true
+        }
+      })
+      monsterHTML += '</div>' // statblock-bonus-actions
+    }
+    if (this.columnAfter === ColumnAfter.BonusActions && !hasHadColumnBreak) {
+      monsterHTML += '</div>' // statblock-section-left
+      monsterHTML += '<div class="statblock-section-right">'
+      hasHadColumnBreak = true
+    }
     if (this.reactions.length > 0) {
       monsterHTML += '<div class="statblock-reactions">'
       monsterHTML += '<p class="statblock-section-title">Reactions</p>'
       this.reactions.forEach((reaction, index) => {
         monsterHTML += '<div class="statblock-property-block">'
         if (reaction.name) {
-          monsterHTML += `<p class="statblock-action-name">${reaction.name}.</p> `
+          monsterHTML += `<p class="statblock-reaction-name">${reaction.name}.</p> `
         }
-        monsterHTML += `<p class="statblock-action-description">${formatDescription(reaction.description)}</p>`
+        monsterHTML += `<p class="statblock-reaction-description">${formatDescription(reaction.description)}</p>`
         monsterHTML += '</div>' // statblock-property-block
         if (this.columnAfter === ColumnAfter.Reactions && !hasHadColumnBreak && this.columnAfterProperty !== undefined && this.columnAfterProperty.toLowerCase() === reaction.name.toLowerCase()) {
           monsterHTML += '</div>' // statblock-reactions
@@ -768,9 +812,9 @@ export class Monster extends ModuleEntity {
       this.legendaryActions.forEach((legendaryAction, index) => {
         monsterHTML += '<div class="statblock-property-block">'
         if (legendaryAction.name) {
-          monsterHTML += `<p class="statblock-action-name">${legendaryAction.name}.</p> `
+          monsterHTML += `<p class="statblock-legendary-action-name">${legendaryAction.name}.</p> `
         }
-        monsterHTML += `<p class="statblock-action-description">${formatDescription(legendaryAction.description)}</p>`
+        monsterHTML += `<p class="statblock-legendary-action-description">${formatDescription(legendaryAction.description)}</p>`
         monsterHTML += '</div>' // statblock-property-block
       })
       monsterHTML += '</div>' // statblock-legendaryActions
@@ -798,6 +842,9 @@ enum ColumnAfter {
 
   /** In a two-column statblock, place the column split after the Actions */
   Actions,
+
+  /** In a two-column statblock, place the column split after the Bonus Actions */
+  BonusActions,
 
   /** In a two-column statblock, place the column split after the Reactions */
   Reactions,
@@ -828,6 +875,15 @@ interface Action {
   name: string
 
   /** The action's description */
+  description: string
+}
+
+/** Describes a Bonus Action */
+interface BonusAction {
+  /** The bonus action's name */
+  name: string
+
+  /** The bonus action's description */
   description: string
 }
 

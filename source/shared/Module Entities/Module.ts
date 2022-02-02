@@ -697,6 +697,9 @@ export class Module {
       let actions = monster.actions.map((action) => {
         return { name: action.name, text: action.description }
       })
+      let bonusActions = monster.bonusActions.map((bonusAction) => {
+        return { name: bonusAction.name, text: bonusAction.description }
+      })
       let reactions = monster.reactions.map((reaction) => {
         return { name: reaction.name, text: reaction.description }
       })
@@ -735,6 +738,7 @@ export class Module {
         token: monster.token,
         trait: traits,
         action: actions,
+        bonus: bonusActions,
         reaction: reactions,
         legendary: legendaryActions,
         description: monster.description

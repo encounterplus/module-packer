@@ -922,6 +922,9 @@ table.sidebar td:first-child {
 }
 .statblock .statblock-trait-description,
 .statblock .statblock-action-description,
+.statblock .statblock-bonus-action-description,
+.statblock .statblock-reaction-description,
+.statblock .statblock-legendary-action-description,
 .statblock .statblock-property-value,
 .statblock .statblock-property-name,
 .statblock .statblock-trait-name,
@@ -1002,6 +1005,9 @@ table.sidebar td:first-child {
   font-weight: lighter;
 }
 .statblock .statblock-action-name,
+.statblock .statblock-bonus-action-name,
+.statblock .statblock-reaction-name,
+.statblock .statblock-legendary-action-name,
 .statblock .statblock-trait-name {
   color: #000000;
   font-size: 1.35rem;
@@ -1010,14 +1016,20 @@ table.sidebar td:first-child {
   margin: 0;
 }
 .statblock .statblock-action-name,
+.statblock .statblock-bonus-action-name,
+.statblock .statblock-reaction-name,
 .statblock .statblock-trait-name {
   font-style: italic;
+  font-weight: bold;
+}
+.statblock .statblock-legendary-action-name {
   font-weight: bold;
 }
 .statblock .statblock-property-block {
   padding: 1rem 0.2rem 0;
 }
 .statblock .statblock-actions,
+.statblock .statblock-bonus-actions,
 .statblock .statblock-reactions,
 .statblock .statblock-legendary-actions {
   margin: 0 0 2rem;
@@ -1043,6 +1055,7 @@ table.sidebar td:first-child {
   vertical-align: middle;
 }
 .statblock .statblock-actions:last-child,
+.statblock .statblock-bonus-actions:last-child,
 .statblock .statblock-reactions:last-child,
 .statblock .statblock-legendary-actions:last-child {
   margin: 0;
