@@ -1213,6 +1213,7 @@ table.sidebar {
   .statblock-bonus-action-description,
   .statblock-reaction-description,  
   .statblock-legendary-action-description,
+  .statblock-mythic-action-description,
   .statblock-property-value,
   .statblock-property-name,
   .statblock-trait-name,
@@ -1310,6 +1311,7 @@ table.sidebar {
   .statblock-bonus-action-name,
   .statblock-reaction-name,
   .statblock-legendary-action-name,
+  .statblock-mythic-action-name,
   .statblock-trait-name {
     color: @foreground-color;
     font-size: 1.35rem;
@@ -1326,7 +1328,8 @@ table.sidebar {
     font-weight: bold;
   }
 
-  .statblock-legendary-action-name {
+  .statblock-legendary-action-name,
+  .statblock-mythic-action-name {
     font-weight: bold;
   }
 
@@ -1337,7 +1340,8 @@ table.sidebar {
   .statblock-actions,
   .statblock-bonus-actions,
   .statblock-reactions,
-  .statblock-legendary-actions {
+  .statblock-legendary-actions,
+  .statblock-mythic-actions {
     margin: 0 0 2.0rem;
   }
 
@@ -1367,7 +1371,8 @@ table.sidebar {
   .statblock-actions:last-child,
   .statblock-bonus-actions:last-child,
   .statblock-reactions:last-child,
-  .statblock-legendary-actions:last-child {
+  .statblock-legendary-actions:last-child,
+  .statblock-mythic-actions:last-child {
     margin: 0;
   }
 }
