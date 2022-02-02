@@ -1,5 +1,14 @@
 # Change Log
 
+# 1.0.59
+
+### Added
+- Added support for Mythic Actions in monster Stat Blocks
+- Added support for "No Repeat" and "Each Row" Roll Tables when exporting to a module.
+
+### Fixed
+- Fixed numeric-only AC values breaking monster stat blocks
+
 # 1.0.58
 
 ### Added
