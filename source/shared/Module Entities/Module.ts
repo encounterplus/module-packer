@@ -235,12 +235,14 @@ export class Module {
     if (!scanOnly) {
       let baseAssets = Path.join(appRootPath, 'assets/base')
       FileSystem.copySync(baseAssets, assetsOutputPath)
+      Module.setFolderPermissions(assetsOutputPath)
     }
 
     // Copy print assets if doing the module for print.
     if (!scanOnly && forPrint) {
       let printAssets = Path.join(appRootPath, 'assets/print')
       FileSystem.copySync(printAssets, assetsOutputPath)
+      Module.setFolderPermissions(assetsOutputPath)
     }
 
     // Parse the project directory - navigating through
@@ -1587,6 +1589,27 @@ export class Module {
     })
 
     return $('body').html() ?? pageContent
+  }
+
+  /**
+   * Recursively sets directory permissions. This is necessary
+   * when copying some resource files on certain platforms (e.g.,
+   * using Electron with ASAR causes the assets folder to have 
+   * insufficient permissions for use with module-packer)
+   * @param directoryPath The directory to set permissions on
+   */
+  private static setFolderPermissions(directoryPath: string) {
+    FileSystem.chmodSync(directoryPath, 0o744)
+    let items: string[] = FileSystem.readdirSync(directoryPath)
+
+    items.forEach((item) => {
+      let itemPath = Path.join(directoryPath, item)
+      if (FileSystem.statSync(itemPath).isDirectory()) {
+        Module.setFolderPermissions(itemPath)
+      } else {
+        FileSystem.chmodSync(itemPath, 0o744)
+      }
+    })
   }
 
   /**

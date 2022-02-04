@@ -48,7 +48,7 @@
         }
       ]
     },
-    "asar": false
+    "asar": true
   },
   "publish": {
     "provider": "github",
