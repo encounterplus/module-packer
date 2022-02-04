@@ -123,6 +123,12 @@ encounters:
     order: 1
     parent: my-first-map
     slug: my-first-encounter
+references:
+  - path: https://encounter.plus
+    name: Encounter Plus Website
+    order: 1
+    parent: my-links    
+    slug: my-encounter-plus-link
 ```
 
 **Values:**
@@ -142,6 +148,7 @@ All `Module.yaml` values are optional - and default values will be used for anyt
 - `name`: The name of the module.
 - `print-cover`: The cover to use as the cover image in PDF output (this will be, effectively, a page 0).
 - `print-document-size`: Sets the output page size when exporting to PDF. May be `letter` (default) or `a4`.
+- `references`: Reference items for EncounterPlus. Reference items can link to files that can be rendered by EncounterPlus (such as images or PDFs) or URLs.
 - `slug`: The slug for the module. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
 - `version`: The version of the module. Must be an integer.
 
