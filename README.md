@@ -180,8 +180,8 @@ slug: page-name
 order: 3
 parent: parent-slug
 module-pagebreaks: h1, h2, h3
-pdf-pagebreaks: h1, h2, h3
 pdf-pagebreaks: h1
+pdf-page-style: multi-column
 footer: My Custom Footer Text
 hide-footer: false
 hide-footer-text: false
@@ -202,6 +202,7 @@ All front-matter values are optional - and default values will be used for anyth
 - `name`: The name of the page.
 - `order`: An order for the page. Lower numbers will be placed before higher numbers. If two pages share the same order value, their effective order may differ upon each import. Pages and groups placed at the same place in the tree will respect each other's group values.
 - `parent`: The slug of the parent entity (page or group). If not specified, the parent will be based on the folder structure.
+- `pdf-page-style`: Determines if PDF output one or two columns. Valid values are `single-column` and `multi-column` (default).
 - `pdf-pagebreak`: Element tags that, when specified, will automatically result in the markdown output being split into individual pages. The order specified here will cause pages to nest accordingly (e.g., H2 values will be nested under H1 values). This will only apply when the markdown is being output to a PDF.
 - `print-cover-only`: If true, and printing to PDF, this will cause the page content not to be output. This is useful for having multiple, consecutive pages that are full-images (like maps). Generally used in combination with `include-in: print`. This value is not used when exporting to a module.
 - `slug`: The slug for the module. Slugs should follow standard URL slug guidelines (best to stick with only lowercase letters and dashes). If a slug is manually specified, care should be taken that the slug is not repeated elsewhere in the module. Repeats will cause prevent the module from being created.
@@ -578,6 +579,10 @@ legendary-actions:
   - description: The Evil McEvilface can take 1 legendary actions, using the Explosion option below.
   - name: Explosion
     description: "The Evil McEvilface suddenly explodes doing 1d20 damage to all creatures within 10 ft. This kills the Evil McEvilface."
+mythic-actions:
+  - description: If The Evil McEvilface's Smells Bad Trait has activated in the last hour, it can use the options below as legendary actions. 
+  - name: Bonk
+    description: "The Evil McEvilface can bonk you."
 description: Evil McEvilface lives in the sewer, but not in a cool way like a Ninja Turtle.
 ```
 ~~~

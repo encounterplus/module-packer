@@ -1,5 +1,14 @@
 # Change Log
 
+# 1.0.60
+
+### Added
+- Added support for EncounterPlus References when building a module
+
+### Fixed
+- Fixed Electron support on Windows
+- Fixed timeout on PDF generation
+
 # 1.0.59
 
 ### Added
