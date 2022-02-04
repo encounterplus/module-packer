@@ -706,6 +706,9 @@ export class Module {
       let legendaryActions = monster.legendaryActions.map((legendaryAction) => {
         return { name: legendaryAction.name, text: legendaryAction.description }
       })
+      let mythicActions = monster.mythicActions.map((mythicAction) => {
+        return { name: mythicAction.name, text: mythicAction.description }
+      })
 
       let monsterObj: any = {
         $: monsterAttributes,
@@ -741,6 +744,7 @@ export class Module {
         bonus: bonusActions,
         reaction: reactions,
         legendary: legendaryActions,
+        mythic: mythicActions,
         description: monster.description
       }
 
