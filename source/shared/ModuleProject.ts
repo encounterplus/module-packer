@@ -6,6 +6,7 @@ import * as YAML from 'yaml'
 import { Module } from './Module Entities/Module'
 import { MapFileReference } from './MapFileReference'
 import { EncounterFileReference } from './EncounterFileReference'
+import { ReferenceInfo } from './ReferenceInfo'
 
 /** 
  * Defines project-level information about a project
@@ -75,6 +76,9 @@ export class ModuleProject {
 
   /** The module encounter references for the project */
   encounterFiles: EncounterFileReference[] = []
+
+  /** The references for the project */
+  references: ReferenceInfo[] = []
 
   /** The list of paths that are ignored from being processed */
   ignoredPaths: string[] | undefined = undefined
@@ -308,7 +312,7 @@ export class ModuleProject {
         let mapSlug = map['slug'] as string
         let mapFile = new MapFileReference(mapPath, mapSort, mapSlug, mapParent)
         moduleProject.mapFiles.push(mapFile)
-      });
+      })
     }
 
     // If encounter references exist, add them to project
@@ -332,7 +336,29 @@ export class ModuleProject {
         let encounterSlug = encounter['slug'] as string
         let encounterFile = new EncounterFileReference(encounterPath, encounterSort, encounterSlug, encounterParent)
         moduleProject.encounterFiles.push(encounterFile)
-      });
+      })
+    }
+
+    let references = moduleData['references'] as []
+    moduleProject.references = []
+    if (references) {
+      references.forEach(reference => {
+        let referencePath = reference['path'] as string
+        if (referencePath === undefined) {
+          throw new Error('A reference must have a path defined')
+        }
+
+        let referenceName = reference['name'] as string
+        if (referenceName === undefined) {
+          throw new Error('A reference must have a name')
+        }
+
+        let referenceSort = reference['order'] as number
+        let referenceParent = reference['parent'] as string
+        let referenceSlug = reference['slug'] as string
+        let referenceInfo = new ReferenceInfo(referenceName, referencePath, referenceSort, referenceSlug, referenceParent)
+        moduleProject.references.push(referenceInfo)
+      })
     }
 
     // If createRollTables is specified in Module project file, use that
@@ -468,6 +494,27 @@ export class ModuleProject {
         encounterObjects.push(encounterObject)
       })
       newModuleProject['encounters'] = encounterObjects
+    }
+
+    if (this.references.length > 0)
+    {
+      let referenceObjects: any[] = []
+      this.references.forEach((reference) => {        
+        let referenceObject: any = { }
+        referenceObject['path'] = reference.path
+        referenceObject['name'] = reference.name     
+        if (reference.sort !== undefined) {
+          referenceObject['order'] = reference.sort
+        }
+        if (reference.parentSlug !== undefined) {
+          referenceObject['parent'] = reference.parentSlug
+        }           
+        if (reference.slug !== undefined) {
+          referenceObject['slug'] = reference.slug
+        }
+        referenceObjects.push(referenceObject)
+      })
+      newModuleProject['references'] = referenceObjects
     }
 
     let outputYAML = YAML.stringify(newModuleProject)

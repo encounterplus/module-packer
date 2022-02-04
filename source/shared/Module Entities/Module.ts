@@ -16,6 +16,7 @@ import { ModuleEntity, IncludeMode } from './ModuleEntity'
 import { Monster } from './Monster'
 import { Page } from './Page'
 import { Map } from './Map'
+import { Reference } from './Reference'
 import { Encounter } from './Encounter'
 import { Spell } from './Spell'
 import { RollMode, RollTable } from './RollTable'
@@ -79,6 +80,9 @@ export class Module {
 
   /** The pages of the module */
   pages: Page[] = []
+
+  /** The references of the module */
+  references: Reference[] = []
 
   /** The maps of the module */
   maps: Map[] = []
@@ -276,6 +280,15 @@ export class Module {
       })
 
       await Promise.all(encounterPromises)
+    }
+
+    // Add References
+    if (forModule) {
+      module.moduleProjectInfo.references.forEach((referenceInfo) => {
+        let reference = new Reference(referenceInfo.name, module.moduleProjectInfo.id, referenceInfo.path, referenceInfo.slug)
+        reference.parentSlug = referenceInfo.parentSlug
+        module.references.push(reference)
+      })
     }
 
     // Resolve forced parent reassignments
@@ -487,6 +500,9 @@ export class Module {
     this.encounters.forEach((encounter) => {
       allEntities.push(encounter)
     })
+    this.references.forEach((reference) => {
+      allEntities.push(reference)
+    })
     return allEntities
   }
 
@@ -682,6 +698,21 @@ export class Module {
       return encounterData
     })
 
+    // Map reference data
+    let references = this.references.map((referenceObject) => {
+      let referenceAttributes = {
+        id: referenceObject.id,
+        sort: referenceObject.sort,
+        parent: referenceObject.parent?.id,
+      }
+      let referenceData: any = new Object()
+      referenceData['$'] = referenceAttributes
+      referenceData['name'] = referenceObject.name
+      referenceData['slug'] = referenceObject.slug
+      referenceData['reference'] = referenceObject.path
+      return referenceData
+    })
+
     // Map monster data
     let monsters = this.monsters.map((monster) => {
       let monsterImageFolder = Path.join(outputPath, 'monsters')
@@ -851,6 +882,7 @@ export class Module {
       page: pages,
       map: maps,
       encounter: encounters,
+      reference: references
     }
 
     let moduleBuilder = new XML2JS.Builder({ rootName: 'module' })
