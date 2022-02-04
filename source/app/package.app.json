@@ -3,7 +3,7 @@
   "displayName": "EncounterPlus Module Packer",
   "description": "Tools for creating EncounterPlus modules from markdown.",
   "icon": "build/icon.icns",
-  "version": "1.0.59",
+  "version": "1.0.60",
   "repository": {
     "type": "git",
     "url": "https://github.com/encounterplus/module-packer"
@@ -27,6 +27,14 @@
   "build": {
     "appId": "com.jjohnston.modulepacker",
     "files":  ["app-out/**/*", "node_modules/**/*", "package.json"],
+    "win": {
+			"target": {
+				"target": "NSIS",
+				"arch": [
+					"x64"
+				]
+			}
+		},
     "mac": {
       "category": "public.app-category.utilities",
       "identity": "UMJUH72CLG",
@@ -50,7 +58,7 @@
   "scripts": {
     "lint": "eslint . --ext .ts,.tsx",
     "compile-css": "lessc ./assets/base/css/global.less ./assets/base/css/global.css && lessc ./assets/print/css/print.less ./assets/print/css/print.css && lessc ./assets/print/css/print_a4.less ./assets/print/css/print_a4.css",
-		"compile-app": "tsc -p tsconfig.app.json && ncp ./app/resources ./app-out/resources && ncp ./assets ./app-out/assets",
+		"compile-app": "tsc -p tsconfig.app.json && ncp ./app/resources ./app-out && ncp ./assets ./app-out/assets",
     "watch-app": "tsc -watch -p tsconfig.app.json",
     "start": "npm run compile-app && electron ./app-out/app/main.js",
     "build-mac": "electron-builder build --mac",
@@ -58,11 +66,11 @@
     "build-all": "electron-builder -mw"
   },
   "devDependencies": {
-    "@types/node": "^16.10.3",
+    "@types/node": "^17.0.4",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
-    "electron": "^13.5.1",
-    "electron-builder": "^22.13.1",
+    "electron": "^17.0.0",
+    "electron-builder": "^22.14.5",
     "eslint": "^7.32.0",
     "less": "^4.1.2",
     "ncp": "^2.0.0",

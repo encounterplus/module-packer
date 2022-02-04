@@ -3,7 +3,7 @@
   "displayName": "EncounterPlus Markdown",
   "description": "Renders markdown as it would appear in EncounterPlus",
   "icon": "Logo.png",
-  "version": "1.0.59",
+  "version": "1.0.60",
   "publisher": "jacobjohnston",
   "repository": {
     "type": "git",
@@ -340,7 +340,7 @@
     "watch-extension": "webpack --config webpack.extension.config.js --mode development && ncp ./vscode-extension/resources ./extension-out/resources && ncp ./assets ./extension-out/assets"
   },
   "devDependencies": {
-    "@types/node": "^16.11.21",
+    "@types/node": "^17.0.4",
     "@types/vscode": "^1.51.0",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",

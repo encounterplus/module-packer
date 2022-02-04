@@ -12,6 +12,13 @@ import { PrintDocumentSize, PrintLinkMode } from './ModuleProject'
 
 
 export class PdfExporter {
+
+  /** An optional download folder for the chromium engine */
+  static downloadFolder: string | undefined
+
+  /** The installed browser path */
+  static browserPath: string | undefined
+
   /**
    * Exports a module to PDF (needs the chromium rendering engine already installed)
    * @param projectDirectory The project directory
@@ -43,7 +50,7 @@ export class PdfExporter {
 
     let options = {
       headless: true,
-      executablePath: PuppeteerBridge.executablePath(),
+      executablePath: PdfExporter.browserPath == undefined ? PuppeteerBridge.executablePath() : PdfExporter.browserPath,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     }
     const browser = await Puppeteer.launch(options)
@@ -92,11 +99,19 @@ export class PdfExporter {
   /**
    * Installs the Chromium engine to render the PDF if needed
    * @param downloadProgressChanged A callback to handle the download progress changing
+   * @param path An optional path for where to download Chromium
    */
   public static async installChromiumForRendering(downloadProgressChanged?: (progress: number) => void) {
     try {
       let PuppeteerBridge = ((Puppeteer as unknown) as Puppeteer.PuppeteerNode)
-      if (FileSystem.existsSync(PuppeteerBridge.executablePath())) {
+      const desiredRevision = '950341'
+      const browserFetcher = PuppeteerBridge.createBrowserFetcher({
+        path: PdfExporter.downloadFolder
+      })
+
+      const browserRevisions = await browserFetcher.localRevisions()
+      if (browserRevisions.length != 0 && FileSystem.existsSync(browserFetcher.revisionInfo(browserRevisions[0]).executablePath))  {
+        PdfExporter.browserPath = browserFetcher.revisionInfo(browserRevisions[0]).executablePath
         return
       }
 
@@ -106,14 +121,13 @@ export class PdfExporter {
       }
 
       // Download Chromium
-      const desiredRevision = '950341'
-      const browserFetcher = PuppeteerBridge.createBrowserFetcher({})
       let revisionInfo = await browserFetcher.download(desiredRevision, (downloadBytes, totalBytes) => {
         const progress = (downloadBytes / totalBytes) * 100.0
         if (downloadProgressChanged) {
           downloadProgressChanged(progress)
         }
       })
+      PdfExporter.browserPath = revisionInfo.executablePath
       let localRevisions = await browserFetcher.localRevisions()
       Logger.info('Chromium downloaded to ' + revisionInfo.folderPath)
 

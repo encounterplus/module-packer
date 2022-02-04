@@ -2,7 +2,7 @@
   "name": "module-packer",
   "displayName": "EncounterPlus Module Packer",
   "description": "Tools for creating EncounterPlus modules from markdown.",
-  "version": "1.0.59",
+  "version": "1.0.60",
   "repository": {
     "type": "git",
     "url": "https://github.com/encounterplus/module-packer"
@@ -34,7 +34,7 @@
 		"compile-cli": "tsc -p tsconfig.cli.json && ncp ./assets ./cli-out/assets"
   },
   "devDependencies": {
-    "@types/node": "^16.10.3",
+    "@types/node": "^17.0.4",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "eslint": "^7.32.0",
