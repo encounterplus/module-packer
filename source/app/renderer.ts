@@ -110,6 +110,6 @@ container.ondrop = (event) => {
   for (var i = 0; i < files.length; i++) {
     paths.push(files.item(i).path)
   }
-  Electron.ipcRenderer.send('handlePathSelection', paths)
+  Electron.ipcRenderer.send('handlePathsSelection', paths)
   return false
 }
