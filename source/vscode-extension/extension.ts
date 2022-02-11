@@ -172,7 +172,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (editor === undefined) {
           return
         }
-        let insertText = `\`\`\`Monster\nname:\nslug:\nsize:\ntype:\nalignment:\nac:\nhp:\nspeed:\nstr:\ndex:\ncon:\nint:\nwis:\ncha:\nsaves:\nskills:\nvulnerabilities:\nresistances:\ndamageImmunities:\nconditionImmunities:\nsenses:\nlanguages:\nchallenge:\nenvironments:\ntraits:\n  - name:\n    description:\nactions:\n  - name:\n    description:\nbonus-actions:\n  - name:\n    description:\nreactions:\n  - name:\n    description:\nlegendary-actions:\n  - description:\n  - name:\n    description:\nimage:\ntoken:\ncolumn-after: traits\ncolumn-after-property:\n\`\`\``
+        let insertText = `\`\`\`Monster\nname:\nslug:\nsize:\ntype:\nalignment:\nac:\nhp:\nspeed:\nstr:\ndex:\ncon:\nint:\nwis:\ncha:\nsaves:\nskills:\nvulnerabilities:\nresistances:\ndamageImmunities:\nconditionImmunities:\nsenses:\nlanguages:\nchallenge:\nenvironments:\ntraits:\n  - name:\n    description: ""\nactions:\n  - name:\n    description: ""\nbonus-actions:\n  - name:\n    description: ""\nreactions:\n  - name:\n    description: ""\nlegendary-actions:\n  - description: ""\n  - name:\n    description: ""\nmythic-actions:\n  - description: ""\n  - name:\n    description: ""\nimage:\ntoken:\ncolumn-after: traits\ncolumn-after-property:\n\`\`\``
         let insertPosition = editor.selection.end
         editor.edit((editBuilder) => {
           editBuilder.insert(insertPosition, insertText)
@@ -187,7 +187,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (editor === undefined) {
           return
         }
-        let insertText = `\`\`\`Item\nname:\nslug:\ntype:\nrarity:\nattunement:\nprimaryDamage:\nsecondaryDamage:\nproperties:\n  - \ndamageType:\ndescription:\nvalue:\nsource:\n\`\`\``
+        let insertText = `\`\`\`Item\nname:\nslug:\ntype:\nrarity:\nattunement:\nprimaryDamage:\nsecondaryDamage:\nproperties:\n  - \ndamageType:\ndescription: ""\nvalue:\nsource:\n\`\`\``
         let insertPosition = editor.selection.end
         editor.edit((editBuilder) => {
           editBuilder.insert(insertPosition, insertText)
@@ -202,7 +202,7 @@ export function activate(context: vscode.ExtensionContext) {
         if (editor === undefined) {
           return
         }
-        let insertText = `\`\`\`Spell\nname:\nslug:\nlevel:\nschool:\nritual:\ntime:\nrange:\ncomponents:\nduration:\ndescription:\nclasses:\nimage:\nsource:\n\`\`\``
+        let insertText = `\`\`\`Spell\nname:\nslug:\nlevel:\nschool:\nritual:\ntime:\nrange:\ncomponents:\nduration:\ndescription: ""\nclasses:\nimage:\nsource:\n\`\`\``
         let insertPosition = editor.selection.end
         editor.edit((editBuilder) => {
           editBuilder.insert(insertPosition, insertText)

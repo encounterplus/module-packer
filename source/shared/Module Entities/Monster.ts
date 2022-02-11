@@ -833,7 +833,7 @@ export class Monster extends ModuleEntity {
     }
 
     // Legendary Actions
-    if (this.reactions.length > 0) {
+    if (this.legendaryActions.length > 0) {
       monsterHTML += '<div class="statblock-legendary-actions">'
       monsterHTML += '<p class="statblock-section-title">Legendary Actions</p>'
       this.legendaryActions.forEach((legendaryAction, index) => {
