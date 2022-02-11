@@ -1,5 +1,14 @@
 # Change Log
 
+# 1.0.61
+
+### Added
+- Added `.info-block` table style (like the sidebar style, but full width)
+
+### Fixed
+- Fixed Legendary Actions not showing in Monster stat blocks
+- Fixed missing Mythic Actions in Monster stub
+
 # 1.0.60
 
 ### Added

@@ -823,6 +823,43 @@ table.shop > tbody > tr.shopH2 {
   font-size: 1.2rem;
   font-weight: bold;
 }
+/******** Information Block Tables ********/
+table.info-block {
+  line-height: 1.3rem;
+  background: #edebe8;
+  font-size: 1.1rem;
+  page-break-inside: avoid;
+  float: right;
+}
+table.info-block tbody tr:nth-child(odd) {
+  background: #d8d6d2;
+}
+table.info-block tr td img {
+  margin: 0;
+  padding: 0;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+table.info-block thead {
+  font-weight: bold;
+  font-family: 'Andada SC', '-apple-system', sans-serif;
+  color: #58180d;
+  font-size: 1.8rem;
+  border-top: none;
+}
+table.info-block tbody tr {
+  border-bottom: none;
+  border-top: none;
+  border-collapse: separate;
+}
+table.info-block td:first-child {
+  font-weight: bold;
+  font-family: 'Andada SC', '-apple-system', sans-serif;
+  color: #58180d;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+}
 /******** Sidebar Tables ********/
 table.sidebar {
   line-height: 1.3rem;

@@ -1083,6 +1083,54 @@ table.shop > tbody > tr.shopH2 {
   font-weight: bold;
 }
 
+/******** Information Block Tables ********/
+
+table.info-block {
+  line-height: 1.3rem;
+  background: @neutral-background-primary;
+  font-size: 1.1rem;
+  page-break-inside: avoid;
+  float: right;
+
+  tbody {
+    tr {
+      &:nth-child(odd) {
+        background: @neutral-background-secondary;
+      }
+    }
+  }
+
+  tr td img {
+    margin: 0;
+    padding: 0;
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  thead {
+    font-weight: bold;
+    font-family: @heading-font-family;
+    color: @accent-color;
+    font-size: 1.8rem;
+    border-top: none;
+  }
+
+  tbody tr {
+    border-bottom: none;
+    border-top: none;
+    border-collapse: separate;
+  }
+
+  td:first-child {
+    font-weight: bold;
+    font-family: @heading-font-family;
+    color: @accent-color;
+    font-size: .9rem;
+    padding: .4rem .8rem;
+  }
+}
+
 /******** Sidebar Tables ********/
 
 table.sidebar {
