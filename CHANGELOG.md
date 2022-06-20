@@ -1,5 +1,14 @@
 # Change Log
 
+# 1.0.62
+
+### Added
+- Added "Create Slugified Link" command (Mac: Cmd-Shift-K, Win: Ctrl-Shift-K) 
+- Added "Paste as Slug" command (Mac: Cmd-Shift-V, Win: Ctrl-Shift-V )
+
+### Changed
+- Changed Font to Truetype to fix copy and paste issues on PDF output
+
 # 1.0.61
 
 ### Added
