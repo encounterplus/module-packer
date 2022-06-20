@@ -3,6 +3,7 @@ import * as Markdown from 'markdown-it'
 import * as FileSystem from 'fs-extra'
 import * as Logger from 'winston'
 import * as Path from 'path'
+import Slugify from 'slugify'
 import * as Transport from 'winston-transport'
 import { BuildModuleCommand } from './Commands/BuildModuleCommand'
 import { CreateModuleProjectFileCommand } from './Commands/CreateModuleProjectFileCommand'
@@ -207,6 +208,28 @@ export function activate(context: vscode.ExtensionContext) {
         editor.edit((editBuilder) => {
           editBuilder.insert(insertPosition, insertText)
         })
+      })
+    )
+
+    // Paste as a slug
+    context.subscriptions.push(
+      vscode.commands.registerCommand('encounterPlusMarkdown.slugPaste', (documentTreeItem) => {
+        vscode.env.clipboard.readText().then((clipboardText) => {
+          let editor = vscode.window.activeTextEditor
+          if (editor === undefined) {
+            return
+          }
+
+          let insertText = Slugify(clipboardText, {
+            lower: true,
+            remove: /[*+~.()'"!:@&’]/g,
+            strict: true
+          })
+          let selection = editor.selection
+          editor.edit((editBuilder) => {
+            editBuilder.replace(selection, insertText)
+          })
+        })        
       })
     )
 

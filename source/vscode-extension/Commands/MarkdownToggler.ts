@@ -1,4 +1,5 @@
 import * as vscode from 'vscode'
+import Slugify from 'slugify'
 import { MarkdownToggle } from './MarkdownToggle'
 
 /** Toggles markdown states on and off */
@@ -167,6 +168,18 @@ export class MarkdownToggler {
       deselectAfter: true,
     }
 
+    this.toggleDictionary['encounterPlusMarkdown.createSlugLink'] = {
+      isMultiline: false,
+      detectRegExp: /\[(\S.*?\S)\]\((\S*?)\)/gi,
+      enableRegExp: /(.+)/gi,
+      disableRegExp: /\[(\S.*?\S)\]\((\S*?)\)/gi,
+      enableFormat: '[$1]()',
+      disableFormat: '$1',
+      lineOffset: 0,
+      characterOffset: 3,
+      deselectAfter: true,
+    }
+
     this.toggleDictionary['encounterPlusMarkdown.createMonsterLink'] = {
       isMultiline: false,
       detectRegExp: /\[(\S.*?\S)\]\((\S*?)\)/gi,
@@ -216,7 +229,7 @@ export class MarkdownToggler {
 
     let toggle = this.toggleDictionary[command]
     let document = editor.document
-    let selection = editor.selection    
+    let selection = editor.selection
     
     let selectionLineRanges = this.getLineSelections(document, selection)
     if (selectionLineRanges.length == 0) {
@@ -239,7 +252,7 @@ export class MarkdownToggler {
       return
     } 
 
-    selectionLineRanges.forEach( selectionLineRange => {
+    selectionLineRanges.forEach(selectionLineRange => {
       let selectionText = document.getText(selectionLineRange)
       let matches: RegExpMatchArray | null
       let matchRegExp = shouldEnable ? toggle.enableRegExp : toggle.disableRegExp
@@ -252,6 +265,15 @@ export class MarkdownToggler {
         let endCharacter = startCharacter + matches[0].length
         let matchRange = new vscode.Range(lineNumber, startCharacter, lineNumber, endCharacter)
         let replacedText = selectionText.replace(matchRegExp, replaceFormat)
+        if (command === 'encounterPlusMarkdown.createSlugLink') {
+          let slugText = Slugify(selectionText, {
+            lower: true,
+            remove: /[*+~.()'"!:@&’]/g,
+            strict: true,
+          })
+          let replacedTextLength = replacedText.length
+          replacedText = replacedText.slice(0, replacedTextLength - 1) + slugText + replacedText.slice(replacedTextLength - 1, replacedTextLength)
+        }
         edits.push(new vscode.TextEdit(matchRange, replacedText))
       }
     })
