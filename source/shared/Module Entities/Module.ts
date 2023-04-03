@@ -517,8 +517,12 @@ export class Module {
     })
 
     return children.sort((a, b) => {
-      let aVal = a.sort === undefined ? 1000 : a.sort
-      let bVal = b.sort === undefined ? 1000 : b.sort
+      let aVal = a.sort === undefined ? 100000 : a.sort
+      let bVal = b.sort === undefined ? 100000 : b.sort
+
+      if (a.sort === undefined && b.sort === undefined) {
+        return (a.name.toLowerCase() < b.name.toLowerCase()) ? -1 : 1
+      }
 
       if (aVal === bVal) {
         return 0

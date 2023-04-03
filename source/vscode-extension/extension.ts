@@ -130,7 +130,7 @@ export function activate(context: vscode.ExtensionContext) {
           let moduleItems = await moduleProjectProvider.getChildren()
           let firstModuleItem = moduleItems[0] as ModuleTreeItem
           if (firstModuleItem !== undefined) {
-            exportToPdfCommand.startModuleExport(moduleTreeItem.module.moduleProjectInfo)
+            exportToPdfCommand.startModuleExport(firstModuleItem.module.moduleProjectInfo)
           }          
         }        
       })
