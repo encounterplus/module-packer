@@ -103,11 +103,9 @@ export class PdfExporter {
    */
   public static async installChromiumForRendering(downloadProgressChanged?: (progress: number) => void) {
     try {
-      let PuppeteerBridge = ((Puppeteer as unknown) as Puppeteer.PuppeteerNode)
-      const desiredRevision = '950341'
-      const browserFetcher = PuppeteerBridge.createBrowserFetcher({
-        path: PdfExporter.downloadFolder
-      })
+      const desiredRevision = '1108766'
+      let downloadPath = PdfExporter.downloadFolder !== undefined ? PdfExporter.downloadFolder : Path.join(__dirname, '.cache', 'puppeteer')
+      let browserFetcher = new Puppeteer.BrowserFetcher ({ path: downloadPath })
 
       const browserRevisions = await browserFetcher.localRevisions()
       if (browserRevisions.length != 0 && FileSystem.existsSync(browserFetcher.revisionInfo(browserRevisions[0]).executablePath))  {
@@ -127,6 +125,11 @@ export class PdfExporter {
           downloadProgressChanged(progress)
         }
       })
+
+      if (revisionInfo === undefined) {
+        throw Error(`Could not download Chromium revision ${desiredRevision}`)
+      }
+
       PdfExporter.browserPath = revisionInfo.executablePath
       let localRevisions = await browserFetcher.localRevisions()
       Logger.info('Chromium downloaded to ' + revisionInfo.folderPath)
@@ -137,10 +140,7 @@ export class PdfExporter {
           await browserFetcher.remove(revision)
         }
       })
-
-      if (FileSystem.existsSync(PuppeteerBridge.executablePath())) {
-        return Promise.all(cleanupOldVersions)
-      }
+      return Promise.all(cleanupOldVersions)
     } catch (error: any) {
       Logger.error((error as Error).message)
       throw Error(`PDF engine installation failed: ${(error as Error).message}`)
@@ -301,11 +301,11 @@ export class PdfExporter {
     let html = ''
     moduleEntities.forEach((child) => {
       if (child instanceof Group) {
-        html += `<a id="${child.slug}"></a>`
+        html += `<a id="${child.slug}" style="display: none"></a>`
       }
 
       if (child instanceof Page) {
-        html += `<a id="${child.slug}"></a>`
+        html += `<a id="${child.slug}" style="display: none"></a>`
         html += child.content
       }
       html += PdfExporter.getChildPageContent(child.children)

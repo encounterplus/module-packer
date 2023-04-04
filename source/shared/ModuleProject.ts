@@ -286,7 +286,7 @@ export class ModuleProject {
       ignoredPaths.forEach(globPath => {
         let moduleDirectory = Path.dirname(projectFilePath)
         let ignorePath = Path.join(moduleDirectory, globPath)
-        let ignoredFiles = Glob.glob.sync(ignorePath)
+        let ignoredFiles = Glob.globSync(ignorePath)
         moduleProject.ignoredFiles = moduleProject.ignoredFiles.concat(ignoredFiles)
       })
     }
