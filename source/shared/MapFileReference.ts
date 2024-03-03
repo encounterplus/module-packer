@@ -1,7 +1,7 @@
 import * as FileSystem from 'fs-extra'
 import * as Path from 'path'
-import * as Unzipper from 'unzipper'
-import * as XML2JS from 'xml2js'
+import * as ExtractZip from 'extract-zip'
+import { XMLParser } from 'fast-xml-parser'
 import * as Logger from 'winston'
 import { Map } from './Module Entities/Map'
 
@@ -61,16 +61,16 @@ export class MapFileReference {
     FileSystem.ensureDirSync(mapExtractTempPath)
 
     // Unzip the map file
-    await FileSystem.createReadStream(fullMapPath).pipe(Unzipper.Extract({path: mapExtractTempPath})).promise()
+    await ExtractZip(fullMapPath, { dir: mapExtractTempPath })
 
     let mapModuleXmlFile = Path.join(mapExtractTempPath, 'module.xml')
-    let mapCampagnXmlFile = Path.join(mapExtractTempPath, 'campaign.xml')
+    let mapCampaignXmlFile = Path.join(mapExtractTempPath, 'campaign.xml')
 
-    let mapXmlFile = undefined
+    let mapXmlFile: string | undefined = undefined
     if (FileSystem.existsSync(mapModuleXmlFile)) {
       mapXmlFile = mapModuleXmlFile
-    } else if (FileSystem.existsSync(mapCampagnXmlFile)) {
-      mapXmlFile = mapCampagnXmlFile
+    } else if (FileSystem.existsSync(mapCampaignXmlFile)) {
+      mapXmlFile = mapCampaignXmlFile
     }
 
     if (mapXmlFile === undefined) {
@@ -88,40 +88,32 @@ export class MapFileReference {
       FileSystem.copyFileSync(tempPath, newPath)
     })
 
-    let xmlParser = new XML2JS.Parser()
+    let xmlOptions =  {
+      ignoreAttributes: false,
+      attributeNamePrefix : "@_"
+    };
+    let xmlParser = new XMLParser(xmlOptions)
     let mapModuleBuffer = FileSystem.readFileSync(mapXmlFile)
-    let parseResult = await xmlParser.parseStringPromise(mapModuleBuffer.toString())
+    let mapModuleString = mapModuleBuffer.toString()
+    let parseResult = xmlParser.parse(mapModuleString)
 
     let rootElement = parseResult['module'] as any || parseResult['campaign'] as any
     if (rootElement === undefined) {
       throw Error('Map file has an invalid format. Could not locate module or campaign element.')
     }
 
-    let maps = rootElement['map'] as any[]
-    if (maps === undefined || maps.length < 1) {
-      throw Error('Map file has an invalid format. Could not locate map element.')
-    }
-
-    let mapObject = maps[0]
-    let mapName = (mapObject['name'][0] as string) || Path.basename(this.path)
+    let mapObject = rootElement['map'] as any
+    let mapName = (mapObject['name'] as string) || Path.basename(this.path)
     let map = new Map(mapName, moduleUUID, this, this.slug)
     if (this.sort !== undefined) {
       map.sort = this.sort
     }
 
-    if (mapObject['$'] !== undefined) {
-      delete mapObject['$']['parent']
-      delete mapObject['$']['sort']
-      delete mapObject['slug']
-      delete mapObject['name']
-    }
-
     map.mapData = mapObject
     
     // Cleanup the temp directory
-    FileSystem.rmdirSync(mapExtractTempPath, { recursive: true })
+    FileSystem.rmSync(mapExtractTempPath, {recursive: true, force: true})
 
     return map
-  } 
-
+  }
 }

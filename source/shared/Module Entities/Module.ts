@@ -6,7 +6,7 @@ import * as Path from 'path'
 import * as Logger from 'winston'
 import Slugify from 'slugify'
 import { v4 as UUIDV4, v5 as UUIDV5 } from 'uuid'
-import * as XML2JS from 'xml2js'
+import { XMLBuilder } from 'fast-xml-parser'
 import * as YAML from 'yaml'
 import { MarkdownRenderer } from '../MarkdownRenderer'
 import { ModuleProject } from '../ModuleProject'
@@ -651,13 +651,10 @@ export class Module {
 
     // Map page data
     let pages = this.pages.map((page) => {
-      let pageAttributes = {
-        id: page.id,
-        sort: page.sort,
-        parent: page.parent?.id,
-      }
       return {
-        $: pageAttributes,
+        '@_id': page.id, 
+        '@_sort': page.sort, 
+        '@_parent': page.parent?.id, 
         name: page.name,
         slug: page.slug,
         content: page.content,
@@ -666,23 +663,21 @@ export class Module {
 
     // Map group data
     let groups = this.groups.map((group) => {
-      let groupAttributes = {
-        id: group.id,
-        sort: group.sort,
-        parent: group.parent?.id,
+      return { 
+        '@_id': group.id, 
+        '@_sort': group.sort, 
+        '@_parent': group.parent?.id, 
+        name: group.name, 
+        slug: group.slug 
       }
-      return { $: groupAttributes, name: group.name, slug: group.slug }
     })
 
     // Map map data
     let maps = this.maps.map((mapObject) => {
-      let mapAttributes = {
-        id: mapObject.id,
-        sort: mapObject.sort,
-        parent: mapObject.parent?.id,
-      }
       let mapData: any = mapObject.mapData
-      mapData['$'] = mapAttributes
+      mapData['@_id'] = mapObject.id
+      mapData['@_sort'] = mapObject.sort
+      mapData['@_parent'] = mapObject.parent?.id
       mapData['name'] = mapObject.name
       mapData['slug'] = mapObject.slug
       return mapData
@@ -690,13 +685,10 @@ export class Module {
 
     // Map encounter data
     let encounters = this.encounters.map((encounterObject) => {
-      let encounterAttributes = {
-        id: encounterObject.id,
-        sort: encounterObject.sort,
-        parent: encounterObject.parent?.id,
-      }
       let encounterData: any = encounterObject.encounterData
-      encounterData['$'] = encounterAttributes
+      encounterData['@_id'] = encounterObject.id
+      encounterData['@_sort'] = encounterObject.sort
+      encounterData['@_parent'] = encounterObject.parent?.id
       encounterData['name'] = encounterObject.name
       encounterData['slug'] = encounterObject.slug
       return encounterData
@@ -704,13 +696,11 @@ export class Module {
 
     // Map reference data
     let references = this.references.map((referenceObject) => {
-      let referenceAttributes = {
-        id: referenceObject.id,
-        sort: referenceObject.sort,
-        parent: referenceObject.parent?.id,
-      }
+
       let referenceData: any = new Object()
-      referenceData['$'] = referenceAttributes
+      referenceData['@_id'] = referenceObject.id
+      referenceData['@_sort'] = referenceObject.sort
+      referenceData['@_parent'] = referenceObject.parent?.id
       referenceData['name'] = referenceObject.name
       referenceData['slug'] = referenceObject.slug
       referenceData['reference'] = referenceObject.path
@@ -722,10 +712,6 @@ export class Module {
       let monsterImageFolder = Path.join(outputPath, 'monsters')
       if (!FileSystem.existsSync(monsterImageFolder)) {
         FileSystem.mkdirSync(monsterImageFolder)
-      }
-
-      let monsterAttributes = {
-        id: monster.id,
       }
 
       let traits = monster.traits.map((trait) => {
@@ -748,7 +734,7 @@ export class Module {
       })
 
       let monsterObj: any = {
-        $: monsterAttributes,
+        "@_id": monster.id,
         name: monster.name,
         slug: monster.slug,
         size: Monster.getCompendiumSize(monster),
@@ -801,12 +787,8 @@ export class Module {
         FileSystem.mkdirSync(itemImageFolder)
       }
 
-      let itemAttributes = {
-        id: item.id,
-      }
-
       let itemObj: any = {
-        $: itemAttributes,
+        "@_id": item.id,
         name: item.name,
         slug: item.slug,
         type: Item.getCompendiumType(item),
@@ -842,12 +824,8 @@ export class Module {
         FileSystem.mkdirSync(spellImageFolder)
       }
 
-      let spellAttributes = {
-        id: spell.id,
-      }
-
       let spellObj: any = {
-        $: spellAttributes,
+        "@_id": spell.id,
         name: spell.name,
         slug: spell.slug,
         level: spell.level,
@@ -873,37 +851,43 @@ export class Module {
     })
 
     // Layout root module data structure
-    let moduleData = {
-      $: { id: this.moduleProjectInfo.id },
-      name: this.moduleProjectInfo.name,
-      slug: this.moduleProjectInfo.slug,
-      description: this.moduleProjectInfo.description,
-      author: this.moduleProjectInfo.author,
-      code: this.moduleProjectInfo.referenceCode,
-      category: this.moduleProjectInfo.category,
-      image: this.moduleProjectInfo.moduleCoverPath,
-      group: groups,
-      page: pages,
-      map: maps,
-      encounter: encounters,
-      reference: references
+    let moduleData = { module: {
+        "@_id": this.moduleProjectInfo.id,
+        name: this.moduleProjectInfo.name,
+        slug: this.moduleProjectInfo.slug,
+        description: this.moduleProjectInfo.description,
+        author: this.moduleProjectInfo.author,
+        code: this.moduleProjectInfo.referenceCode,
+        category: this.moduleProjectInfo.category,
+        image: this.moduleProjectInfo.moduleCoverPath,
+        group: groups,
+        page: pages,
+        map: maps,
+        encounter: encounters,
+        reference: references 
+      }
     }
 
-    let moduleBuilder = new XML2JS.Builder({ rootName: 'module' })
-    let moduleXML = moduleBuilder.buildObject(moduleData)
+    let xmlBuildOptions =  {
+      ignoreAttributes: false,
+      attributeNamePrefix : "@_"
+    };
+    let moduleBuilder = new XMLBuilder(xmlBuildOptions)
+    let moduleXML = moduleBuilder.build(moduleData)
 
     FileSystem.writeFileSync(modulePath, moduleXML)
 
     let hasCompendiumData = monsters.length > 0 || items.length > 0 || spells.length > 0
-    let compendiumData = {
-      monster: monsters,
-      item: items,
-      spell: spells,
+    let compendiumData = { compendium: {
+        monster: monsters,
+        item: items,
+        spell: spells 
+      }
     }
 
     if (hasCompendiumData) {
-      let compendiumBuilder = new XML2JS.Builder({ rootName: 'compendium' })
-      let compendiumXML = compendiumBuilder.buildObject(compendiumData)
+      let compendiumBuilder = new XMLBuilder(xmlBuildOptions)
+      let compendiumXML = compendiumBuilder.build(compendiumData)
       FileSystem.writeFileSync(compendiumPath, compendiumXML)
     }
   }
