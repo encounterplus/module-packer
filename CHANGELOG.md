@@ -1,5 +1,14 @@
 # Change Log
 
+# 1.0.63
+
+### Added
+- Added PDF Outlines
+
+### Fixed
+- Fixed error in VS Code when processing map or encounter files
+- Fixed sort order for unselected module in VS Code
+
 # 1.0.62
 
 ### Added
