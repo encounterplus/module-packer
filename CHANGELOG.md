@@ -1,5 +1,10 @@
 # Change Log
 
+# 1.0.64
+
+### Fixed
+- Removed some extra logging left in by accident
+
 # 1.0.63
 
 ### Added

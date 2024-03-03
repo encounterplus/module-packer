@@ -58,11 +58,9 @@ export class EncounterFileReference {
     Logger.info(`Processing encounter file "${this.path}"`)
     
     // Create temporary unzip path for encounter file
-    Logger.info(`Creating "${encounterExtractTempPath}"`)
     FileSystem.ensureDirSync(encounterExtractTempPath)
 
     // Unzip the encounter file
-    Logger.info(`Extracting "${fullEncounterPath}"`)
     await ExtractZip(fullEncounterPath, { dir: encounterExtractTempPath })
 
     let encounterModuleXmlFile = Path.join(encounterExtractTempPath, 'module.xml')
@@ -87,7 +85,6 @@ export class EncounterFileReference {
     encounterFiles.forEach(fileName => {
       let tempPath = Path.join(encounterExtractTempPath, fileName)
       let newPath = Path.join(moduleBuildPath, fileName)
-      Logger.info(`Copying "${tempPath}"`)
       FileSystem.copyFileSync(tempPath, newPath)
     })
 
@@ -96,7 +93,6 @@ export class EncounterFileReference {
       attributeNamePrefix : "@_"
     };
     let xmlParser = new XMLParser(xmlOptions)
-    Logger.info(`Reading "${encounterXmlFile}"`)
     let encounterModuleBuffer = FileSystem.readFileSync(encounterXmlFile)
     let parseResult = xmlParser.parse(encounterModuleBuffer.toString())
 
@@ -115,7 +111,6 @@ export class EncounterFileReference {
     encounter.encounterData = encounterObject
 
     // Cleanup the temp directory
-    Logger.info(`Deleting "${encounterExtractTempPath}"`)
     FileSystem.rmSync(encounterExtractTempPath, {recursive: true, force: true})
 
     return encounter
