@@ -1,7 +1,7 @@
 import * as FileSystem from 'fs-extra'
 import * as Path from 'path'
-import * as Unzipper from 'unzipper'
-import * as XML2JS from 'xml2js'
+import * as ExtractZip from 'extract-zip'
+import { XMLParser } from 'fast-xml-parser'
 import * as Logger from 'winston'
 import { Encounter } from './Module Entities/Encounter'
 
@@ -58,15 +58,17 @@ export class EncounterFileReference {
     Logger.info(`Processing encounter file "${this.path}"`)
     
     // Create temporary unzip path for encounter file
+    Logger.info(`Creating "${encounterExtractTempPath}"`)
     FileSystem.ensureDirSync(encounterExtractTempPath)
 
     // Unzip the encounter file
-    await FileSystem.createReadStream(fullEncounterPath).pipe(Unzipper.Extract({path: encounterExtractTempPath})).promise()
+    Logger.info(`Extracting "${fullEncounterPath}"`)
+    await ExtractZip(fullEncounterPath, { dir: encounterExtractTempPath })
 
     let encounterModuleXmlFile = Path.join(encounterExtractTempPath, 'module.xml')
     let encounterCampaignXmlFile = Path.join(encounterExtractTempPath, 'campaign.xml')
 
-    let encounterXmlFile = undefined
+    let encounterXmlFile: string | undefined = undefined
     if (FileSystem.existsSync(encounterModuleXmlFile)) {
       encounterXmlFile = encounterModuleXmlFile
     } else if (FileSystem.existsSync(encounterCampaignXmlFile)) {
@@ -85,43 +87,37 @@ export class EncounterFileReference {
     encounterFiles.forEach(fileName => {
       let tempPath = Path.join(encounterExtractTempPath, fileName)
       let newPath = Path.join(moduleBuildPath, fileName)
+      Logger.info(`Copying "${tempPath}"`)
       FileSystem.copyFileSync(tempPath, newPath)
     })
 
-    let xmlParser = new XML2JS.Parser()
+    let xmlOptions =  {
+      ignoreAttributes: false,
+      attributeNamePrefix : "@_"
+    };
+    let xmlParser = new XMLParser(xmlOptions)
+    Logger.info(`Reading "${encounterXmlFile}"`)
     let encounterModuleBuffer = FileSystem.readFileSync(encounterXmlFile)
-    let parseResult = await xmlParser.parseStringPromise(encounterModuleBuffer.toString())
+    let parseResult = xmlParser.parse(encounterModuleBuffer.toString())
 
     let rootElement = parseResult['module'] as any || parseResult['campaign'] as any
     if (rootElement === undefined) {
       throw Error('Encounter file has an invalid format. Could not locate module or campaign element.')
     }
 
-    let encounters = rootElement['encounter'] as any[]
-    if (encounters === undefined || encounters.length < 1) {
-      throw Error('Encounter file has an invalid format. Could not locate encounter element.')
-    }
-
-    let encounterObject = encounters[0]
-    let encounterName = (encounterObject['name'][0] as string) || Path.basename(this.path)
+    let encounterObject = rootElement['encounter'] as any
+    let encounterName = (encounterObject['name'] as string) || Path.basename(this.path)
     let encounter = new Encounter(encounterName, moduleUUID, this, this.slug)
     if (this.sort !== undefined) {
       encounter.sort = this.sort
     }
 
-    if (encounterObject['$'] !== undefined) {
-      delete encounterObject['$']['parent']
-      delete encounterObject['$']['sort']
-      delete encounterObject['slug']
-      delete encounterObject['name']
-    }
-
     encounter.encounterData = encounterObject
-    
+
     // Cleanup the temp directory
-    FileSystem.rmdirSync(encounterExtractTempPath, { recursive: true })
+    Logger.info(`Deleting "${encounterExtractTempPath}"`)
+    FileSystem.rmSync(encounterExtractTempPath, {recursive: true, force: true})
 
     return encounter
-  } 
-
+  }
 }

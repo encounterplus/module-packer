@@ -1,6 +1,7 @@
 import * as Cheerio from 'cheerio'
 import * as FileSystem from 'fs-extra'
 import * as Path from 'path'
+import * as PdfLib from 'pdf-lib'
 import * as Puppeteer from 'puppeteer-core'
 import * as Logger from 'winston'
 import { pathToFileURL } from 'url'
@@ -9,6 +10,7 @@ import { ModuleEntity } from './Module Entities/ModuleEntity'
 import { Page } from './Module Entities/Page'
 import { Group } from './Module Entities/Group'
 import { PrintDocumentSize, PrintLinkMode } from './ModuleProject'
+import { outlinePdfFactory } from '@lillallol/outline-pdf'
 
 
 export class PdfExporter {
@@ -18,6 +20,9 @@ export class PdfExporter {
 
   /** The installed browser path */
   static browserPath: string | undefined
+
+  /** The PDF Outline */
+  static pdfOutline: string = ""
 
   /**
    * Exports a module to PDF (needs the chromium rendering engine already installed)
@@ -56,6 +61,7 @@ export class PdfExporter {
     const browser = await Puppeteer.launch(options)
     const page = await browser.newPage()
 
+    this.pdfOutline = ""
     html += `</head><body>`
     if (module.moduleProjectInfo.printCoverPath && module.moduleProjectInfo.moduleProjectPath) {
       let moduleDirectory = Path.dirname(module.moduleProjectInfo.moduleProjectPath)
@@ -90,8 +96,20 @@ export class PdfExporter {
       timeout: 0
     })
 
-    Logger.info(`Saving PDF file at ${saveLocation}...`)
-    FileSystem.writeFileSync(saveLocation, pdf)
+    if (this.pdfOutline != "") {
+      Logger.info(`Adding outline to the PDF.`)
+      const outlinePdf = outlinePdfFactory(PdfLib)
+      Logger.info(`Generated outline: "${this.pdfOutline}"`)
+      const outline: string = this.pdfOutline
+      const outlinedPdfDocument = await outlinePdf({ outline, pdf })
+      const outlinedPdf = await outlinedPdfDocument.save()
+      Logger.info(`Saving PDF file at ${saveLocation}...`)
+      FileSystem.writeFileSync(saveLocation, outlinedPdf)
+    } else {
+      Logger.info(`Saving PDF file at ${saveLocation}...`)
+      FileSystem.writeFileSync(saveLocation, pdf)
+    }
+
     await browser.close()
     return saveLocation
   }
@@ -103,11 +121,9 @@ export class PdfExporter {
    */
   public static async installChromiumForRendering(downloadProgressChanged?: (progress: number) => void) {
     try {
-      let PuppeteerBridge = ((Puppeteer as unknown) as Puppeteer.PuppeteerNode)
-      const desiredRevision = '950341'
-      const browserFetcher = PuppeteerBridge.createBrowserFetcher({
-        path: PdfExporter.downloadFolder
-      })
+      const desiredRevision = '1108766'
+      let downloadPath = PdfExporter.downloadFolder !== undefined ? PdfExporter.downloadFolder : Path.join(__dirname, '.cache', 'puppeteer')
+      let browserFetcher = new Puppeteer.BrowserFetcher ({ path: downloadPath })
 
       const browserRevisions = await browserFetcher.localRevisions()
       if (browserRevisions.length != 0 && FileSystem.existsSync(browserFetcher.revisionInfo(browserRevisions[0]).executablePath))  {
@@ -127,6 +143,11 @@ export class PdfExporter {
           downloadProgressChanged(progress)
         }
       })
+
+      if (revisionInfo === undefined) {
+        throw Error(`Could not download Chromium revision ${desiredRevision}`)
+      }
+
       PdfExporter.browserPath = revisionInfo.executablePath
       let localRevisions = await browserFetcher.localRevisions()
       Logger.info('Chromium downloaded to ' + revisionInfo.folderPath)
@@ -137,10 +158,7 @@ export class PdfExporter {
           await browserFetcher.remove(revision)
         }
       })
-
-      if (FileSystem.existsSync(PuppeteerBridge.executablePath())) {
-        return Promise.all(cleanupOldVersions)
-      }
+      return Promise.all(cleanupOldVersions)
     } catch (error: any) {
       Logger.error((error as Error).message)
       throw Error(`PDF engine installation failed: ${(error as Error).message}`)
@@ -250,6 +268,7 @@ export class PdfExporter {
     let $ = Cheerio.load(html)
     let currentPage = 1
     let anchorPageDictionary: { [anchor: string]: number } = {}
+    this.pdfOutline = ""
 
     // Use the footer-page-number elements to determine the
     // page count.
@@ -271,6 +290,8 @@ export class PdfExporter {
 
     // Replace the list items in an unordered list marked as a table of contents
     // with actual item and page numbers.
+    let isFirstOutlineElement = true
+    let categoryDepth = 0
     $('ul.toc').each((i, element) => {
       $(element).find('li').each((i, listElement) => {
         $(listElement).find('a').each((i, linkElement) => {
@@ -287,6 +308,41 @@ export class PdfExporter {
           }
           
           $(linkElement).replaceWith(`<span class="toc-title"><a href="${linkHref}">${linkContent}</a></span><span class="toc-page-number"><a href="${linkHref}">${pageNumber}</a></span>`)
+
+          let newDepth = 2
+          let maxCategoryDepthAddition = 1
+          if (isFirstOutlineElement || listElement.attribs['class'] == 'part') {
+            isFirstOutlineElement = false
+            categoryDepth = 0
+            newDepth = 0
+          } else if (listElement.attribs['class'] == 'category') {
+            categoryDepth = 1
+            newDepth = 1
+          } else if (listElement.attribs['class'] == 'subitem') {
+            maxCategoryDepthAddition = 2
+            newDepth = 3
+          } else {
+            newDepth = 2
+          }
+
+          let outlineDepthString = '|--|'
+          let depth = Math.min(newDepth, categoryDepth + maxCategoryDepthAddition)
+          switch (depth) {
+            case 0:
+              outlineDepthString = '||'
+              break;
+            case 1:
+              outlineDepthString = '|-|'
+              break;
+            case 2:
+              outlineDepthString = '|--|'
+              break;
+            case 3:
+              outlineDepthString = '|---|'
+              break;
+          }
+
+          this.pdfOutline += `${pageNumber + 1}${outlineDepthString}${linkContent}\n`
         })
       })
     })
@@ -301,11 +357,11 @@ export class PdfExporter {
     let html = ''
     moduleEntities.forEach((child) => {
       if (child instanceof Group) {
-        html += `<a id="${child.slug}"></a>`
+        html += `<a id="${child.slug}" style="display: none"></a>`
       }
 
       if (child instanceof Page) {
-        html += `<a id="${child.slug}"></a>`
+        html += `<a id="${child.slug}" style="display: none"></a>`
         html += child.content
       }
       html += PdfExporter.getChildPageContent(child.children)
